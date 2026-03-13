@@ -1,0 +1,212 @@
+DROP DATABASE IF EXISTS bookstore;
+CREATE DATABASE IF NOT EXISTS bookstore;
+USE bookstore;
+
+-- Tạo bảng users
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN','AUTHOR', 'CUSTOMER') NOT NULL DEFAULT 'CUSTOMER',
+    full_name VARCHAR(100),
+    address TEXT,
+    phone VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tạo bảng authors
+DROP TABLE IF EXISTS authors;
+CREATE TABLE authors (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    bio TEXT,
+    profile_image VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tạo bảng categories
+DROP TABLE IF EXISTS categories;
+CREATE TABLE categories (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tạo bảng books với trường discount
+DROP TABLE IF EXISTS books;
+CREATE TABLE books (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    category_id BIGINT,
+    author_id BIGINT,
+    image_url VARCHAR(255),
+    discount DECIMAL(5, 2) DEFAULT 0.00, -- Thêm trường discount, mặc định 0.00
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE SET NULL
+);
+
+
+-- Tạo bảng orders
+DROP TABLE IF EXISTS orders;
+CREATE TABLE orders (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    cart_id VARCHAR(24), -- Lưu trữ cartId dạng chuỗi
+    total_amount DECIMAL(10, 2) NOT NULL,
+    status ENUM('UNPROCESSED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL DEFAULT 'UNPROCESSED',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Tạo bảng order_items
+DROP TABLE IF EXISTS order_items;
+CREATE TABLE order_items (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_id BIGINT NOT NULL,
+    book_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    discount DECIMAL(5, 2) DEFAULT 0.00, -- Thêm trường discount
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+);
+
+
+-- Tạo bảng cart
+DROP TABLE IF EXISTS cart;
+CREATE TABLE cart (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Tạo bảng cart_items
+DROP TABLE IF EXISTS cart_items;
+CREATE TABLE cart_items (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cart_id BIGINT NOT NULL,
+    book_id BIGINT NOT NULL,
+    quantity INT NOT NULL CHECK (quantity >= 1),
+    UNIQUE(cart_id, book_id),
+    FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+);
+
+-- Chèn dữ liệu mẫu
+INSERT INTO users (username, email, password, role, full_name, address, phone) VALUES
+('admin', 'admin@bookstore.com', '$2a$10$YTlzLUA408lM1mkyp2Jp6ea5IO2wIhyB0vxAm/xZWqQGUq/.ckO2C', 'ADMIN', 'Admin User', '123 Admin St, Hanoi', '0123456789'),
+('customer1', 'customer1@bookstore.com', '$2a$10$YTlzLUA408lM1mkyp2Jp6ea5IO2wIhyB0vxAm/xZWqQGUq/.ckO2C', 'CUSTOMER', 'Nguyen Van A', '456 Customer St, Hanoi', '0987654321');
+
+INSERT INTO authors (name, bio, profile_image) VALUES
+('F. Scott Fitzgerald', 'Author of classic American literature', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSIE2EQGU2oeVLZE-Jtj1s8_IeOKpakzaHPkMo06frKHBuadtzMpUIZO5Em-vL73Sp5nYWjcz1EYh3ffMmuQhsbnJM57dLPuoNENOrhg&s=10'),
+('Stephen Hawking', 'Renowned physicist and author', 'https://vcdn1-vnexpress.vnecdn.net/2018/03/14/1710-1521014337.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=eC60Uetu-A0dPpNlEVKyvQ');
+
+INSERT INTO categories (name, description) VALUES
+('Literature', 'Novels and literary works'),
+('Science', 'Books about science and technology');
+
+INSERT INTO books (title, description, price, stock, category_id, author_id, image_url, discount) VALUES
+('The Great Gatsby', 'A classic novel about the American Dream', 120000, 100, 1, 1, 'https://skyhorse-us.imgix.net/covers/9781949846386.jpg?auto=format&w=298', 5.00), -- Giảm 5%
+('A Brief History of Time', 'An exploration of the universe', 50000, 50, 2, 2, 'https://i.ytimg.com/vi/NN5cXXtuETM/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGDwgZShLMA8=&rs=AOn4CLCAyell3bhXOy66z1AKxR1c-eaxAg', 0.00); -- Không giảm
+
+
+-- Chèn dữ liệu vào bảng orders
+INSERT INTO orders (user_id, full_name, phone, address, cart_id, total_amount, status) VALUES
+(2, 'Le Van A', '123456789', '456 Customer St, Hanoi', '677cf2527964bd05c169c993', 36.49, 'UNPROCESSED');
+
+-- Chèn dữ liệu vào bảng order_items
+INSERT INTO order_items (order_id, book_id, quantity, unit_price, discount) VALUES
+(1, 1, 1, 15.99, 0.80), -- Giảm 5% trên 15.99 = 0.80
+(1, 2, 1, 20.50, 0.00); -- Không giảm
+
+
+-- Chèn dữ liệu mẫu
+INSERT INTO cart (user_id) VALUES
+(2); -- Giỏ hàng cho customer1 (ID=2)
+
+INSERT INTO cart_items (cart_id, book_id, quantity) VALUES
+(1, 1, 2), -- 2 cuốn "The Great Gatsby"
+(1, 2, 1); -- 1 cuốn "A Brief History of Time"
+
+
+INSERT INTO categories (id, name, created_at) VALUES
+(316, 'Sách tiếng Việt', '2025-08-20 09:30:00'),
+(385, 'Sách kỹ năng làm việc', '2025-08-20 09:30:00'),
+(845, 'Truyện ngắn - Tản văn - Tạp Văn', '2025-08-20 09:30:00'),
+(842, 'Tác phẩm kinh điển', '2025-08-20 09:30:00'),
+(871, 'Sách tư duy - Kỹ năng sống', '2025-08-20 09:30:00'),
+(320, 'English Books', '2025-08-20 09:30:00'),
+(14896, 'Grammar, vocabulary & skills', '2025-08-20 09:30:00'),
+(9, 'Fiction - Literature', '2025-08-20 09:30:00'),
+(1755336457656, 'Kỹ năng sống', '2025-08-20 09:30:00'),
+(1755685707270, 'Quacky Adventures', '2025-08-20 10:28:27'),
+(1755686684090, 'Le Van A', '2025-08-20 10:44:44');
+
+
+INSERT INTO authors (id, name, bio, profile_image) VALUES
+(363, 'Haruki Murakami', 'Haruki Murakami là tiểu thuyết gia người Nhật Bản, nổi tiếng với các tác phẩm thấm đẫm chủ nghĩa siêu thực và nỗi cô đơn. Các tác phẩm nổi bật: Rừng Na Uy, Biên niên ký chim vặn dây cót.', 'https://static01.nyt.com/images/2011/10/23/magazine/23murakami1_span/23murakami1_span-articleLarge.jpg?year=2011&h=478&w=600&s=60526c9c5fa0b415fc3976ba9f5cd59fb90c72f01a7a71d68e4d42604c7457e2&k=ZQJBKqZ0VN'),
+(9173, 'Paulo Coelho', 'Paulo Coelho là tiểu thuyết gia người Brazil, nổi tiếng với tác phẩm Nhà giả kim. Ông là một trong những tác giả được dịch nhiều nhất trên thế giới.', 'https://file.hstatic.net/200000692705/article/paulo-coelho-q-and-a_hero__1__f7b1f5be422643678139800d5759aa36.jpg'),
+(7142, 'Napoleon Hill', 'Napoleon Hill là tác giả người Mỹ trong lĩnh vực tư duy thành công và phát triển cá nhân, nổi tiếng với cuốn Think and Grow Rich.', 'https://cafebiz.cafebizcdn.vn/162123310254002176/2023/2/23/napoleon-hill-1677119216732-16771192171401744424230.jpg'),
+(638625, 'Albert Rutherford', 'Tác giả chuyên viết về lĩnh vực tư duy phản biện và kỹ năng học tập, với mục đích giúp độc giả phát triển khả năng phân tích và đánh giá thông tin.', 'https://salt.tikicdn.com/ts/brickv2og/75/d3/e5/814221520f64e22c5457e1b61e5373aa.jpg'),
+(4213891, 'A Crazy Mind team', 'Một nhóm tác giả tập trung vào các chủ đề sức khỏe tinh thần và tâm lý học, thường thông qua các câu chuyện đời thực và góc nhìn nhân văn.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuLWO3rYsHCdGkmZp4n-m8HNBazeExo6m_vg&s'),
+(572221, 'Donald Keene', 'Học giả, nhà văn người Mỹ, chuyên nghiên cứu về văn học và văn hóa Nhật Bản, nổi bật với các tác phẩm về lịch sử và văn hóa thời Minh Trị.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReaFg-kw8eXTvqKQVRXwfh6ZEaY-vu4NsvIw&s'),
+(12018, 'Fyodor Dostoyevsky', 'Tiểu thuyết gia, triết gia người Nga vĩ đại, nổi tiếng với các tác phẩm kinh điển phân tích sâu sắc tâm lý con người như Tội ác và hình phạt, Anh em nhà Karamazov.', 'https://file.hstatic.net/200000896417/article/fyodor-dostoevsky-author_3b0672fbc9ed46a19f2a5da656548925.jpg'),
+(10480, 'La Quán Trung', 'Tiểu thuyết gia thời nhà Minh, Trung Quốc, là tác giả của một trong Tứ đại danh tác Trung Hoa: Tam Quốc Diễn Nghĩa.', 'https://salt.tikicdn.com/ts/brickv2og/cc/91/51/e47fb3d03f860aca8712a599f39829fa.jpg'),
+(4415443, 'Instant Research Institude', 'Viện nghiên cứu tập trung vào các chủ đề kỹ năng mềm và xây dựng mối quan hệ trong môi trường làm việc hiện đại.', 'https://upload.wikimedia.org/wikipedia/en/f/ff/ICR_new_logo.jpeg'),
+(163121, 'Steven Schuster', 'Chuyên gia về tư duy hệ thống và giải quyết vấn đề phức tạp trong công việc và cuộc sống hàng ngày.', 'https://www.schusterplasticsurgery.com/wp-content/uploads/2025/04/STEVEN-H.-SCHUSTER-MD.jpg'),
+(114261, 'Nguyễn Anh Dũng', 'Tác giả Việt Nam chuyên viết về lĩnh vực phát triển bản thân và kỹ năng tư duy sáng tạo, đặc biệt là tư duy ngược.', 'https://tiki.vn/blog/wp-content/uploads/2024/12/tu-duy-mo-1.jpg'),
+(8318, 'Raymond Murphy', 'Raymond Murphy là chuyên gia ngữ pháp, tác giả của bộ sách English Grammar in Use kinh điển, được sử dụng rộng rãi trên toàn thế giới.', 'https://assets.uniweb.app/opt/e101ad86-44d2-40ae-acd1-b83d71b61e68/lg.webp'),
+(7807, 'Michael McCarthy', 'Giáo sư ngôn ngữ học người Anh, đồng tác giả của nhiều tài liệu giảng dạy tiếng Anh nổi tiếng, đặc biệt là về từ vựng (English Vocabulary in Use).', 'https://images-na.ssl-images-amazon.com/images/I/C19hAv5ecaS.jpg'),
+(843855, 'VARIOS AUTORES', 'Đề cập đến nhiều tác giả khác nhau (thường là trong sách giáo trình hoặc tuyển tập), không phải một cá nhân cụ thể.', 'https://iliadaediciones.com/wp-content/uploads/2021/01/paraguay-autores-chic-767x432.jpg'),
+(46343, 'R. J. Palacio', 'Tác giả người Mỹ, nổi tiếng với tiểu thuyết Wonder (Điều kỳ diệu), một câu chuyện nhân văn về lòng tốt và sự chấp nhận.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6tYRZM6cgi-lPF-4UwqPR9_XkQx5nsfKIqw&s'),
+(10081, 'Antoine De Saint-Exupéry', 'Nhà văn, phi công người Pháp, tác giả của kiệt tác Hoàng tử bé (The Little Prince), một câu chuyện ngụ ngôn nổi tiếng.', 'https://trieuxuan.vn/datafiles/img_data/images/Saint-exupery%20van.jpg'),
+(5348, 'Aesop', 'Tác giả ngụ ngôn Hy Lạp cổ đại, nổi tiếng với tuyển tập Ngụ ngôn Aesop, chứa đựng nhiều bài học đạo đức sâu sắc.', 'https://upload.wikimedia.org/wikipedia/commons/6/63/Aesop_pushkin01.jpg'),
+(931, 'Frances Hodgson Burnett', 'Tiểu thuyết gia người Anh-Mỹ, nổi tiếng với các tác phẩm văn học thiếu nhi kinh điển như The Secret Garden.', 'https://i.guim.co.uk/img/media/33e337378edf6cdadb1c2356b343d1d63f6ee3cb/0_211_2695_1618/master/2695.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=b44bcdd0cc5c0cbba659a79cb90e3517'),
+(315, 'Jonathan Swift', 'Nhà văn châm biếm người Anh-Ireland, tác giả của tác phẩm nổi tiếng Gulliver’s Travels.', 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Jervas-JonathanSwift.jpg/250px-Jervas-JonathanSwift.jpg'),
+(13992, 'Robin Sharma', 'Chuyên gia lãnh đạo và phát triển bản thân người Canada, nổi tiếng với các sách như Đời ngắn đừng ngủ dài, The Monk Who Sold His Ferrari.', 'https://salt.tikicdn.com/ts/brickv2og/a5/fa/30/d72d90d8bd9ff48dec64865a8f9d1e5d.jpg'),
+(1755336457656, 'Le Van A', 'Một tác giả đang cập nhật thông tin cá nhân.', 'http://example.com/images/authors/le_van_a.jpg'),
+(112340, 'Betty Azar', 'Chuyên gia ngữ pháp tiếng Anh', 'https://englishwithjennifer.wordpress.com/wp-content/uploads/2025/02/betty-azar_photo-2025-1.jpg');
+
+INSERT INTO books (id, title, description, price, stock, category_id, author_id, image_url, discount, created_at, updated_at) VALUES
+(8, 'Rừng Nauy (Tái Bản)', 'Câu chuyện bắt đầu từ một chuyến bay trong ngày mưa ảm đạm, một người đàn ông 37 tuổi chợt nghe thấy bài hát gắn liền với hình ảnh người yêu cũ, thế là quá khứ ùa về xâm chiếm thực tại. Mười tám năm trước, người đàn ông ấy là chàng Toru Wanatabe trẻ trung, mỗi chủ nhật lại cùng nàng Naoko lang thang vô định trên những con phố Tokyo... (Còn tiếp theo như trong mô tả)...', 117000, 48, 316, 363, 'https://salt.tikicdn.com/cache/w1200/ts/product/c9/e4/18/a9cfc425fa590c453f20307229804bb3.jpg', 22.00, NULL, NULL),
+(9, 'Nhà Giả Kim (Tái Bản 2020)', 'Tất cả những trải nghiệm trong chuyến phiêu du theo đuổi vận mệnh của mình đã giúp Santiago thấu hiểu được ý nghĩa sâu xa nhất của hạnh phúc, hòa hợp với vũ trụ và con người. (Còn tiếp theo như trong mô tả)...', 51350, 2269, 316, 9173, 'https://salt.tikicdn.com/cache/w1200/ts/product/45/3b/fc/aa81d0a534b45706ae1eee1e344e80d9.jpg', 35.00, NULL, NULL),
+(10, 'Think And Grow Rich - 13 Nguyên Tắc Nghĩ Giàu, Làm Giàu (Tái Bản)', 'Cuốn sách sẽ giúp bạn trở nên giàu có, làm giàu cho cuộc sống của bạn trên tất cả các phương diện của cuộc sống chứ không chỉ về tài chính và vật chất. (Còn tiếp theo như trong mô tả)...', 77000, 9630, 385, 7142, 'https://salt.tikicdn.com/cache/w1200/ts/product/0b/cd/50/9c219e191737b2757911b962eeb54c2c.jpg', 30.00, NULL, NULL),
+(12, 'Rèn Luyện Tư Duy Phản Biện', 'Như bạn có thể thấy, chìa khóa để trở thành một người có tư duy phản biện tốt chính là sự tự nhận thức. Bạn cần phải đánh giá trung thực những điều trước đây bạn nghĩ là đúng... (Còn tiếp theo như trong mô tả)...', 59400, 2105, 316, 638625, 'https://salt.tikicdn.com/cache/w1200/ts/product/22/cb/a9/524a27dcd45e8a13ae6eecb3dfacba7c.jpg', 40.00, NULL, NULL),
+(13, 'Những Đêm Không Ngủ, Những Ngày Chậm Trôi', '“Những đêm không ngủ, những ngày chậm trôi” đại diện cho một hành tinh mới - nơi nỗi đau tinh thần được đưa ra ánh sáng và chữa lành. Cuốn sách là tập hợp những câu chuyện có thật của những số phận khác nhau... (Còn tiếp theo như trong mô tả)...', 54000, 567, 316, 4213891, 'https://salt.tikicdn.com/cache/w1200/ts/product/a8/e9/36/94bb68f3b55bb93a593fec97c087915f.jpg', 37.21, NULL, NULL),
+(14, 'NẾU BIẾT TRĂM NĂM LÀ HỮU HẠN - Bìa cứng - ấn bản kỷ niệm lần in thứ 20 – Phạm Lữ Ân', 'Đây là sách dành cho tuổi học trò - tuổi ô mai - tuổi trái tim lần đầu biết rung độ ở tuổi chập choạng ấy, các em rất cần liều thuốc cho tâm hồn... (Còn tiếp theo như trong mô tả)...', 224500, 8, 845, NULL, 'https://salt.tikicdn.com/cache/w1200/ts/product/ef/6c/b1/e14d862b8a24c546dce69c71582089de.jpg', 0.00, NULL, NULL),
+(15, 'THIÊN HOÀNG MINH TRỊ - BÌA MỀM', 'Triều đại Minh Trị là giai đoạn khai sinh ra nước Nhật mới, chuyển từ quốc gia phong kiến lạc hậu sang một xã hội công nghiệp lập hiến hiện đại... (Còn tiếp theo như trong mô tả)...', 240000, 0, 842, 572221, 'https://salt.tikicdn.com/cache/w1200/ts/product/b5/42/19/4e614bc580b3de9c8b0aca634a22f705.jpg', 20.00, NULL, NULL),
+(16, 'ẤN BẢN BÌA DA PU CAO CẤP VÀ GIỚI HẠN “TỘI ÁC VÀ HÌNH PHẠT” CỦA DOSTOYEVSKY – S300 – NHÃ NAM ', 'Ở Việt Nam, trong số các tác phẩm của Dostoyevsky, “Tội ác và hình phạt” có lẽ là cuốn tiếp cận được với đông đảo công chúng nhất. (Còn tiếp theo như trong mô tả)...', 1700000, 18, 842, NULL, 'https://salt.tikicdn.com/cache/w1200/ts/product/70/53/c2/5e40f93acf2e35a55c262e277457197f.jpeg', 0.00, NULL, NULL),
+(17, 'Anh Em Nhà Karamazov (Bìa Cứng)', '“Dos đã cho tôi nhiều hơn bất cứ nhà tư tưởng nào của nhân loại.” – A. Einstein. “Anh em nhà Karamazov là cuốn tiểu thuyết vĩ đại nhất từng được viết nên.” – Sigmund Freud. (Còn tiếp theo như trong mô tả)...', 260000, 384, 842, 12018, 'https://salt.tikicdn.com/cache/w1200/ts/product/e5/44/50/f2f7b7f873c54fed2ee677a283f6cbcb.jpg', 35.00, NULL, NULL),
+(18, 'Tam Quốc Diễn Nghĩa (Trọn Bộ 13 Tập) - Tái Bản 2020', 'Tam Quốc diễn nghĩa là pho tiểu thuyết lịch sử ưu tú của nền văn học cổ Trung Quốc được độc giả khắp thế giới yêu thích, say mê. (Còn tiếp theo như trong mô tả)...', 273000, 33, 842, 10480, 'https://salt.tikicdn.com/cache/w1200/ts/product/86/f4/fb/2466ac14784c38242a2f123e4f472cf1.jpg', 30.00, NULL, NULL),
+(19, 'Sách: Cho Đi Và Nhận Lại - Nghệ Thuật Xây Dựng Mối Quan Hệ Nơi Công Sở ', 'Mạng lưới quan hệ cá nhân phong phú là trang bị cần thiết của các cao thủ chốn công sở! Từ xưa đến nay, dường như chưa từng có tiền lệ một đội quân chỉ dựa vào sức mình mà có thể thắng trận. (Còn tiếp theo như trong mô tả)...', 52000, 11, 871, 4415443, 'https://salt.tikicdn.com/cache/w1200/ts/product/a9/d4/f0/c6cddbe8bc813582cd925251e440d3e8.jpg', 35.00, NULL, NULL),
+(20, 'Tư Duy Hệ Thống Trong Công Việc', 'Khi đối mặt với những vấn đề phức tạp, chúng ta không thể giải quyết chúng bằng kiểu suy nghĩ lối mòn, nước đến chân mới nhảy, mù quáng đâm đầu vào sự vụ... (Còn tiếp theo như trong mô tả)...', 60800, 182, 316, 163121, 'https://salt.tikicdn.com/cache/w1200/ts/product/22/f5/04/eca46d6836c0f9c467c25996e89cd225.jpg', 31.69, NULL, NULL),
+(21, 'TƯ DUY NGƯỢC - Nguyễn Anh Dũng', 'Chúng ta thực sự có hạnh phúc không? Chúng ta có đang sống cuộc đời mình không? Chúng ta có dám dũng cảm chiến thắng mọi khuôn mẫu, định kiến, đi ngược đám đông để khẳng định bản sắc riêng của mình không?. (Còn tiếp theo như trong mô tả)...', 84150, 54, 871, 114261, 'https://salt.tikicdn.com/cache/w1200/ts/product/a5/76/eb/f0cd28e1b2e331ccbfc528c8827c3b07.jpg', 15.00, NULL, NULL),
+(22, 'English Grammar in Use Book w Ans', 'The world''s best-selling grammar series for learners of English. English Grammar in Use Fourth edition is an updated version of the world''s best-selling grammar title. (Còn tiếp theo như trong mô tả)...', 169100, 9476, 320, 8318, 'https://salt.tikicdn.com/cache/w1200/ts/product/19/50/3b/18543018924618fbf07bf56433e8b1cd.jpg', 5.00, NULL, NULL),
+(23, 'English Vocabulary in Use: Vocabulary Reference and Practice (CD-ROM)', 'The perfect choice for advanced-level students wanting to build their vocabulary skills. English Vocabulary in Use: Advanced includes over 2,000 new words and expressions... (Còn tiếp theo như trong mô tả)...', 183350, 622, 320, 7807, 'https://salt.tikicdn.com/cache/w1200/ts/product/52/68/61/b7d70fca1c94264fb534d639f338962f.jpg', 5.00, NULL, NULL),
+(24, 'Ngữ pháp tiếng Anh thường dùng (trình độ trung cấp) – English Grammar in Use -5th edition', 'Nếu phải chọn một cuốn sách ngữ pháp để học tiếng Anh 100% người học tiếng Anh sẽ khuyên bạn chọn English Grammar in Use. (Còn tiếp theo như trong mô tả)...', 180000, 23, 14896, 112340, 'https://salt.tikicdn.com/cache/w1200/ts/product/73/08/9d/90afbc855716def49c2c47a1c1577b92.jpg', 0.00, NULL, NULL),
+(25, 'Oxford Word Skills: Elementary: Student''s Pack', 'The first level in a three-level topic-based vocabulary course to learn and practise the words that learners need to know at each CEFR level, based on the Oxford 3000TM.', 282150, 71, 14896, 843855, 'https://salt.tikicdn.com/cache/w1200/ts/product/9c/43/04/0fb2bfef1d5fc8861d50d8ebae279027.jpg', 5.00, NULL, NULL),
+(26, 'Oxford Word Skills: Intermediate: Student''s Pack', 'A three-level topic-based vocabulary course to learn and practise the words that learners need to know at each CEFR level, based on the Oxford 3000TM and 5000TM. (Còn tiếp theo như trong mô tả)...', 282150, 50, 14896, 843855, 'https://salt.tikicdn.com/cache/w1200/ts/product/e4/5c/10/7542bed1ab68653f3311f94e2b56a4e4.jpg', 5.00, NULL, NULL),
+(27, 'Truyện đọc tiếng Anh - Wonder', '\"My name is August. I won''t describe what I look like. Whatever you''re thinking, it''s probably worse.\" Auggie wants to be an ordinary ten-year-old. (Còn tiếp theo như trong mô tả)...', 139650, 469, 9, 46343, 'https://salt.tikicdn.com/cache/w1200/ts/product/3d/dd/d4/94dcc8f1290da143544b9c4da7e8042a.jpg', 5.00, NULL, NULL),
+(28, 'Truyện đọc tiếng Anh - Wordsworth Editions: The Little Prince', 'The Little Prince is a classic tale of equal appeal to children and adults. On one level it is the story of an airman''s discovery, in the desert, of a small boy from another planet... (Còn tiếp theo như trong mô tả)...', 115000, 357, 9, 10081, 'https://salt.tikicdn.com/cache/w1200/ts/product/99/ec/9a/f5f8a3f7e1f430c571cf8315e3b160ed.jpg', 0.00, NULL, NULL),
+(29, 'Truyện đọc tiếng Anh - Aesop''s Fables', 'Aesop''s celebrated collection of fables has always been popular with both adults and children. These simple tales embody truths so powerful... (Còn tiếp theo như trong mô tả)...', 90000, 13, 9, 5348, 'https://salt.tikicdn.com/cache/w1200/media/catalog/product/5d/9f/9a/8259308871b25355cdc22e691a22f793.jpg', 0.00, NULL, NULL),
+(30, 'The Secret Garden (Vintage Children''s Classics)', 'When Mary Lennox is sent to Misselthwaite Manor to live with her uncle everybody says she is the most disagreeable-looking child ever seen. (Còn tiếp theo như trong mô tả)...', 114950, 9, 9, 931, 'https://salt.tikicdn.com/cache/200x280/media/catalog/product/5/1/51yxa3joyxl-_sx340_bo1-204-203-200_.u547.d20161128.t081505.698314.jpg', 5.00, NULL, NULL),
+(31, 'Wordsworth Classics: Gulliver''s Travels', 'Jonathan Swift''s classic satirical narrative was first published in 1726, seven years after Defoe''s Robinson Crusoe (one of its few rivals in fame and breadth of appeal). (Còn tiếp theo như trong mô tả)...', 69000, 5, 9, 315, 'https://salt.tikicdn.com/cache/w1200/media/catalog/product/g/u/gulliver_s_travels.jpg', 42.50, NULL, NULL),
+(6, 'Đời Ngắn Đừng Ngủ Dài (Tái Bản)', '“Mọi lựa chọn đều giá trị. Mọi bước đi đều quan trọng. Cuộc sống vẫn diễn ra theo cách của nó, không phải theo cách của ta. Hãy kiên nhẫn. Tin tưởng... (Còn tiếp theo như trong mô tả)...', 57491, 42844, 316, 13992, 'https://salt.tikicdn.com/cache/w1200/ts/product/57/44/86/19de0644beef19b9b885d0942f7d6f25.jpg', 23.34, NULL, NULL),
+(7, 'Cây Cam Ngọt Của Tôi - Tái bản lần 2', '“Vị chua chát của cái nghèo hòa trộn với vị ngọt ngào khi khám phá ra những điều khiến cuộc đời này đáng số một tác phẩm kinh điển của Brazil.” (Còn tiếp theo như trong mô tả)...', 108000, 805, 316, NULL, 'https://salt.tikicdn.com/cache/w1200/ts/product/5e/18/24/2a6154ba08df6ce6161c13f4303fa19e.jpg', 0.00, NULL, NULL),
+(1755336457656, 'Đắc Nhân Tâm', 'Day La mo ta sach', 10000, 10, 1755336457656, 1755336457656, 'https://th.bing.com/th/id/R.4b8ca7d8687072ed6dc73e6c4dd8813b?rik=mb8FlPxm0PEH5Q&pid=ImgRaw&r=0', 0.00, NULL, NULL);

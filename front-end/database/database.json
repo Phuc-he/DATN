@@ -1,0 +1,630 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "Science Fiction",
+      "description": "Books that explore futuristic and scientific concepts.",
+      "created_at": "2025-05-01T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Fantasy",
+      "description": "Books filled with magical and mythical adventures.",
+      "created_at": "2025-05-02T11:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Mystery",
+      "description": "Books that involve solving crimes or uncovering secrets.",
+      "created_at": "2025-05-03T09:30:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Romance",
+      "description": "Books centered around love stories and emotional relationships.",
+      "created_at": "2025-05-04T14:15:00Z"
+    },
+    {
+      "id": "5",
+      "name": "Historical Fiction",
+      "description": "Books set in historical settings with fictional narratives.",
+      "created_at": "2025-05-05T16:45:00Z"
+    }
+  ],
+  "authors": [
+    {
+      "id": "1",
+      "name": "Nguyễn Văn A",
+      "bio": "Tác giả chuyên viết về công nghệ và phần mềm.",
+      "created_at": "2023-05-10"
+    },
+    {
+      "id": "2",
+      "name": "J.K. Rowling",
+      "bio": "British author best known for the Harry Potter series.",
+      "profile_image": "rowling.jpg",
+      "created_at": "2025-05-02T13:00:00Z",
+      "updated_at": "2025-05-02T13:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Frank Herbert",
+      "bio": "American science fiction writer, best known for the novel Dune.",
+      "profile_image": "herbert.jpg",
+      "created_at": "2025-05-05T10:30:00Z",
+      "updated_at": "2025-05-05T10:30:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Agatha Christie",
+      "bio": "Famous for her detective novels and short stories.",
+      "profile_image": "christie.jpg",
+      "created_at": "2025-05-08T09:00:00Z",
+      "updated_at": "2025-05-08T09:00:00Z"
+    },
+    {
+      "id": "5",
+      "name": "Trần Thị B",
+      "bio": "Chuyên gia về AI, dữ liệu lớn và các hệ thống thông minh.",
+      "created_at": "2024-11-02"
+    }
+  ],
+  "books": [
+    {
+      "id": "1",
+      "title": "Foundation",
+      "description": "A complex saga of humans scattered on planets throughout the galaxy.",
+      "price": 19.99,
+      "discount": 0.1,
+      "stock": 12,
+      "category_id": 1,
+      "author_id": 1,
+      "thumbnail": "foundation.jpg",
+      "created_at": "2025-05-03T14:00:00Z",
+      "updated_at": "2025-05-03T14:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Harry Potter and the Philosopher's Stone",
+      "description": "A young wizard discovers his magical heritage.",
+      "price": 14.99,
+      "discount": 0,
+      "stock": 30,
+      "category_id": 2,
+      "author_id": 2,
+      "thumbnail": "harry_potter1.jpg",
+      "created_at": "2025-05-04T15:00:00Z",
+      "updated_at": "2025-05-04T15:00:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Dune",
+      "description": "Set on the desert planet Arrakis, Dune is the story of Paul Atreides.",
+      "price": 22.5,
+      "discount": 0.15,
+      "stock": 20,
+      "category_id": 1,
+      "author_id": 3,
+      "thumbnail": "dune.jpg",
+      "created_at": "2025-05-05T16:00:00Z",
+      "updated_at": "2025-05-05T16:00:00Z"
+    },
+    {
+      "id": "4",
+      "title": "I, Robot",
+      "description": "A collection of short stories about the interaction of humans, robots, and morality.",
+      "price": 17.5,
+      "discount": 0.05,
+      "stock": 18,
+      "category_id": 1,
+      "author_id": 1,
+      "thumbnail": "i_robot.jpg",
+      "created_at": "2025-05-06T10:00:00Z",
+      "updated_at": "2025-05-06T10:00:00Z"
+    },
+    {
+      "id": "5",
+      "title": "Harry Potter and the Chamber of Secrets",
+      "description": "Harry returns to Hogwarts and discovers a dark secret beneath the school.",
+      "price": 16.99,
+      "discount": 0,
+      "stock": 25,
+      "category_id": 2,
+      "author_id": 2,
+      "thumbnail": "harry_potter2.jpg",
+      "created_at": "2025-05-06T11:00:00Z",
+      "updated_at": "2025-05-06T11:00:00Z"
+    },
+    {
+      "id": "6",
+      "title": "Children of Dune",
+      "description": "The epic saga continues as Paul Atreides' children confront political chaos.",
+      "price": 20.99,
+      "discount": 0.2,
+      "stock": 15,
+      "category_id": 1,
+      "author_id": 3,
+      "thumbnail": "children_of_dune.jpg",
+      "created_at": "2025-05-06T12:00:00Z",
+      "updated_at": "2025-05-06T12:00:00Z"
+    },
+    {
+      "id": "7",
+      "title": "Harry Potter and the Prisoner of Azkaban",
+      "description": "Harry learns the truth about Sirius Black, his parents, and betrayal.",
+      "price": 18.99,
+      "discount": 0,
+      "stock": 22,
+      "category_id": 2,
+      "author_id": 2,
+      "thumbnail": "harry_potter3.jpg",
+      "created_at": "2025-05-06T13:00:00Z",
+      "updated_at": "2025-05-06T13:00:00Z"
+    },
+    {
+      "id": "8",
+      "title": "Murder on the Orient Express",
+      "description": "Detective Hercule Poirot investigates a murder on a snowbound train.",
+      "price": 15.99,
+      "discount": 0.1,
+      "stock": 20,
+      "category_id": 6,
+      "author_id": 4,
+      "thumbnail": "orient_express.jpg",
+      "created_at": "2025-05-08T14:00:00Z",
+      "updated_at": "2025-05-08T14:00:00Z"
+    },
+    {
+      "id": "9",
+      "title": "Pride and Prejudice",
+      "description": "A romantic novel about manners and matrimonial machinations.",
+      "price": 13.99,
+      "discount": 0.05,
+      "stock": 18,
+      "category_id": 7,
+      "author_id": 5,
+      "thumbnail": "pride_prejudice.jpg",
+      "created_at": "2025-05-08T15:00:00Z",
+      "updated_at": "2025-05-08T15:00:00Z"
+    },
+    {
+      "id": "10",
+      "title": "The Book Thief",
+      "description": "A historical novel about a young girl's life in Nazi Germany.",
+      "price": 17.99,
+      "discount": 0.2,
+      "stock": 16,
+      "category_id": "3",
+      "author_id": "3",
+      "thumbnail": "book_thief.jpg",
+      "created_at": "2025-05-08T16:00:00Z",
+      "updated_at": "2025-05-08T16:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "email": "admin001@example.com",
+      "password": "$2b$10$hashedpassworduser001",
+      "role": "ADMIN",
+      "fullName": "Trần Thị B",
+      "address": "456 Đường Nguyễn Trãi, Hà Nội",
+      "phone": "0912345678",
+      "created_at": "2025-01-05T09:15:00Z",
+      "updated_at": "2025-01-05T09:15:00Z",
+      "token": "e8a45c7f22ad42019dsdcfb4d7a58b3c"
+    },
+    {
+      "id": "2",
+      "username": "user001",
+      "email": "user001@example.com",
+      "password": "123456",
+      "role": "CUSTOMER",
+      "fullName": "Trần Thị B",
+      "address": "456 Đường Nguyễn Trãi, Hà Nội",
+      "phone": "0912345678",
+      "created_at": "2025-01-05T09:15:00Z",
+      "updated_at": "2025-01-05T09:15:00Z",
+      "token": "d8a45c7f22ad420198edcfb4d7a58b5f"
+    },
+    {
+      "id": "3",
+      "username": "john_doe",
+      "email": "john.doe@example.com",
+      "password": "$2b$10$hashedpasswordjohn",
+      "role": "CUSTOMER",
+      "fullName": "John Doe",
+      "address": "789 Trần Hưng Đạo, TP. Đà Nẵng",
+      "phone": "0987654321",
+      "created_at": "2025-02-20T14:30:00Z",
+      "updated_at": "2025-03-01T11:45:00Z",
+      "token": "9cae5f6bd4a64eb6ae5a77fd9a4e5d92"
+    }
+  ],
+  "carts": [
+    {
+      "id": "347b",
+      "cartItems": [
+        {
+          "bookId": 1,
+          "quantity": 6
+        },
+        {
+          "bookId": 2,
+          "quantity": 14
+        }
+      ],
+      "userId": 10
+    },
+    {
+      "id": "1c87",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 3
+        },
+        {
+          "bookId": 1,
+          "quantity": 2
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "9455",
+      "cartItems": [
+        {
+          "bookId": 1,
+          "quantity": 1
+        },
+        {
+          "bookId": 2,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "7990",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "45ef",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 2
+        },
+        {
+          "bookId": 1,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "cbd2",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 5
+        },
+        {
+          "bookId": 1,
+          "quantity": 2
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "310b",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 5
+        },
+        {
+          "bookId": 1,
+          "quantity": 3
+        }
+      ],
+      "userId": 14
+    },
+    {
+      "id": "3bfb",
+      "cartItems": [
+        {
+          "bookId": 1,
+          "quantity": 2
+        },
+        {
+          "bookId": 2,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "2517",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "a4ee",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "cf80",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "7b9c",
+      "cartItems": [],
+      "userId": 3
+    },
+    {
+      "id": "ffb8",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "3989",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "c541",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "5cd4",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "41bd",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "7989",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "851a",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "7565",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "8429",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "fa6e",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "0a15",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "45db",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "4df3",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "edde",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "0f8b",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "d04c",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "0b0d",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "f32b",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "f280",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "346a",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "6196",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "afc8",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "121a",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "d900",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "cd96",
+      "cartItems": [],
+      "userId": 1
+    },
+    {
+      "id": "5aac",
+      "cartItems": [
+        {
+          "bookId": 2,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "9a89",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "36cf",
+      "cartItems": [
+        {
+          "bookId": 1,
+          "quantity": 1
+        },
+        {
+          "bookId": 6,
+          "quantity": 3
+        },
+        {
+          "bookId": 2,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "f91c",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "2f4c",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "366c",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "ad41",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "f6a1",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "ef30",
+      "cartItems": [
+        {
+          "bookId": 1,
+          "quantity": 1
+        },
+        {
+          "bookId": 2,
+          "quantity": 2
+        }
+      ],
+      "userId": ""
+    },
+    {
+      "id": "f47a",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "401c",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "e2bc",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "626e",
+      "cartItems": [],
+      "userId": 3
+    },
+    {
+      "id": "67d9",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "f196",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "af76",
+      "cartItems": [],
+      "userId": ""
+    },
+    {
+      "id": "b35f",
+      "cartItems": [
+        {
+          "bookId": 1,
+          "quantity": 1
+        },
+        {
+          "bookId": 2,
+          "quantity": 1
+        },
+        {
+          "bookId": 6,
+          "quantity": 1
+        }
+      ],
+      "userId": ""
+    }
+  ]
+}
