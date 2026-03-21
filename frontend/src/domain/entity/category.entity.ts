@@ -6,6 +6,8 @@ export interface Category {
   id?: number;          // Long? in Kotlin maps to optional number
   name: string;
   description?: string; // String? maps to optional string
+  image?: string; // String? maps to optional string
+  createdAt?: string;
 }
 
 /**
@@ -13,5 +15,7 @@ export interface Category {
  */
 export const EmptyCategory: Category = {
   name: '',
-  description: ''
+  description: '',
+  image: '',
+  createdAt: '',
 };

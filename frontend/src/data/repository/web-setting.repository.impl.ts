@@ -4,6 +4,7 @@ import { WebSettingPageResponse, WebSettingProto } from "@/src/generated/schema"
 import { BaseRepositoryImpl } from "./base.repository.impl";
 
 export class WebSettingRepositoryImpl extends BaseRepositoryImpl<WebSetting> implements WebSettingRepository {
+  protected listProto = null;
   protected proto = WebSettingProto;
 
   protected pageProto = WebSettingPageResponse;

@@ -4,6 +4,7 @@ import { VoucherPageResponse, VoucherProto } from "@/src/generated/schema";
 import { BaseRepositoryImpl } from "./base.repository.impl";
 
 export class VoucherRepositoryImpl extends BaseRepositoryImpl<Voucher> implements VoucherRepository {
+  protected listProto = null;
   protected proto = VoucherProto;
 
   protected pageProto = VoucherPageResponse;

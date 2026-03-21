@@ -26,7 +26,16 @@ class WebSettingService(private val webSettingRepository: WebSettingRepository) 
      * This is what your Next.js 'Header' and 'Footer' will call.
      */
     fun getActiveSetting(): WebSetting = webSettingRepository.findFirstByIsActiveTrue()
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No active web settings found")
+        ?: WebSetting(
+            id = 0L,
+            webName = "Book shop",
+            logoUrl = "",
+            headerIcon = "",
+            contactEmail = "",
+            footerText = "",
+            isActive = true,
+            updatedAt = LocalDateTime.now(),
+        )
 
     @Transactional
     fun create(setting: WebSetting): WebSetting {

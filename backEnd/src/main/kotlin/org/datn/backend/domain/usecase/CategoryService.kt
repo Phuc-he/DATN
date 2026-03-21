@@ -39,7 +39,8 @@ class CategoryService(
 
         val updatedCategory = existingCategory.copy(
             name = updates["name"] as? String ?: existingCategory.name,
-            description = updates["description"] as? String ?: existingCategory.description
+            description = updates["description"] as? String ?: existingCategory.description,
+            image = updates["image"] as? String ?: existingCategory.image,
         )
 
         return categoryRepository.save(updatedCategory)

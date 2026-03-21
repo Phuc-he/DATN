@@ -29,9 +29,9 @@ class OrderController(private val orderService: OrderService) {
     }
 
     @GetMapping(produces = ["application/x-protobuf"])
-    fun getAll(): ResponseEntity<List<OrderProto>> {
+    fun getAll(): ResponseEntity<OrderProtoList> {
         val orders = orderService.getAll()
-        return ResponseEntity.ok(orders.map { it.toProto() })
+        return ResponseEntity.ok(OrderProtoList.newBuilder().addAllData(orders.map { it.toProto() }).build())
     }
 
     @GetMapping("/{id}", produces = ["application/x-protobuf"])

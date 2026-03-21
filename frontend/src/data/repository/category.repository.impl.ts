@@ -1,9 +1,10 @@
 import { Category } from "@/src/domain/entity/category.entity";
 import { CategoryRepository } from "@/src/domain/repository/category.repository";
-import { CategoryPageResponse, CategoryProto } from "@/src/generated/schema";
+import { CategoryPageResponse, CategoryProto, CategoryProtoList } from "@/src/generated/schema";
 import { BaseRepositoryImpl } from "./base.repository.impl";
 
 export class CategoryRepositoryImpl extends BaseRepositoryImpl<Category> implements CategoryRepository {
+  protected listProto = CategoryProtoList;
   protected proto = CategoryProto;
 
   protected pageProto = CategoryPageResponse;

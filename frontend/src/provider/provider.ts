@@ -8,7 +8,7 @@ import { UserRepositoryImpl } from "../data/repository/user.repository.impl";
 import { VoucherRepositoryImpl } from "../data/repository/voucher.repository.impl";
 import { WebSettingRepositoryImpl } from "../data/repository/web-setting.repository.impl";
 import { CreateAuthorUseCase, DeleteAuthorUseCase, GetAllAuthorsUseCase, GetAuthorsByPageUseCase, GetAuthorUseCase, UpdateAuthorUseCase } from "../domain/use-case/author.usecase";
-import { CreateBookUseCase, DeleteBookUseCase, GetBooksByPageUseCase, GetBookUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
+import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByPageUseCase, GetBookUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
 import { CreateCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, GetCategoriesByPageUseCase, GetCategoryUseCase, SearchCategoriesUseCase, UpdateCategoryUseCase } from "../domain/use-case/category.usecase";
 import { CreateOrderItemUseCase, DeleteOrderItemUseCase, GetAllOrderItemsUseCase, GetOrderItemsByPageUseCase, GetOrderItemUseCase, UpdateOrderItemUseCase } from "../domain/use-case/order-item.usecase";
 import { CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
@@ -77,6 +77,7 @@ export const AppProviders = {
   DeleteBookUseCase: new DeleteBookUseCase(bookRepository),
   GetBooksByPageUseCase: new GetBooksByPageUseCase(bookRepository),
   SearchBooksUseCase: new SearchBooksUseCase(bookRepository),
+  GetAllBooksUseCase: new GetAllBooksUseCase(bookRepository),
 
   // --- OrderItem Domain ---
   OrderItemRepository: orderItemRepository,

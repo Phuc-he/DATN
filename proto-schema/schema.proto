@@ -32,6 +32,7 @@ message UserProto {
   string address = 6;
   string phone = 7;
   string created_at = 8; // ISO-8601 string
+  string avatar = 9; // ISO-8601 string
 }
 
 message AuthorProto {
@@ -45,6 +46,8 @@ message CategoryProto {
   int64 id = 1;
   string name = 2;
   string description = 3;
+  string image = 4;
+  string created_at = 5;
 }
 
 message BookProto {
@@ -153,7 +156,7 @@ enum DiscountTypeProto {
 }
 
 message VoucherPageResponse {
-  repeated VoucherProto vouchers = 1;
+  repeated VoucherProto content = 1;
   int64 totalElements = 2;
   int32 totalPages = 3;
   int32 pageNumber = 4;
@@ -172,9 +175,31 @@ message WebSettingProto {
 }
 
 message WebSettingPageResponse {
-  repeated WebSettingProto settings = 1;
+  repeated WebSettingProto content = 1;
   int64 totalElements = 2;
   int32 totalPages = 3;
   int32 pageNumber = 4;
   int32 pageSize = 5;
+}
+
+message UserProtoList {
+  repeated UserProto data = 1;
+}
+message CategoryProtoList {
+  repeated CategoryProto data = 1;
+}
+message AuthorProtoList {
+  repeated AuthorProto data = 1;
+}
+message BookProtoList {
+  repeated BookProto data = 1;
+}
+message OrderProtoList {
+  repeated OrderProto data = 1;
+}
+message VoucherProtoList {
+  repeated VoucherProto data = 1;
+}
+message WebSettingProtoList {
+  repeated WebSettingProto data = 1;
 }

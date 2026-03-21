@@ -7,6 +7,7 @@ import org.datn.backend.domain.usecase.BookService
 import org.datn.backend.proto.AuthorProto
 import org.datn.backend.proto.BookPageResponse
 import org.datn.backend.proto.BookProto
+import org.datn.backend.proto.BookProtoList
 import org.datn.backend.proto.CategoryProto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -20,10 +21,10 @@ import java.math.BigDecimal
 class BookController(private val bookService: BookService) {
 
     @GetMapping(produces = ["application/x-protobuf"])
-    fun getAllBooks(): ResponseEntity<List<BookProto>> {
+    fun getAllBooks(): ResponseEntity<BookProtoList> {
         val books = bookService.getAll()
         val protoList = books.map { it.toProto() }
-        return ResponseEntity.ok(protoList)
+        return ResponseEntity.ok(BookProtoList.newBuilder().addAllData(protoList).build())
     }
 
     @GetMapping("/all", produces = ["application/x-protobuf"])

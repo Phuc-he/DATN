@@ -52,7 +52,8 @@ class UserService(private val userRepository: UserRepository) {
             address = updates["address"] as? String ?: existingUser.address,
             phone = updates["phone"] as? String ?: existingUser.phone,
             // Only allow role updates if specifically needed (usually an Admin task)
-            role = (updates["role"] as? String)?.let { Role.valueOf(it.uppercase()) } ?: existingUser.role
+            role = (updates["role"] as? String)?.let { Role.valueOf(it.uppercase()) } ?: existingUser.role,
+            avatar = updates["avatar"] as? String ?: existingUser.avatar
         )
 
         return userRepository.save(updatedUser)

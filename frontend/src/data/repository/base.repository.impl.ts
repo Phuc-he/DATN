@@ -5,13 +5,17 @@ import { PaginatedResult } from '@/src/domain/entity/paginated.result';
 export abstract class BaseRepositoryImpl<T, ID = number> implements BaseRepository<T, ID> {
   protected readonly api: AxiosInstance;
   protected readonly endpoint: string;
-  protected abstract proto: { 
+  protected abstract proto: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     encode: (message: any) => { finish: () => Uint8Array },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    decode: (buffer: Uint8Array) => any 
+    decode: (buffer: Uint8Array) => any
   } | null;
   protected abstract pageProto: {
+    decode: (buffer: Uint8Array) => unknown
+  } | null;
+
+  protected abstract listProto: {
     decode: (buffer: Uint8Array) => unknown
   } | null;
 
@@ -43,8 +47,9 @@ export abstract class BaseRepositoryImpl<T, ID = number> implements BaseReposito
     const response = await this.api.get(`/${this.endpoint}/all`, {
       params: { page, size },
     });
-
+    console.log("findByPage", response.data);
     const decoded = this.pageProto?.decode(new Uint8Array(response.data));
+    console.log("decoded", decoded);
     return this.mapToPaginatedResult(decoded);
   }
 
@@ -61,8 +66,8 @@ export abstract class BaseRepositoryImpl<T, ID = number> implements BaseReposito
     const response = await this.api.get(`/${this.endpoint}`);
     // For List<BookProto>, handle as an array of messages or a wrapper message
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decoded = this.proto?.decode(new Uint8Array(response.data)) as any;
-    return decoded.content || [];
+    const decoded = this.listProto?.decode(new Uint8Array(response.data)) as any;
+    return decoded.data || [];
   }
 
   async findById(id: ID): Promise<T | null> {
@@ -76,7 +81,7 @@ export abstract class BaseRepositoryImpl<T, ID = number> implements BaseReposito
     const response = await this.api.patch(`/${this.endpoint}/${id}`, item, {
       headers: { 'Content-Type': 'application/json' }
     });
-    
+
     return this.proto?.decode(new Uint8Array(response.data)) as T;
   }
 

@@ -1,10 +1,13 @@
 package org.datn.backend.presentation.controller
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import org.datn.backend.domain.entity.User
 import org.datn.backend.domain.usecase.UserService
 import org.datn.backend.proto.Role
 import org.datn.backend.proto.UserPageResponse
 import org.datn.backend.proto.UserProto
+import org.datn.backend.proto.UserProtoList
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -15,12 +18,15 @@ import java.time.format.DateTimeFormatter
 @RestController
 @RequestMapping("/api/users")
 class UserController(private val userService: UserService) {
+    private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     @GetMapping("/all", produces = ["application/x-protobuf"])
     fun getAll(pageable: Pageable): ResponseEntity<UserPageResponse> {
         val users = userService.getAll(pageable)
+//        val gson = GsonBuilder().setPrettyPrinting().create();
+//        log.info("Found ${users.size} users with pageable $pageable ${gson.toJson(users)}")
         return ResponseEntity.ok(toPageResponse(users))
     }
 
@@ -31,9 +37,9 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping(produces = ["application/x-protobuf"])
-    fun getAll(): ResponseEntity<List<UserProto>> {
+    fun getAll(): ResponseEntity<UserProtoList> {
         val users = userService.getAll()
-        return ResponseEntity.ok(users.map { it.toProto() })
+        return ResponseEntity.ok(UserProtoList.newBuilder().addAllData(users.map { it.toProto() }).build())
     }
 
     @GetMapping("/email/{email}", produces = ["application/x-protobuf"])
@@ -52,6 +58,12 @@ class UserController(private val userService: UserService) {
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
     fun register(@RequestBody proto: UserProto): ResponseEntity<UserProto> {
+        val role = when (proto.role) {
+            Role.ADMIN -> org.datn.backend.domain.entity.Role.ADMIN
+            Role.CUSTOMER -> org.datn.backend.domain.entity.Role.CUSTOMER
+            Role.AUTHOR_ROLE -> org.datn.backend.domain.entity.Role.AUTHOR
+            else -> org.datn.backend.domain.entity.Role.CUSTOMER
+        }
         val entity = User(
             username = proto.username,
             email = proto.email,
@@ -59,7 +71,7 @@ class UserController(private val userService: UserService) {
             fullName = proto.fullName,
             address = proto.address,
             phone = proto.phone,
-            role = org.datn.backend.domain.entity.Role.valueOf(proto.role.name)
+            role = role
         )
 
         val savedUser = userService.create(entity)
@@ -98,6 +110,7 @@ class UserController(private val userService: UserService) {
             .setAddress(this.address ?: "")
             .setPhone(this.phone ?: "")
             .setRole(protoRole) // Pass the mapped enum directly
+            .setAvatar(this.avatar ?: "")
             .setCreatedAt(this.createdAt?.format(dateFormatter) ?: "")
             .build()
     }

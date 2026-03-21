@@ -4,6 +4,7 @@ import org.datn.backend.domain.entity.Author
 import org.datn.backend.domain.usecase.AuthorService
 import org.datn.backend.proto.AuthorPageResponse
 import org.datn.backend.proto.AuthorProto
+import org.datn.backend.proto.AuthorProtoList
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -19,10 +20,10 @@ class AuthorController(private val authorService: AuthorService) {
      * Returns a list of authors in Protobuf format
      */
     @GetMapping(produces = ["application/x-protobuf"])
-    fun getAllAuthors(): ResponseEntity<List<AuthorProto>> {
+    fun getAllAuthors(): ResponseEntity<AuthorProtoList> {
         val authors = authorService.getAll()
         val protoList = authors.map { it.toProto() }
-        return ResponseEntity.ok(protoList)
+        return ResponseEntity.ok(AuthorProtoList.newBuilder().addAllData(protoList).build())
     }
 
     @GetMapping("/all", produces = ["application/x-protobuf"])

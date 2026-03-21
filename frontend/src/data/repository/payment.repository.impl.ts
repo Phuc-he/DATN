@@ -5,6 +5,7 @@ import { QrPaymentResponseProto } from "@/src/generated/schema"; // Assuming thi
 import { Payment } from "@/src/domain/entity/payment.entity";
 
 export class PaymentRepositoryImpl extends BaseRepositoryImpl<unknown> implements PaymentRepository {
+  protected listProto = null;
   // Use the Proto message we defined for payments
   protected proto = QrPaymentResponseProto;
   protected pageProto = null; // No pagination needed for QR generation

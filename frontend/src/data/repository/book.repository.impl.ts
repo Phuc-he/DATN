@@ -1,10 +1,11 @@
 import { Book } from "@/src/domain/entity/book.entity";
 import { BaseRepositoryImpl } from "./base.repository.impl";
-import { BookPageResponse, BookProto } from "@/src/generated/schema";
+import { BookPageResponse, BookProto, BookProtoList } from "@/src/generated/schema";
 import { BookRepository } from "@/src/domain/repository/book.repository";
 import { PaginatedResult } from "@/src/domain/entity/paginated.result";
 
 export class BookRepositoryImpl extends BaseRepositoryImpl<Book> implements BookRepository {
+    protected listProto = BookProtoList;
     protected proto = BookProto;
 
     protected pageProto = BookPageResponse;

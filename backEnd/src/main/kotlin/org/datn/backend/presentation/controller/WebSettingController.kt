@@ -4,6 +4,7 @@ import org.datn.backend.domain.entity.WebSetting
 import org.datn.backend.domain.usecase.WebSettingService
 import org.datn.backend.proto.WebSettingPageResponse
 import org.datn.backend.proto.WebSettingProto
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,15 +24,24 @@ class WebSettingController(private val webSettingService: WebSettingService) {
         return ResponseEntity.ok(toProto(active))
     }
 
-    @GetMapping(produces = ["application/x-protobuf"])
+    @GetMapping("all", produces = ["application/x-protobuf"])
     fun getAll(pageable: Pageable): ResponseEntity<WebSettingPageResponse> {
         val page = webSettingService.getAll(pageable)
         return ResponseEntity.ok(toPageResponse(page))
     }
 
-    @PostMapping(consumes = ["application/json"], produces = ["application/x-protobuf"])
-    fun create(@RequestBody setting: WebSetting): ResponseEntity<WebSettingProto> {
-        val saved = webSettingService.create(setting)
+    @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
+    fun create(@RequestBody setting: WebSettingProto): ResponseEntity<WebSettingProto> {
+        val saved = webSettingService.create(
+            WebSetting(
+                webName = setting.webName,
+                logoUrl = setting.logoUrl,
+                headerIcon = setting.headerIcon,
+                contactEmail = setting.contactEmail,
+                footerText = setting.footerText,
+                isActive = setting.isActive,
+            )
+        )
         return ResponseEntity.status(HttpStatus.CREATED).body(toProto(saved))
     }
 
@@ -59,9 +69,9 @@ class WebSettingController(private val webSettingService: WebSettingService) {
             .build()
     }
 
-    private fun toPageResponse(page: org.springframework.data.domain.Page<WebSetting>): WebSettingPageResponse {
+    private fun toPageResponse(page: Page<WebSetting>): WebSettingPageResponse {
         return WebSettingPageResponse.newBuilder()
-            .addAllSettings(page.content.map { toProto(it) })
+            .addAllContent(page.content.map { toProto(it) })
             .setTotalPages(page.totalPages)
             .setTotalElements(page.totalElements)
             .build()

@@ -95,7 +95,7 @@ export default function Page() {
               <select
                 className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
                 value={role}
-                onChange={(e) => setRole(e.target.value as Role)}
+                onChange={(e) => setRole(Number(e.target.value) as Role)}
               >
                 {[Role.CUSTOMER, Role.AUTHOR].map((r) => (
                   <option key={r} value={r}>

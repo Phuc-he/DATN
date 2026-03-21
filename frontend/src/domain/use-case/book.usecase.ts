@@ -84,3 +84,11 @@ export class GetBooksByAuthorUseCase {
     return this.bookRepository.getBooksByAuthor(authorId, page, limit);
   }
 }
+
+export class GetAllBooksUseCase {
+  constructor(private readonly bookRepository: BookRepository) {}
+
+  async execute(): Promise<Book[]> {
+    return this.bookRepository.findAll();
+  }
+}

@@ -144,7 +144,11 @@ export interface UserProto {
     | string
     | undefined;
   /** ISO-8601 string */
-  createdAt?: string | undefined;
+  createdAt?:
+    | string
+    | undefined;
+  /** ISO-8601 string */
+  avatar?: string | undefined;
 }
 
 export interface AuthorProto {
@@ -158,6 +162,8 @@ export interface CategoryProto {
   id?: number | undefined;
   name?: string | undefined;
   description?: string | undefined;
+  image?: string | undefined;
+  createdAt?: string | undefined;
 }
 
 export interface BookProto {
@@ -276,7 +282,7 @@ export interface VoucherProto {
 }
 
 export interface VoucherPageResponse {
-  vouchers?: VoucherProto[] | undefined;
+  content?: VoucherProto[] | undefined;
   totalElements?: number | undefined;
   totalPages?: number | undefined;
   pageNumber?: number | undefined;
@@ -298,15 +304,43 @@ export interface WebSettingProto {
 }
 
 export interface WebSettingPageResponse {
-  settings?: WebSettingProto[] | undefined;
+  content?: WebSettingProto[] | undefined;
   totalElements?: number | undefined;
   totalPages?: number | undefined;
   pageNumber?: number | undefined;
   pageSize?: number | undefined;
 }
 
+export interface UserProtoList {
+  data?: UserProto[] | undefined;
+}
+
+export interface CategoryProtoList {
+  data?: CategoryProto[] | undefined;
+}
+
+export interface AuthorProtoList {
+  data?: AuthorProto[] | undefined;
+}
+
+export interface BookProtoList {
+  data?: BookProto[] | undefined;
+}
+
+export interface OrderProtoList {
+  data?: OrderProto[] | undefined;
+}
+
+export interface VoucherProtoList {
+  data?: VoucherProto[] | undefined;
+}
+
+export interface WebSettingProtoList {
+  data?: WebSettingProto[] | undefined;
+}
+
 function createBaseUserProto(): UserProto {
-  return { id: 0, username: "", email: "", role: 0, fullName: "", address: "", phone: "", createdAt: "" };
+  return { id: 0, username: "", email: "", role: 0, fullName: "", address: "", phone: "", createdAt: "", avatar: "" };
 }
 
 export const UserProto: MessageFns<UserProto> = {
@@ -334,6 +368,9 @@ export const UserProto: MessageFns<UserProto> = {
     }
     if (message.createdAt !== undefined && message.createdAt !== "") {
       writer.uint32(66).string(message.createdAt);
+    }
+    if (message.avatar !== undefined && message.avatar !== "") {
+      writer.uint32(74).string(message.avatar);
     }
     return writer;
   },
@@ -409,6 +446,14 @@ export const UserProto: MessageFns<UserProto> = {
           message.createdAt = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.avatar = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -436,6 +481,7 @@ export const UserProto: MessageFns<UserProto> = {
         : isSet(object.created_at)
         ? globalThis.String(object.created_at)
         : "",
+      avatar: isSet(object.avatar) ? globalThis.String(object.avatar) : "",
     };
   },
 
@@ -465,6 +511,9 @@ export const UserProto: MessageFns<UserProto> = {
     if (message.createdAt !== undefined && message.createdAt !== "") {
       obj.createdAt = message.createdAt;
     }
+    if (message.avatar !== undefined && message.avatar !== "") {
+      obj.avatar = message.avatar;
+    }
     return obj;
   },
 
@@ -481,6 +530,7 @@ export const UserProto: MessageFns<UserProto> = {
     message.address = object.address ?? "";
     message.phone = object.phone ?? "";
     message.createdAt = object.createdAt ?? "";
+    message.avatar = object.avatar ?? "";
     return message;
   },
 };
@@ -598,7 +648,7 @@ export const AuthorProto: MessageFns<AuthorProto> = {
 };
 
 function createBaseCategoryProto(): CategoryProto {
-  return { id: 0, name: "", description: "" };
+  return { id: 0, name: "", description: "", image: "", createdAt: "" };
 }
 
 export const CategoryProto: MessageFns<CategoryProto> = {
@@ -611,6 +661,12 @@ export const CategoryProto: MessageFns<CategoryProto> = {
     }
     if (message.description !== undefined && message.description !== "") {
       writer.uint32(26).string(message.description);
+    }
+    if (message.image !== undefined && message.image !== "") {
+      writer.uint32(34).string(message.image);
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      writer.uint32(42).string(message.createdAt);
     }
     return writer;
   },
@@ -646,6 +702,22 @@ export const CategoryProto: MessageFns<CategoryProto> = {
           message.description = reader.string();
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.image = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.createdAt = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -660,6 +732,12 @@ export const CategoryProto: MessageFns<CategoryProto> = {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       description: isSet(object.description) ? globalThis.String(object.description) : "",
+      image: isSet(object.image) ? globalThis.String(object.image) : "",
+      createdAt: isSet(object.createdAt)
+        ? globalThis.String(object.createdAt)
+        : isSet(object.created_at)
+        ? globalThis.String(object.created_at)
+        : "",
     };
   },
 
@@ -674,6 +752,12 @@ export const CategoryProto: MessageFns<CategoryProto> = {
     if (message.description !== undefined && message.description !== "") {
       obj.description = message.description;
     }
+    if (message.image !== undefined && message.image !== "") {
+      obj.image = message.image;
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
+    }
     return obj;
   },
 
@@ -685,6 +769,8 @@ export const CategoryProto: MessageFns<CategoryProto> = {
     message.id = object.id ?? 0;
     message.name = object.name ?? "";
     message.description = object.description ?? "";
+    message.image = object.image ?? "";
+    message.createdAt = object.createdAt ?? "";
     return message;
   },
 };
@@ -2382,13 +2468,13 @@ export const VoucherProto: MessageFns<VoucherProto> = {
 };
 
 function createBaseVoucherPageResponse(): VoucherPageResponse {
-  return { vouchers: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
+  return { content: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
 }
 
 export const VoucherPageResponse: MessageFns<VoucherPageResponse> = {
   encode(message: VoucherPageResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.vouchers !== undefined && message.vouchers.length !== 0) {
-      for (const v of message.vouchers) {
+    if (message.content !== undefined && message.content.length !== 0) {
+      for (const v of message.content) {
         VoucherProto.encode(v!, writer.uint32(10).fork()).join();
       }
     }
@@ -2421,7 +2507,7 @@ export const VoucherPageResponse: MessageFns<VoucherPageResponse> = {
 
           const el = VoucherProto.decode(reader, reader.uint32());
           if (el !== undefined) {
-            message.vouchers!.push(el);
+            message.content!.push(el);
           }
           continue;
         }
@@ -2468,8 +2554,8 @@ export const VoucherPageResponse: MessageFns<VoucherPageResponse> = {
 
   fromJSON(object: any): VoucherPageResponse {
     return {
-      vouchers: globalThis.Array.isArray(object?.vouchers)
-        ? object.vouchers.map((e: any) => VoucherProto.fromJSON(e))
+      content: globalThis.Array.isArray(object?.content)
+        ? object.content.map((e: any) => VoucherProto.fromJSON(e))
         : [],
       totalElements: isSet(object.totalElements) ? globalThis.Number(object.totalElements) : 0,
       totalPages: isSet(object.totalPages) ? globalThis.Number(object.totalPages) : 0,
@@ -2480,8 +2566,8 @@ export const VoucherPageResponse: MessageFns<VoucherPageResponse> = {
 
   toJSON(message: VoucherPageResponse): unknown {
     const obj: any = {};
-    if (message.vouchers?.length) {
-      obj.vouchers = message.vouchers.map((e) => VoucherProto.toJSON(e));
+    if (message.content?.length) {
+      obj.content = message.content.map((e) => VoucherProto.toJSON(e));
     }
     if (message.totalElements !== undefined && message.totalElements !== 0) {
       obj.totalElements = Math.round(message.totalElements);
@@ -2503,7 +2589,7 @@ export const VoucherPageResponse: MessageFns<VoucherPageResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<VoucherPageResponse>, I>>(object: I): VoucherPageResponse {
     const message = createBaseVoucherPageResponse();
-    message.vouchers = object.vouchers?.map((e) => VoucherProto.fromPartial(e)) || [];
+    message.content = object.content?.map((e) => VoucherProto.fromPartial(e)) || [];
     message.totalElements = object.totalElements ?? 0;
     message.totalPages = object.totalPages ?? 0;
     message.pageNumber = object.pageNumber ?? 0;
@@ -2722,13 +2808,13 @@ export const WebSettingProto: MessageFns<WebSettingProto> = {
 };
 
 function createBaseWebSettingPageResponse(): WebSettingPageResponse {
-  return { settings: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
+  return { content: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
 }
 
 export const WebSettingPageResponse: MessageFns<WebSettingPageResponse> = {
   encode(message: WebSettingPageResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.settings !== undefined && message.settings.length !== 0) {
-      for (const v of message.settings) {
+    if (message.content !== undefined && message.content.length !== 0) {
+      for (const v of message.content) {
         WebSettingProto.encode(v!, writer.uint32(10).fork()).join();
       }
     }
@@ -2761,7 +2847,7 @@ export const WebSettingPageResponse: MessageFns<WebSettingPageResponse> = {
 
           const el = WebSettingProto.decode(reader, reader.uint32());
           if (el !== undefined) {
-            message.settings!.push(el);
+            message.content!.push(el);
           }
           continue;
         }
@@ -2808,8 +2894,8 @@ export const WebSettingPageResponse: MessageFns<WebSettingPageResponse> = {
 
   fromJSON(object: any): WebSettingPageResponse {
     return {
-      settings: globalThis.Array.isArray(object?.settings)
-        ? object.settings.map((e: any) => WebSettingProto.fromJSON(e))
+      content: globalThis.Array.isArray(object?.content)
+        ? object.content.map((e: any) => WebSettingProto.fromJSON(e))
         : [],
       totalElements: isSet(object.totalElements) ? globalThis.Number(object.totalElements) : 0,
       totalPages: isSet(object.totalPages) ? globalThis.Number(object.totalPages) : 0,
@@ -2820,8 +2906,8 @@ export const WebSettingPageResponse: MessageFns<WebSettingPageResponse> = {
 
   toJSON(message: WebSettingPageResponse): unknown {
     const obj: any = {};
-    if (message.settings?.length) {
-      obj.settings = message.settings.map((e) => WebSettingProto.toJSON(e));
+    if (message.content?.length) {
+      obj.content = message.content.map((e) => WebSettingProto.toJSON(e));
     }
     if (message.totalElements !== undefined && message.totalElements !== 0) {
       obj.totalElements = Math.round(message.totalElements);
@@ -2843,11 +2929,458 @@ export const WebSettingPageResponse: MessageFns<WebSettingPageResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<WebSettingPageResponse>, I>>(object: I): WebSettingPageResponse {
     const message = createBaseWebSettingPageResponse();
-    message.settings = object.settings?.map((e) => WebSettingProto.fromPartial(e)) || [];
+    message.content = object.content?.map((e) => WebSettingProto.fromPartial(e)) || [];
     message.totalElements = object.totalElements ?? 0;
     message.totalPages = object.totalPages ?? 0;
     message.pageNumber = object.pageNumber ?? 0;
     message.pageSize = object.pageSize ?? 0;
+    return message;
+  },
+};
+
+function createBaseUserProtoList(): UserProtoList {
+  return { data: [] };
+}
+
+export const UserProtoList: MessageFns<UserProtoList> = {
+  encode(message: UserProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        UserProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = UserProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserProtoList {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => UserProto.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: UserProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => UserProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserProtoList>, I>>(base?: I): UserProtoList {
+    return UserProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UserProtoList>, I>>(object: I): UserProtoList {
+    const message = createBaseUserProtoList();
+    message.data = object.data?.map((e) => UserProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseCategoryProtoList(): CategoryProtoList {
+  return { data: [] };
+}
+
+export const CategoryProtoList: MessageFns<CategoryProtoList> = {
+  encode(message: CategoryProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        CategoryProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CategoryProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCategoryProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = CategoryProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CategoryProtoList {
+    return {
+      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => CategoryProto.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: CategoryProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => CategoryProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CategoryProtoList>, I>>(base?: I): CategoryProtoList {
+    return CategoryProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CategoryProtoList>, I>>(object: I): CategoryProtoList {
+    const message = createBaseCategoryProtoList();
+    message.data = object.data?.map((e) => CategoryProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseAuthorProtoList(): AuthorProtoList {
+  return { data: [] };
+}
+
+export const AuthorProtoList: MessageFns<AuthorProtoList> = {
+  encode(message: AuthorProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        AuthorProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthorProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthorProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = AuthorProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthorProtoList {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => AuthorProto.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: AuthorProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => AuthorProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthorProtoList>, I>>(base?: I): AuthorProtoList {
+    return AuthorProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<AuthorProtoList>, I>>(object: I): AuthorProtoList {
+    const message = createBaseAuthorProtoList();
+    message.data = object.data?.map((e) => AuthorProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseBookProtoList(): BookProtoList {
+  return { data: [] };
+}
+
+export const BookProtoList: MessageFns<BookProtoList> = {
+  encode(message: BookProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        BookProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BookProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBookProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = BookProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BookProtoList {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => BookProto.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: BookProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => BookProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BookProtoList>, I>>(base?: I): BookProtoList {
+    return BookProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BookProtoList>, I>>(object: I): BookProtoList {
+    const message = createBaseBookProtoList();
+    message.data = object.data?.map((e) => BookProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseOrderProtoList(): OrderProtoList {
+  return { data: [] };
+}
+
+export const OrderProtoList: MessageFns<OrderProtoList> = {
+  encode(message: OrderProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        OrderProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): OrderProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOrderProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = OrderProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OrderProtoList {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => OrderProto.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: OrderProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => OrderProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OrderProtoList>, I>>(base?: I): OrderProtoList {
+    return OrderProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<OrderProtoList>, I>>(object: I): OrderProtoList {
+    const message = createBaseOrderProtoList();
+    message.data = object.data?.map((e) => OrderProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseVoucherProtoList(): VoucherProtoList {
+  return { data: [] };
+}
+
+export const VoucherProtoList: MessageFns<VoucherProtoList> = {
+  encode(message: VoucherProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        VoucherProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): VoucherProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVoucherProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = VoucherProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VoucherProtoList {
+    return {
+      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => VoucherProto.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: VoucherProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => VoucherProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<VoucherProtoList>, I>>(base?: I): VoucherProtoList {
+    return VoucherProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<VoucherProtoList>, I>>(object: I): VoucherProtoList {
+    const message = createBaseVoucherProtoList();
+    message.data = object.data?.map((e) => VoucherProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseWebSettingProtoList(): WebSettingProtoList {
+  return { data: [] };
+}
+
+export const WebSettingProtoList: MessageFns<WebSettingProtoList> = {
+  encode(message: WebSettingProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        WebSettingProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WebSettingProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWebSettingProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = WebSettingProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WebSettingProtoList {
+    return {
+      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => WebSettingProto.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: WebSettingProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => WebSettingProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WebSettingProtoList>, I>>(base?: I): WebSettingProtoList {
+    return WebSettingProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WebSettingProtoList>, I>>(object: I): WebSettingProtoList {
+    const message = createBaseWebSettingProtoList();
+    message.data = object.data?.map((e) => WebSettingProto.fromPartial(e)) || [];
     return message;
   },
 };

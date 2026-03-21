@@ -18,6 +18,7 @@ export interface User {
   fullName?: string;
   address?: string;
   phone?: string;
+  avatar?: string;
 
   // Timestamps are typically sent as ISO strings via Protobuf/JSON
   createdAt?: string; 

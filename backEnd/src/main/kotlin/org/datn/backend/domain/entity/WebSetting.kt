@@ -14,7 +14,8 @@ data class WebSetting(
     @Column(name = "web_name", nullable = false)
     var webName: String,
 
-    @Column(name = "logo_url")
+    @Column(name = "logo_url", columnDefinition = "LONGTEXT")
+    @Lob
     var logoUrl: String? = null,
 
     @Column(name = "header_icon")

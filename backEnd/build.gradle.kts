@@ -31,6 +31,7 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:4.28.2")
     implementation("com.google.protobuf:protobuf-kotlin:4.28.2")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("com.google.code.gson:gson:2.11.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")

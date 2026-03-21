@@ -3,15 +3,19 @@ package org.datn.backend.domain.usecase
 import org.datn.backend.domain.entity.Voucher
 import org.datn.backend.domain.entity.DiscountType
 import org.datn.backend.domain.repository.VoucherRepository
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 
 @Service
 class VoucherService(private val voucherRepository: VoucherRepository) {
+    private val log = LoggerFactory.getLogger(javaClass)
 
     fun getAll(): List<Voucher> = voucherRepository.findAll()
 
@@ -35,14 +39,28 @@ class VoucherService(private val voucherRepository: VoucherRepository) {
      */
     fun update(id: Long, updates: Map<String, Any>): Voucher {
         val existing = findById(id)
-
+        val dateParser = { input: String ->
+            try {
+                // Try parsing with Offset first (handles "2026...Z")
+                ZonedDateTime.parse(input).toLocalDateTime()
+            } catch (e: Exception) {
+                // Fallback to Local (handles "2026...639" without Z)
+                LocalDateTime.parse(input)
+            }
+        }
         // Using .copy() assuming Voucher is a data class
         val updated = existing.copy(
+            usedCount = updates["usedCount"] as? Int ?: existing.usedCount,
+            code = updates["code"] as? String ?: existing.code,
             isActive = updates["isActive"] as? Boolean ?: existing.isActive,
             maxUses = updates["maxUses"] as? Int ?: existing.maxUses,
-            expirationDate = (updates["expirationDate"] as? String)?.let { LocalDateTime.parse(it) } ?: existing.expirationDate
+            discountType = DiscountType.entries[updates["discountType"] as? Int ?: 0],
+            discountValue = (updates["discountValue"] as? Number)?.toDouble() ?: existing.discountValue,
+            minOrderValue = (updates["minOrderValue"] as? Number)?.toDouble() ?: existing.minOrderValue,
+            startDate = (updates["startDate"] as? String)?.let { dateParser(it) } ?: existing.startDate,
+            expirationDate = (updates["expirationDate"] as? String)?.let { dateParser(it) } ?: existing.expirationDate
         )
-
+        log.info("updated $updated")
         return voucherRepository.save(updated)
     }
 

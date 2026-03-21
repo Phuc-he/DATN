@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.Lob
 import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -33,6 +34,9 @@ data class User(
     val fullName: String? = null,
     val address: String? = null,
     val phone: String? = null,
+    @Lob
+    @Column(name = "avatar", columnDefinition = "LONGTEXT")
+    val avatar: String? = null,
 
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,

@@ -1,12 +1,13 @@
 import { User } from "@/src/domain/entity/user.entity";
-import { BookPageResponse, BookProto } from "@/src/generated/schema";
-import { BaseRepositoryImpl } from "./base.repository.impl";
 import { UserRepository } from "@/src/domain/repository/user.repository";
+import { UserPageResponse, UserProto, UserProtoList } from "@/src/generated/schema";
+import { BaseRepositoryImpl } from "./base.repository.impl";
 
 export class UserRepositoryImpl extends BaseRepositoryImpl<User> implements UserRepository {
-  protected proto = BookProto;
+  protected listProto = UserProtoList;
+  protected proto = UserProto;
 
-  protected pageProto = BookPageResponse;
+  protected pageProto = UserPageResponse;
 
   constructor() {
     super('api/users');
@@ -27,8 +28,9 @@ export class UserRepositoryImpl extends BaseRepositoryImpl<User> implements User
 
       // If this still fails at .decode, the schema.ts is definitely 
       // out of sync with the backend UserProto.java
-      return this.proto.decode(uint8Array) as User;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // Replace: return this.proto?.decode(uint8Array) as User;
+      return (this.proto.decode(uint8Array) as unknown) as User;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response?.status === 404) return null;
       throw error;

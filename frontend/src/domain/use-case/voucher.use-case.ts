@@ -10,15 +10,6 @@ export class CreateVoucherUseCase {
   constructor(private readonly voucherRepository: VoucherRepository) { }
 
   async execute(voucher: Voucher): Promise<Voucher> {
-    // Vouchers must have unique codes
-    const vouchers = await this.voucherRepository.findAll();
-    const exists = vouchers.find((v) => v.code === voucher.code);
-
-    if (exists) {
-      throw new Error(
-        `Voucher with code "${voucher.code}" already exists`,
-      );
-    }
 
     return this.voucherRepository.create(voucher);
   }
