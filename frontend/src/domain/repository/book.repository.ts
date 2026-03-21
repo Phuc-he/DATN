@@ -1,0 +1,11 @@
+import { Book } from "../entity/book.entity";
+import { PaginatedResult } from "../entity/paginated.result";
+import { BaseRepository } from "./base.repository";
+
+export abstract class BookRepository extends BaseRepository<Book, number> { 
+  abstract getBooksByAuthor(
+      query: string,
+      page?: number,
+      limit?: number
+    ): Promise<PaginatedResult<Book>>;
+}

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: backEnd
+  datasource:
+    url: jdbc:mysql://localhost:3306/bookshop
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver # Optional but good practice
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true # Helpful for debugging your queries
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect

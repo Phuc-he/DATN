@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+package org.datn.backend.proto;
+
+// Ensures generated classes are in separate files for easier management
+option java_multiple_files = true;
+
+// --- Enums ---
+
+enum Role {
+  CUSTOMER = 0;
+  ADMIN = 1;
+  AUTHOR_ROLE = 2; // Named AUTHOR_ROLE to avoid conflict with Author message
+}
+
+enum OrderStatus {
+  UNPROCESSED = 0;
+  PROCESSING = 1;
+  SHIPPED = 2;
+  DELIVERED = 3;
+  CANCELLED = 4;
+}
+
+// --- Messages ---
+
+message UserProto {
+  int64 id = 1;
+  string username = 2;
+  string email = 3;
+  Role role = 4;
+  string full_name = 5;
+  string address = 6;
+  string phone = 7;
+  string created_at = 8; // ISO-8601 string
+}
+
+message AuthorProto {
+  int64 id = 1;
+  string name = 2;
+  string bio = 3;
+  string profile_image = 4;
+}
+
+message CategoryProto {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message BookProto {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  string price = 4;        // Using string for BigDecimal precision
+  int32 stock = 5;
+  string discount = 6;     // Using string for BigDecimal precision
+  string image_url = 7;
+  CategoryProto category = 8;
+  AuthorProto author = 9;
+}
+
+message OrderItemProto {
+  int64 id = 1;
+  BookProto book = 2;
+  int32 quantity = 3;
+  string unit_price = 4;
+  string discount = 5;
+}
+
+message OrderProto {
+  int64 id = 1;
+  UserProto user = 2;
+  string full_name = 3;
+  string phone = 4;
+  string address = 5;
+  string cart_id = 6;
+  string total_amount = 7;
+  OrderStatus status = 8;
+  repeated OrderItemProto items = 9; // 'repeated' is the Protobuf version of a List
+}
+
+message BookPageResponse {
+  repeated BookProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message AuthorPageResponse {
+  repeated AuthorProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message CategoryPageResponse {
+  repeated CategoryProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message OrderPageResponse {
+  repeated OrderProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message UserPageResponse {
+  repeated UserProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message OrderItemPageResponse {
+  repeated OrderItemProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message QrPaymentResponseProto {
+  string qr_url = 1;
+  int64 amount = 2;
+  string order_id = 3;
+  string description = 4;
+}
+
+message VoucherProto {
+  int64 id = 1;
+  string code = 2;
+  DiscountTypeProto discount_type = 3;
+  double discount_value = 4;
+  double min_order_value = 5;
+  int32 max_uses = 6;
+  int32 used_count = 7;
+  string start_date = 8;      // Format: ISO_LOCAL_DATE_TIME
+  string expiration_date = 9; // Format: ISO_LOCAL_DATE_TIME
+  bool is_active = 10;
+}
+
+enum DiscountTypeProto {
+  PERCENTAGE = 0;
+  FIXED = 1;
+}
+
+message VoucherPageResponse {
+  repeated VoucherProto vouchers = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message WebSettingProto {
+  int64 id = 1;
+  string web_name = 2;
+  string logo_url = 3;
+  string header_icon = 4;
+  string contact_email = 5;
+  string footer_text = 6;
+  bool is_active = 7;
+  string updated_at = 8; // ISO String
+}
+
+message WebSettingPageResponse {
+  repeated WebSettingProto settings = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
