@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Voucher } from '@/src/domain/entity/voucher.entity';
 import { DiscountType } from '@/src/domain/entity/discount-type.enum';
-import { X, Ticket, RefreshCw, Calendar, DollarSign, Percent } from 'lucide-react';
+import { Voucher } from '@/src/domain/entity/voucher.entity';
+import { Calendar, Percent, RefreshCw, Ticket, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 interface VoucherModalProps {
   isOpen: boolean;
@@ -146,7 +146,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
                 }}
               >
                 <option value={DiscountType.PERCENTAGE}>Percentage (%)</option>
-                <option value={DiscountType.FIXED}>Fixed Amount ($)</option>
+                <option value={DiscountType.FIXED}>Fixed Amount (VND)</option>
               </select>
             </div>
 
@@ -162,7 +162,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
                   onChange={(e) => setFormData({ ...formData, discountValue: e.target.value === '' ? 0 : Number(e.target.value) })}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                  {formData.discountType === DiscountType.PERCENTAGE ? <Percent size={14} /> : <DollarSign size={14} />}
+                  {formData.discountType === DiscountType.PERCENTAGE ? <Percent size={14} /> : "VND"}
                 </div>
               </div>
             </div>

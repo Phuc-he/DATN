@@ -1,9 +1,9 @@
 'use client';
 
 import { calculateItemSubtotal } from '@/src/domain/entity/order-item.entity';
-import { OrderStatus } from '@/src/domain/entity/order-status.enum';
+import { getOrderStatusDetails, OrderStatus } from '@/src/domain/entity/order-status.enum';
 import { Order } from '@/src/domain/entity/order.entity';
-import { Hash, MapPin, Package, Phone, RefreshCw, Truck, User, X } from 'lucide-react';
+import { BookOpen, Hash, MapPin, Package, Phone, RefreshCw, Truck, User, X } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -14,9 +14,9 @@ interface OrderDetailsModalProps {
   onUpdateStatus?: (id: number, status: OrderStatus) => void;
 }
 
-const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ 
-  isOpen, 
-  onClose, 
+const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
+  isOpen,
+  onClose,
   order,
   onUpdateStatus
 }) => {
@@ -31,11 +31,11 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
       default: return 'bg-amber-100 text-amber-700 border-amber-200';
     }
   };
-
+  const details = getOrderStatusDetails(order.status);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
-        
+
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50">
           <div>
@@ -53,7 +53,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
         {/* Content */}
         <div className="overflow-y-auto p-6 flex-1 space-y-6">
-          
+
           {/* Information Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Customer Info */}
@@ -66,7 +66,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                 <Phone size={12} /> {order.phone}
               </div>
               <div className="flex items-start gap-2 text-xs text-slate-500 mt-1">
-                <MapPin size={12} className="mt-0.5" /> 
+                <MapPin size={12} className="mt-0.5" />
                 <span className="leading-relaxed">{order.address}</span>
               </div>
             </div>
@@ -87,11 +87,13 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
               <div className="flex items-center gap-2 text-orange-600 mb-3 font-bold text-xs uppercase tracking-wider">
                 <Truck size={14} /> Logistics
               </div>
-              <p className="text-xs text-slate-500">Cart Reference:</p>
-              <p className="text-sm font-mono text-slate-600">{order.cartId || 'N/A'}</p>
-              
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black text-white shadow-sm ${details.color}`}>
+                <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
+                {details.label.toUpperCase()}
+              </span>
+
               {onUpdateStatus && order.status !== OrderStatus.DELIVERED && (
-                <button 
+                <button
                   onClick={() => onUpdateStatus(order.id!, OrderStatus.PROCESSING)}
                   className="mt-3 text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
                 >
@@ -122,24 +124,31 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                       <td className="px-4 py-3 flex items-center gap-3">
                         <div className="relative h-12 w-10 flex-shrink-0">
                           {/* Accessing book thumbnail - update path if different */}
-                          <Image 
-                            src={item.book.imageUrl || '/placeholder-book.png'} 
-                            alt={item.book.title} 
-                            fill 
-                            className="object-cover rounded shadow-sm" 
-                          />
+
+                          {item.book.imageUrl ? (
+                            <Image
+                              className="rounded border border-slate-100 object-cover"
+                              src={item.book.imageUrl}
+                              alt={item.book.title}
+                              fill
+                            />
+                          ) : (
+                            <div className="h-full w-full rounded bg-slate-100 flex items-center justify-center text-slate-400">
+                              <BookOpen size={20} />
+                            </div>
+                          )}
                         </div>
                         <div>
-                           <p className="font-bold text-slate-800 line-clamp-1">{item.book.title}</p>
-                           <p className="text-[10px] text-slate-400 font-medium">SKU: {item.book.id}</p>
+                          <p className="font-bold text-slate-800 line-clamp-1">{item.book.title}</p>
+                          <p className="text-[10px] text-slate-400 font-medium">SKU: {item.book.id}</p>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center font-medium text-slate-600">x{item.quantity}</td>
                       <td className="px-4 py-3 text-right text-slate-600">
                         {item.discount > 0 && (
-                           <span className="text-[10px] line-through text-slate-300 mr-2">
-                             {item.unitPrice.toLocaleString()}
-                           </span>
+                          <span className="text-[10px] line-through text-slate-300 mr-2">
+                            {item.unitPrice.toLocaleString()}
+                          </span>
                         )}
                         {(item.unitPrice - item.discount).toLocaleString()} VND
                       </td>

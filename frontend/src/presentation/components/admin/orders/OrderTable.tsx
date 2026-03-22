@@ -2,7 +2,7 @@
 
 import { Order } from '@/src/domain/entity/order.entity';
 import { OrderStatus, getOrderStatusDetails } from '@/src/domain/entity/order-status.enum';
-import { Calendar, Eye, Package, User } from 'lucide-react';
+import { BookOpen, Calendar, Eye, Package, User } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -29,7 +29,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
         <tbody className="divide-y divide-slate-200 bg-white">
           {orders.map((order) => {
             const statusDetail = getOrderStatusDetails(order.status);
-            
+
             return (
               <tr key={order.id} className="hover:bg-slate-50 transition-colors text-slate-900">
                 {/* Order ID & Placeholder Date */}
@@ -62,13 +62,19 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
                   <div className="flex -space-x-2 overflow-hidden mb-1">
                     {order.items.slice(0, 3).map((item) => (
                       <div key={item.id} className="inline-block h-8 w-8 rounded-lg ring-2 ring-white bg-white overflow-hidden border border-slate-100 shadow-sm">
-                        <Image 
-                          src={item.book.imageUrl || '/placeholder-book.png'} 
-                          alt={item.book.title} 
-                          className="h-full w-full object-cover" 
-                          width={32} 
-                          height={32} 
-                        />
+                        {item.book.imageUrl ? (
+                          <Image
+                            className="rounded border border-slate-100 object-cover"
+                            src={item.book.imageUrl}
+                            alt={item.book.title}
+                            width={64}
+                            height={64}
+                          />
+                        ) : (
+                          <div className="h-full w-full rounded bg-slate-100 flex items-center justify-center text-slate-400">
+                            <BookOpen size={20} />
+                          </div>
+                        )}
                       </div>
                     ))}
                     {order.items.length > 3 && (

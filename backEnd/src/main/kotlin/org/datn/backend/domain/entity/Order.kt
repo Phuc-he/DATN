@@ -11,7 +11,9 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.hibernate.annotations.CreationTimestamp
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "orders")
@@ -32,5 +34,8 @@ data class Order(
     val status: OrderStatus = OrderStatus.UNPROCESSED,
 
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
-    val items: MutableList<OrderItem> = mutableListOf()
+    val items: MutableList<OrderItem> = mutableListOf(),
+
+    @CreationTimestamp
+    val createdAt: LocalDateTime? = null,
 )

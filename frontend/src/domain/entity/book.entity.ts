@@ -13,6 +13,7 @@ export interface Book {
   // Relationships
   category?: Category;      // @ManyToOne
   author?: Author;          // @ManyToOne
+  createdAt?: string; 
 }
 
 /**

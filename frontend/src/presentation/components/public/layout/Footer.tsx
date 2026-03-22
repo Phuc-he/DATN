@@ -28,7 +28,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await AppProviders.GetCategoriesByPageUseCase.execute();
+        const data = await AppProviders.GetCategoriesByPageUseCase.execute(0, 5);
         setCategories(data.content.slice(0, 5));
       } catch (error) {
         console.error("Failed to load categories", error);

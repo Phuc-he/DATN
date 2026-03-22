@@ -10,7 +10,9 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.CreationTimestamp
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "books")
@@ -32,5 +34,8 @@ data class Book(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
-    val author: Author? = null
+    val author: Author? = null,
+
+    @CreationTimestamp
+    val createdAt: LocalDateTime? = null,
 )

@@ -5,7 +5,6 @@ import org.datn.backend.domain.entity.OrderStatus
 import org.datn.backend.domain.usecase.OrderService
 import org.datn.backend.presentation.service.PaymentService
 import org.datn.backend.proto.QrPaymentResponseProto
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -40,40 +39,24 @@ class PaymentController(
      * POST /api/payments/webhook
      * Simulates receiving a notification from a payment gateway (VietQR/VNPay).
      */
+    // Trong PaymentController.kt
     @PostMapping("/webhook")
     fun handlePaymentWebhook(@RequestBody body: Map<String, Any>): ResponseEntity<Map<String, Any>> {
-        println("--- Nhận dữ liệu thanh toán giả lập --- $body")
+        val content = body["content"] as? String ?: ""
 
-        val content = body["content"] as? String ?: return ResponseEntity
-            .badRequest()
-            .body(mapOf("status" to "error", "message" to "Nội dung chuyển khoản trống"))
+        // Giả sử mã đơn hàng của bạn chỉ gồm số (Long)
+        val orderIdRegex = Regex("""(\d+)$""")
+        val orderIdStr = orderIdRegex.find(content)?.value
 
-        val amount = body["amount"]
+        if (orderIdStr != null) {
+            val orderIdLong = orderIdStr.toLong()
+            // Cập nhật DB
+            orderService.updateStatus(orderIdLong, OrderStatus.PAID.ordinal.toString())
+            // Gửi qua socket (Dùng chuỗi gốc để tìm Room)
+            paymentHandler.notifyPaymentSuccess(orderIdStr)
 
-        // 1. Regex to extract Order ID (assuming it's at the end of the content)
-        // Example: "Thanh toan don hang DH12345" -> matches "DH12345"
-        val orderIdRegex = Regex("""(\w+)$""")
-        val orderId = orderIdRegex.find(content)?.value
-
-        if (orderId != null) {
-            println("Tìm thấy mã đơn hàng: $orderId, Số tiền: $amount")
-
-            orderService.updateStatus(orderId.toLong(), OrderStatus.PAID.name)
-
-            // 3. Notify Frontend via WebSocket (Real-time)
-            paymentHandler.notifyPaymentSuccess(orderId)
-
-            return ResponseEntity.ok(
-                mapOf(
-                    "status" to "success",
-                    "orderId" to orderId,
-                    "message" to "Cập nhật trạng thái thanh toán thành công"
-                )
-            )
+            return ResponseEntity.ok(mapOf("status" to "success"))
         }
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(mapOf("status" to "error", "message" to "Không tìm thấy mã đơn hàng hợp lệ"))
+        return ResponseEntity.badRequest().build()
     }
 }

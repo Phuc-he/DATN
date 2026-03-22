@@ -16,6 +16,7 @@ export interface Order {
   totalAmount: number; // BigDecimal maps to number for UI
   status: OrderStatus;
   items: OrderItem[];  // @OneToMany relationship
+  createdAt?: string; 
 }
 
 /**

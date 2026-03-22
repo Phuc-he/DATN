@@ -90,3 +90,13 @@ export class SearchVouchersUseCase {
     return this.voucherRepository.search(query, page, limit);
   }
 }
+
+export class ValidateVoucherUseCase {
+  constructor(private readonly voucherRepository: VoucherRepository) { }
+
+  async execute(
+    code: string, amount: number
+  ): Promise<Voucher | null> {
+    return this.voucherRepository.validateVoucher(code, amount);
+  }
+}

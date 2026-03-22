@@ -1,5 +1,6 @@
 import { AuthService } from '@/src/presentation/services/auth.service';
 import {
+  Book,
   Layers,
   LayoutDashboard,
   LogOut,
@@ -9,6 +10,7 @@ import {
 const AuthorSidebar = () => {
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/author' },
+    { name: 'Authors', icon: <Book size={20} />, path: '/author/authors' },
     { name: 'Categories', icon: <Layers size={20} />, path: '/author/categories' },
     { name: 'Products', icon: <Package size={20} />, path: '/author/products' },
   ];

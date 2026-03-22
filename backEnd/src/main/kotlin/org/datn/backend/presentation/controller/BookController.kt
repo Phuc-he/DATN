@@ -15,11 +15,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 @RestController
 @RequestMapping("/api/books")
 class BookController(private val bookService: BookService) {
-
+    private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
     @GetMapping(produces = ["application/x-protobuf"])
     fun getAllBooks(): ResponseEntity<BookProtoList> {
         val books = bookService.getAll()
@@ -31,6 +33,16 @@ class BookController(private val bookService: BookService) {
     fun getAll(pageable: Pageable): ResponseEntity<BookPageResponse> {
         val books = bookService.getAll(pageable)
         return ResponseEntity.ok(toPageResponse(books))
+    }
+
+    @GetMapping("/{id}", produces = ["application/x-protobuf"])
+    fun getById(@PathVariable id: Long,): ResponseEntity<BookProto> {
+        val optional = bookService.getById(id)
+        return if (optional?.isPresent == true) {
+            ResponseEntity.ok(optional.get().toProto())
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
     @GetMapping("/search", produces = ["application/x-protobuf"])
@@ -93,6 +105,7 @@ class BookController(private val bookService: BookService) {
             .setStock(this.stock)
             .setDiscount(this.discount.toString())
             .setImageUrl(this.imageUrl ?: "")
+            .setCreatedAt(this.createdAt?.format(dateFormatter) ?: "")
 
         this.author?.let {
             builder.setAuthor(AuthorProto.newBuilder().setId(it.id ?: 0L).setName(it.name).build())

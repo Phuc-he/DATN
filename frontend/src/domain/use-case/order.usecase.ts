@@ -2,6 +2,7 @@ import { Order } from '@/src/domain/entity/order.entity';
 import { OrderRepository } from '@/src/domain/repository/order.repository';
 import { PaginatedResult } from '@/src/domain/entity/paginated.result';
 import { Constants } from '@/src/shared/constans';
+import { OrderStatus } from '../entity/order-status.enum';
 
 /**
  * Places a new order during checkout.
@@ -55,6 +56,29 @@ export class UpdateOrderUseCase {
       throw new Error(`Order with ID ${id} not found or update failed`);
     }
     return updatedOrder;
+  }
+}
+
+export class UpdateOrderStatusUseCase {
+  constructor(private readonly orderRepository: OrderRepository) {}
+
+  async execute(
+    id: number, orderStatus: OrderStatus
+  ): Promise<Order | null> {
+    const updatedOrder = await this.orderRepository.updateStatus(id, orderStatus);
+    if (!updatedOrder) {
+      throw new Error(`Order with ID ${id} not found or update failed`);
+    }
+    return updatedOrder;
+  }
+}
+
+export class CancelOrderUseCase {
+  constructor(private readonly orderRepository: OrderRepository) {}
+  async execute(
+    id: number,
+  ): Promise<null> {
+    return await this.orderRepository.cancelOrder(id);
   }
 }
 

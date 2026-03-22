@@ -127,7 +127,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-semibold text-slate-700">Price ($)</label>
+                <label className="text-sm font-semibold text-slate-700">Price (VND)</label>
                 <input required type="number" step="0.01" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   value={formData.price || 0} onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })} />
               </div>

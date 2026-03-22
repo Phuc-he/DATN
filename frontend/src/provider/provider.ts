@@ -11,7 +11,7 @@ import { CreateAuthorUseCase, DeleteAuthorUseCase, GetAllAuthorsUseCase, GetAuth
 import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByPageUseCase, GetBookUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
 import { CreateCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, GetCategoriesByPageUseCase, GetCategoryUseCase, SearchCategoriesUseCase, UpdateCategoryUseCase } from "../domain/use-case/category.usecase";
 import { CreateOrderItemUseCase, DeleteOrderItemUseCase, GetAllOrderItemsUseCase, GetOrderItemsByPageUseCase, GetOrderItemUseCase, UpdateOrderItemUseCase } from "../domain/use-case/order-item.usecase";
-import { CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
+import { CancelOrderUseCase, CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderStatusUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
 import { GeneratePaymentQrUseCase, VerifyPaymentWebhookUseCase } from "../domain/use-case/payment.usecase";
 import {
   CreateUserUseCase,
@@ -23,7 +23,7 @@ import {
   SearchUsersUseCase,
   UpdateUserUseCase
 } from "../domain/use-case/user.use-case";
-import { CreateVoucherUseCase, DeleteVoucherUseCase, GetAllVouchersUseCase, GetVouchersByPageUseCase, GetVoucherUseCase, SearchVouchersUseCase, UpdateVoucherUseCase } from "../domain/use-case/voucher.use-case";
+import { CreateVoucherUseCase, DeleteVoucherUseCase, GetAllVouchersUseCase, GetVouchersByPageUseCase, GetVoucherUseCase, SearchVouchersUseCase, UpdateVoucherUseCase, ValidateVoucherUseCase } from "../domain/use-case/voucher.use-case";
 import { CreateWebSettingUseCase, DeleteWebSettingUseCase, GetActiveWebSettingUseCase, GetAllWebSettingsUseCase, GetWebSettingsByPageUseCase, GetWebSettingUseCase, SearchWebSettingsUseCase, UpdateWebSettingUseCase } from "../domain/use-case/web-setting.use-case";
 
 // --- Repository Instantiation ---
@@ -68,6 +68,8 @@ export const AppProviders = {
   DeleteOrderUseCase: new DeleteOrderUseCase(orderRepository),
   GetOrdersByPageUseCase: new GetOrdersByPageUseCase(orderRepository),
   SearchOrdersUseCase: new SearchOrdersUseCase(orderRepository),
+  UpdateOrderStatusUseCase: new UpdateOrderStatusUseCase(orderRepository),
+  CancelOrderUseCase: new CancelOrderUseCase(orderRepository),
 
   // --- Book Domain ---
   BookRepository: bookRepository,
@@ -106,6 +108,7 @@ export const AppProviders = {
   DeleteVoucherUseCase: new DeleteVoucherUseCase(voucherRepository),
   GetVouchersByPageUseCase: new GetVouchersByPageUseCase(voucherRepository),
   SearchVouchersUseCase: new SearchVouchersUseCase(voucherRepository),
+  ValidateVoucherUseCase: new ValidateVoucherUseCase(voucherRepository),
 
   // --- Payment domain ---
   PaymentRepository: paymentRepository,

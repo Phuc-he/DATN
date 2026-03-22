@@ -52,9 +52,10 @@ export function roleToJSON(object: Role): string {
 export enum OrderStatus {
   UNPROCESSED = 0,
   PROCESSING = 1,
-  SHIPPED = 2,
-  DELIVERED = 3,
-  CANCELLED = 4,
+  PAID = 2,
+  SHIPPED = 3,
+  DELIVERED = 4,
+  CANCELLED = 5,
   UNRECOGNIZED = -1,
 }
 
@@ -67,12 +68,15 @@ export function orderStatusFromJSON(object: any): OrderStatus {
     case "PROCESSING":
       return OrderStatus.PROCESSING;
     case 2:
+    case "PAID":
+      return OrderStatus.PAID;
+    case 3:
     case "SHIPPED":
       return OrderStatus.SHIPPED;
-    case 3:
+    case 4:
     case "DELIVERED":
       return OrderStatus.DELIVERED;
-    case 4:
+    case 5:
     case "CANCELLED":
       return OrderStatus.CANCELLED;
     case -1:
@@ -88,6 +92,8 @@ export function orderStatusToJSON(object: OrderStatus): string {
       return "UNPROCESSED";
     case OrderStatus.PROCESSING:
       return "PROCESSING";
+    case OrderStatus.PAID:
+      return "PAID";
     case OrderStatus.SHIPPED:
       return "SHIPPED";
     case OrderStatus.DELIVERED:
@@ -182,6 +188,7 @@ export interface BookProto {
   imageUrl?: string | undefined;
   category?: CategoryProto | undefined;
   author?: AuthorProto | undefined;
+  createdAt?: string | undefined;
 }
 
 export interface OrderItemProto {
@@ -205,6 +212,7 @@ export interface OrderProto {
     | undefined;
   /** 'repeated' is the Protobuf version of a List */
   items?: OrderItemProto[] | undefined;
+  createdAt?: string | undefined;
 }
 
 export interface BookPageResponse {
@@ -786,6 +794,7 @@ function createBaseBookProto(): BookProto {
     imageUrl: "",
     category: undefined,
     author: undefined,
+    createdAt: "",
   };
 }
 
@@ -817,6 +826,9 @@ export const BookProto: MessageFns<BookProto> = {
     }
     if (message.author !== undefined) {
       AuthorProto.encode(message.author, writer.uint32(74).fork()).join();
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      writer.uint32(82).string(message.createdAt);
     }
     return writer;
   },
@@ -900,6 +912,14 @@ export const BookProto: MessageFns<BookProto> = {
           message.author = AuthorProto.decode(reader, reader.uint32());
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.createdAt = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -924,6 +944,11 @@ export const BookProto: MessageFns<BookProto> = {
         : "",
       category: isSet(object.category) ? CategoryProto.fromJSON(object.category) : undefined,
       author: isSet(object.author) ? AuthorProto.fromJSON(object.author) : undefined,
+      createdAt: isSet(object.createdAt)
+        ? globalThis.String(object.createdAt)
+        : isSet(object.created_at)
+        ? globalThis.String(object.created_at)
+        : "",
     };
   },
 
@@ -956,6 +981,9 @@ export const BookProto: MessageFns<BookProto> = {
     if (message.author !== undefined) {
       obj.author = AuthorProto.toJSON(message.author);
     }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
+    }
     return obj;
   },
 
@@ -977,6 +1005,7 @@ export const BookProto: MessageFns<BookProto> = {
     message.author = (object.author !== undefined && object.author !== null)
       ? AuthorProto.fromPartial(object.author)
       : undefined;
+    message.createdAt = object.createdAt ?? "";
     return message;
   },
 };
@@ -1120,6 +1149,7 @@ function createBaseOrderProto(): OrderProto {
     totalAmount: "",
     status: 0,
     items: [],
+    createdAt: "",
   };
 }
 
@@ -1153,6 +1183,9 @@ export const OrderProto: MessageFns<OrderProto> = {
       for (const v of message.items) {
         OrderItemProto.encode(v!, writer.uint32(74).fork()).join();
       }
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      writer.uint32(82).string(message.createdAt);
     }
     return writer;
   },
@@ -1239,6 +1272,14 @@ export const OrderProto: MessageFns<OrderProto> = {
           }
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.createdAt = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1273,6 +1314,11 @@ export const OrderProto: MessageFns<OrderProto> = {
       items: globalThis.Array.isArray(object?.items)
         ? object.items.map((e: any) => OrderItemProto.fromJSON(e))
         : [],
+      createdAt: isSet(object.createdAt)
+        ? globalThis.String(object.createdAt)
+        : isSet(object.created_at)
+        ? globalThis.String(object.created_at)
+        : "",
     };
   },
 
@@ -1305,6 +1351,9 @@ export const OrderProto: MessageFns<OrderProto> = {
     if (message.items?.length) {
       obj.items = message.items.map((e) => OrderItemProto.toJSON(e));
     }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
+    }
     return obj;
   },
 
@@ -1322,6 +1371,7 @@ export const OrderProto: MessageFns<OrderProto> = {
     message.totalAmount = object.totalAmount ?? "";
     message.status = object.status ?? 0;
     message.items = object.items?.map((e) => OrderItemProto.fromPartial(e)) || [];
+    message.createdAt = object.createdAt ?? "";
     return message;
   },
 };

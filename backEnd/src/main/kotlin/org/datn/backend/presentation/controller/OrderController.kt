@@ -5,16 +5,20 @@ import org.datn.backend.domain.entity.OrderItem
 import org.datn.backend.domain.entity.OrderStatus
 import org.datn.backend.domain.usecase.OrderService
 import org.datn.backend.proto.*
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("/api/orders")
 class OrderController(private val orderService: OrderService) {
+    private val log = LoggerFactory.getLogger(javaClass)
+    private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     @GetMapping("/all", produces = ["application/x-protobuf"])
     fun getAll(pageable: Pageable): ResponseEntity<OrderPageResponse> {
@@ -31,6 +35,7 @@ class OrderController(private val orderService: OrderService) {
     @GetMapping(produces = ["application/x-protobuf"])
     fun getAll(): ResponseEntity<OrderProtoList> {
         val orders = orderService.getAll()
+        log.info("Found ${orders.size} orders}");
         return ResponseEntity.ok(OrderProtoList.newBuilder().addAllData(orders.map { it.toProto() }).build())
     }
 
@@ -62,7 +67,7 @@ class OrderController(private val orderService: OrderService) {
                 book = org.datn.backend.domain.entity.Book(
                     id = itemProto.book.id,
                     title = "",
-                    price = BigDecimal.ZERO
+                    price = BigDecimal.ZERO,
                 ),
                 quantity = itemProto.quantity,
                 unitPrice = BigDecimal(itemProto.unitPrice),
@@ -102,6 +107,7 @@ class OrderController(private val orderService: OrderService) {
             .setCartId(this.cartId ?: "")
             .setTotalAmount(this.totalAmount.toString())
             .setStatus(org.datn.backend.proto.OrderStatus.valueOf(this.status.name))
+            .setCreatedAt(this.createdAt?.format(dateFormatter) ?: "")
 
         // Map User
         builder.setUser(UserProto.newBuilder().setId(this.user.id ?: 0L).setUsername(this.user.username).build())
@@ -113,7 +119,13 @@ class OrderController(private val orderService: OrderService) {
                 .setQuantity(item.quantity)
                 .setUnitPrice(item.unitPrice.toString())
                 .setDiscount(item.discount.toString())
-                .setBook(BookProto.newBuilder().setId(item.book.id ?: 0L).setTitle(item.book.title).build())
+                .setBook(
+                    BookProto.newBuilder().setId(item.book.id ?: 0L).setTitle(item.book.title)
+                        .setImageUrl(item.book.imageUrl ?: "").setCategory(
+                        CategoryProto.newBuilder().setName(item.book.category?.name ?: "")
+                            .setImage(item.book.category?.image ?: "").build()
+                    ).build()
+                )
                 .build()
             builder.addItems(itemProto)
         }

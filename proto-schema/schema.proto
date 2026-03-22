@@ -16,9 +16,10 @@ enum Role {
 enum OrderStatus {
   UNPROCESSED = 0;
   PROCESSING = 1;
-  SHIPPED = 2;
-  DELIVERED = 3;
-  CANCELLED = 4;
+  PAID = 2;
+  SHIPPED = 3;
+  DELIVERED = 4;
+  CANCELLED = 5;
 }
 
 // --- Messages ---
@@ -60,6 +61,7 @@ message BookProto {
   string image_url = 7;
   CategoryProto category = 8;
   AuthorProto author = 9;
+  string created_at = 10;
 }
 
 message OrderItemProto {
@@ -80,6 +82,7 @@ message OrderProto {
   string total_amount = 7;
   OrderStatus status = 8;
   repeated OrderItemProto items = 9; // 'repeated' is the Protobuf version of a List
+  string created_at = 10;
 }
 
 message BookPageResponse {

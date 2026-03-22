@@ -21,7 +21,7 @@ const Page = () => {
   const fetchOrders = async (page: number) => {
     setLoading(true);
     try {
-      const result = await AppProviders.GetOrdersByPageUseCase.execute(page, 10);
+      const result = await AppProviders.GetOrdersByPageUseCase.execute(page - 1, 10);
       // Defensive check for result structure
       setOrders(result?.content || []);
       setTotalPages(result?.totalPages || 0);
@@ -45,7 +45,7 @@ const Page = () => {
   const handleUpdateStatus = async (id: number, status: OrderStatus) => {
     try {
       // Unified update logic for status
-      await AppProviders.UpdateOrderUseCase.execute(id, { status });
+      await AppProviders.UpdateOrderStatusUseCase.execute(id, status);
       await fetchOrders(currentPage);
       setIsModalOpen(false);
     } catch (error) {

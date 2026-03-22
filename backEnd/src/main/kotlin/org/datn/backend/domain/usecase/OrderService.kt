@@ -58,7 +58,7 @@ class OrderService(
         val existingOrder = getById(id)
 
         val statusEnum = try {
-            OrderStatus.valueOf(newStatus.uppercase())
+            OrderStatus.entries[newStatus.toInt()]
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: $newStatus")
