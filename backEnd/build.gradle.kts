@@ -1,5 +1,3 @@
-import com.google.protobuf.gradle.id
-
 plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
