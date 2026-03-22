@@ -36,7 +36,7 @@ const UserMenu = () => {
         className="flex items-center gap-2 group cursor-pointer hover:bg-gray-50 p-1.5 rounded-xl transition-all"
       >
         {currUser?.avatar ? (
-          <Image className="h-10 w-10 rounded-full object-cover" src={currUser?.avatar || ''} alt={currUser?.name || ''} width={40} height={40} />
+          <Image className="h-10 w-10 rounded-full object-cover" src={currUser?.avatar || ''} alt={currUser?.username || ''} width={40} height={40} />
         ) : (
           <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
             <User size={20} />
@@ -45,7 +45,7 @@ const UserMenu = () => {
         <div className="hidden md:block text-left">
           <p className="text-xs text-gray-400 font-bold uppercase tracking-tighter leading-none mb-1">Account</p>
           <span className="text-sm font-bold text-gray-700 group-hover:text-indigo-600 flex items-center gap-1">
-            {currUser?.name?.split(' ')[0]}
+            {currUser?.username?.split(' ')[0]}
             <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
           </span>
         </div>
