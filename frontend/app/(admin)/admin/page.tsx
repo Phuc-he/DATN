@@ -1,3 +1,4 @@
+import { CategoryDistributionChart } from "@/src/presentation/components/admin/categories/CategoryDistributionChart";
 import { CategoryRevenueChart } from "@/src/presentation/components/admin/orders/CategoryRevenueChart";
 import { RevenueChart } from "@/src/presentation/components/admin/orders/RevenueChart";
 import { InventoryChart } from "@/src/presentation/components/admin/products/InventoryChart";
@@ -9,6 +10,7 @@ export default async function Home() {
   const allProducts = await AppProviders.GetAllBooksUseCase.execute();
   return (
     <div>
+      <CategoryDistributionChart/>
       <CategoryRevenueChart orders={allOrders}/>
       <RevenueChart orders={allOrders}/>
       <InventoryChart products={allProducts} />

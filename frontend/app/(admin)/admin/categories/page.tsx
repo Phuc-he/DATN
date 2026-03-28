@@ -5,16 +5,20 @@ import { Category } from '@/src/domain/entity/category.entity';
 import CategoryModal from '@/src/presentation/components/admin/categories/CategoryModal';
 import CategoryTable from '@/src/presentation/components/admin/categories/CategoryTable';
 import { AppProviders } from '@/src/provider/provider';
+import { useActivityLogger } from '@/src/presentation/hooks/useActivityLogger'; // Import Logger
 import { Constants } from '@/src/shared/constans';
 import { Plus, Layers } from 'lucide-react';
 
-const Page = () => {
+const CategoryPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(Constants.PAGE);
   const [totalPages, setTotalPages] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+
+  // Initialize the activity logger
+  const { logAction } = useActivityLogger();
 
   const fetchCategories = async (page: number) => {
     setLoading(true);
@@ -44,29 +48,36 @@ const Page = () => {
   };
 
   const handleSave = async (data: Category) => {
+    let action = "UPDATE";
     try {
       if (selectedCategory) {
-        // Use .id or ._id depending on your entity structure
         const id = selectedCategory?.id || 0;
         await AppProviders.UpdateCategoryUseCase.execute(id, data);
+        await logAction(action, "Category", `Updated category: ${data.name} (ID: ${id})`);
       } else {
+        action = "CREATE";
         await AppProviders.CreateCategoryUseCase.execute(data);
+        await logAction(action, "Category", `Created new category: ${data.name}`);
       }
       fetchCategories(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save category:", error);
+      logAction(`${action}_FAILURE`, "Category", `Failed to save category: ${data.name}`);
       alert("Operation failed. Check console for details.");
     }
   };
 
   const handleDelete = async (id: number) => {
+    const categoryToDelete = categories.find(c => c.id === id);
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
         await AppProviders.DeleteCategoryUseCase.execute(id);
+        await logAction("DELETE", "Category", `Deleted category: ${categoryToDelete?.name || id}`);
         fetchCategories(currentPage);
       } catch (error) {
         console.error("Failed to delete category:", error);
+        logAction("DELETE_FAILURE", "Category", `Failed to delete category ID: ${id}`);
         alert("Error deleting category");
       }
     }
@@ -74,7 +85,6 @@ const Page = () => {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* Modal - Key ensures state resets every time selectedCategory changes */}
       <CategoryModal 
         key={selectedCategory?.id}
         isOpen={isModalOpen} 
@@ -83,7 +93,6 @@ const Page = () => {
         onSave={handleSave} 
       />
 
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -120,7 +129,6 @@ const Page = () => {
             onDelete={handleDelete}
           />
 
-          {/* Pagination Controls */}
           <div className="flex justify-center mt-8 gap-3">
             <button
               disabled={currentPage === 1}
@@ -148,4 +156,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default CategoryPage;

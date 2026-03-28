@@ -3,7 +3,7 @@
 import { Book, EmptyBook } from '@/src/domain/entity/book.entity';
 import { Category } from '@/src/domain/entity/category.entity';
 import { Author } from '@/src/domain/entity/author.entity';
-import { BookOpen, ImageIcon, Upload, X } from 'lucide-react';
+import { BookOpen, ImageIcon, Upload, X, Star } from 'lucide-react'; // Added Star icon
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
@@ -13,7 +13,7 @@ interface ProductModalProps {
   onSave: (product: Book) => void;
   initialData?: Book | null;
   categories: Category[];
-  authors: Author[]; // Added authors prop
+  authors: Author[];
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({
@@ -24,7 +24,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
   categories,
   authors
 }) => {
-  // Use Partial<Book> to align with your domain model
   const [formData, setFormData] = useState<Partial<Book>>(EmptyBook);
 
   useEffect(() => {
@@ -42,7 +41,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Mapping to 'imageUrl' to match Book entity
         setFormData({ ...formData, imageUrl: reader.result as string });
       };
       reader.readAsDataURL(file);
@@ -89,6 +87,29 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <Upload className="text-white opacity-0 group-hover:opacity-100" size={32} />
                   <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                 </label>
+              </div>
+
+              {/* Notable Work Toggle (Added Here) */}
+              <div 
+                onClick={() => setFormData({ ...formData, isNotable: !formData.isNotable })}
+                className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                  formData.isNotable 
+                    ? 'bg-amber-50 border-amber-200 shadow-sm' 
+                    : 'bg-slate-50 border-transparent opacity-70 hover:opacity-100'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${formData.isNotable ? 'bg-amber-400 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                    <Star size={18} fill={formData.isNotable ? "currentColor" : "none"} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-wider text-slate-700">Notable Work</p>
+                    <p className="text-[10px] text-slate-500 font-bold">Featured in author section</p>
+                  </div>
+                </div>
+                <div className={`w-10 h-5 rounded-full relative transition-colors ${formData.isNotable ? 'bg-amber-400' : 'bg-slate-300'}`}>
+                   <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${formData.isNotable ? 'left-6' : 'left-1'}`} />
+                </div>
               </div>
             </div>
 

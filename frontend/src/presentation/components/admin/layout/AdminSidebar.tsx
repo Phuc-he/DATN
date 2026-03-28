@@ -1,4 +1,6 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { AuthService } from '@/src/presentation/services/auth.service';
+import { ActivityLog } from '@/src/domain/entity/activity-log.entity';
 import {
   Book,
   Layers,
@@ -8,10 +10,32 @@ import {
   Settings,
   ShoppingBag,
   Ticket,
-  Users
-} from 'lucide-react'; // Accessible icon library
+  Users,
+  Bell,
+  Clock
+} from 'lucide-react';
 
 const AdminSidebar = () => {
+  const [logs, setLogs] = useState<ActivityLog[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const socketRef = useRef<WebSocket | null>(null);
+
+  // 1. Establish WebSocket Connection
+  useEffect(() => {
+    // Replace with your actual backend URL
+    const wsUrl = 'ws://localhost:8080/activity-logs';
+    socketRef.current = new WebSocket(wsUrl);
+
+    socketRef.current.onmessage = (event) => {
+      const newLog: ActivityLog = JSON.parse(event.data);
+      setLogs((prev) => [newLog, ...prev].slice(0, 10)); // Keep only last 10
+      setUnreadCount((prev) => prev + 1);
+    };
+
+    return () => socketRef.current?.close();
+  }, []);
+
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/admin' },
     { name: 'Users', icon: <Users size={20} />, path: '/admin/users' },
@@ -21,14 +45,62 @@ const AdminSidebar = () => {
     { name: 'Orders', icon: <ShoppingBag size={20} />, path: '/admin/orders' },
     { name: 'Vouchers', icon: <Ticket size={20} />, path: '/admin/vouchers' },
     { name: 'Setting', icon: <Settings size={20} />, path: '/admin/settings' },
+    { name: 'Logs', icon: <Bell size={20} />, path: '/admin/activity-logs' },
   ];
 
   return (
-    <div className="flex flex-col w-64 h-screen bg-slate-900 text-slate-100 border-r border-slate-800">
-      <div className="flex items-center justify-center h-20 border-b border-slate-800">
+    <div className="flex flex-col w-64 h-screen bg-slate-900 text-slate-100 border-r border-slate-800 relative">
+      <div className="flex items-center justify-between px-4 h-20 border-b border-slate-800">
         <h1 className="text-xl font-bold tracking-wider text-blue-400 uppercase">
-          Admin Panel
+          Admin
         </h1>
+        
+        {/* 2. Notification Bell UI */}
+        <div className="relative">
+          <button 
+            onClick={() => {
+              setShowNotifications(!showNotifications);
+              setUnreadCount(0);
+            }}
+            className="p-2 text-slate-400 hover:text-blue-400 transition-colors relative"
+          >
+            <Bell size={22} />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* 3. Dropdown Menu for Logs */}
+          {showNotifications && (
+            <div className="absolute left-0 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 max-h-[400px] overflow-y-auto">
+              <div className="p-3 border-b border-slate-700 font-bold text-sm text-slate-300">
+                Recent Activity Logs
+              </div>
+              {logs.length === 0 ? (
+                <div className="p-4 text-center text-slate-500 text-sm">No recent activity</div>
+              ) : (
+                logs.map((log, index) => (
+                  <div key={index} className="p-3 border-b border-slate-700 hover:bg-slate-750 transition-colors">
+                    <div className="flex justify-between items-start">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                        log.action.includes('DELETE') ? 'bg-red-900/40 text-red-400' : 'bg-blue-900/40 text-blue-400'
+                      }`}>
+                        {log.action}
+                      </span>
+                      <span className="text-[10px] text-slate-500 flex items-center">
+                        <Clock size={10} className="mr-1" /> Just now
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1 font-semibold">{log.entityName}</p>
+                    <p className="text-[11px] text-slate-400 truncate">{log.details}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
@@ -47,9 +119,10 @@ const AdminSidebar = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-800">
-        <button className="flex items-center w-full px-4 py-3 text-slate-400 transition-colors rounded-lg hover:bg-red-900/20 hover:text-red-400" onClick={() => {
-          AuthService.logout();
-        }}>
+        <button 
+          className="flex items-center w-full px-4 py-3 text-slate-400 transition-colors rounded-lg hover:bg-red-900/20 hover:text-red-400" 
+          onClick={() => AuthService.logout()}
+        >
           <LogOut size={20} />
           <span className="ml-3 font-medium">Logout</span>
         </button>

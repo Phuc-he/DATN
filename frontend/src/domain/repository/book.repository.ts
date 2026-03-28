@@ -8,4 +8,5 @@ export abstract class BookRepository extends BaseRepository<Book, number> {
       page?: number,
       limit?: number
     ): Promise<PaginatedResult<Book>>;
+    abstract getCategoryStats(categotyId: number): Promise<number>
 }

@@ -5,12 +5,13 @@ import { OrderStatus } from '@/src/domain/entity/order-status.enum';
 import OrderDetailsModal from '@/src/presentation/components/admin/orders/OrderDetailsModal';
 import OrderTable from '@/src/presentation/components/admin/orders/OrderTable';
 import { AppProviders } from '@/src/provider/provider';
+import { useActivityLogger } from '@/src/presentation/hooks/useActivityLogger'; // Import Logger
 import { Constants } from '@/src/shared/constans';
 import { Search, ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const Page = () => {
-  const [orders, setOrders] = useState<Order[]>([]); // Initialized as empty array
+const OrderPage = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(Constants.PAGE);
   const [totalPages, setTotalPages] = useState(0);
@@ -18,11 +19,13 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
+  // Initialize the activity logger
+  const { logAction } = useActivityLogger();
+
   const fetchOrders = async (page: number) => {
     setLoading(true);
     try {
       const result = await AppProviders.GetOrdersByPageUseCase.execute(page - 1, 10);
-      // Defensive check for result structure
       setOrders(result?.content || []);
       setTotalPages(result?.totalPages || 0);
     } catch (error) {
@@ -43,13 +46,29 @@ const Page = () => {
   };
 
   const handleUpdateStatus = async (id: number, status: OrderStatus) => {
+    const action = "UPDATE";
     try {
-      // Unified update logic for status
       await AppProviders.UpdateOrderStatusUseCase.execute(id, status);
+      
+      // Log successful status change
+      await logAction(
+        action, 
+        "Order", 
+        `Changed Order #${id} status to ${status}`
+      );
+
       await fetchOrders(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to update status:", error);
+      
+      // Log failed attempt
+      logAction(
+        `${action}_FAILURE`, 
+        "Order", 
+        `Failed to change Order #${id} status to ${status}`
+      );
+      
       alert("Failed to update order status");
     }
   };
@@ -63,6 +82,7 @@ const Page = () => {
         onUpdateStatus={handleUpdateStatus}
       />
 
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -128,4 +148,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default OrderPage;

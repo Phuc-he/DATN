@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Edit, Trash2, BookOpen, Package } from 'lucide-react';
+import { Edit, Trash2, BookOpen, Package, Star } from 'lucide-react'; // Added Star icon
 import { Book } from '@/src/domain/entity/book.entity';
 import Image from 'next/image';
 
 interface ProductTableProps {
-  products: Book[]; // Changed to Book entity
+  products: Book[];
   onEdit: (product: Book) => void;
-  onDelete: (id: number) => void; // IDs are now numbers
+  onDelete: (id: number) => void;
 }
 
 const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete }) => {
@@ -17,16 +17,16 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-slate-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Book</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Category</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Inventory</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Price</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Book</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventory</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
           {products.map((book) => (
-            <tr key={book.id} className="hover:bg-slate-50 transition-colors">
+            <tr key={book.id} className="hover:bg-slate-50 transition-colors group">
               {/* Image & Title */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -43,12 +43,24 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
                         <BookOpen size={20} />
                       </div>
                     )}
+                    {/* Floating Star Badge for Notable books */}
+                    {book.isNotable && (
+                      <div className="absolute -top-2 -left-2 bg-amber-400 text-white p-1 rounded-full shadow-sm border border-white">
+                        <Star size={10} fill="currentColor" />
+                      </div>
+                    )}
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-bold text-slate-900 truncate max-w-[200px]">
-                      {book.title}
+                    <div className="flex items-center gap-2">
+                      <div className="text-sm font-bold text-slate-900 truncate max-w-[180px]">
+                        {book.title}
+                      </div>
+                      {book.isNotable && (
+                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[9px] font-black uppercase border border-amber-100">
+                          <Star size={8} fill="currentColor" /> Notable
+                        </span>
+                      )}
                     </div>
-                    {/* Accessing author.name since it's an object */}
                     <div className="text-xs text-slate-500 italic">
                       by {book.author?.name || 'Unknown Author'}
                     </div>
@@ -58,7 +70,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
 
               {/* Category */}
               <td className="px-6 py-4 whitespace-nowrap">
-                <span className="px-2 py-1 rounded bg-blue-50 text-blue-700 text-[10px] font-bold uppercase">
+                <span className="px-2 py-1 rounded bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-tight">
                   {book.category?.name || 'Uncategorized'}
                 </span>
               </td>
@@ -71,33 +83,42 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
                     {book.stock}
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-400 uppercase mt-0.5">In Stock</div>
+                <div className="text-[10px] text-slate-400 uppercase font-bold mt-0.5">Units Left</div>
               </td>
 
               {/* Price & Discount */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-bold text-slate-900">
-                  ${book.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  {/* Assuming VND based on previous context, but using local string for safety */}
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(book.price)}
                 </div>
                 {book.discount > 0 ? (
-                  <div className="text-xs text-green-600 font-medium">-{book.discount}% Off</div>
-                ) : null}
+                  <div className="text-[10px] text-green-600 font-bold uppercase">
+                    Save {book.discount}%
+                  </div>
+                ) : (
+                  <div className="text-[10px] text-slate-400 uppercase font-bold">Base Price</div>
+                )}
               </td>
 
               {/* Actions */}
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  onClick={() => onEdit(book)}
-                  className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors mr-1"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => book.id && onDelete(book.id)}
-                  className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
-                >
-                  <Trash2 size={18} />
-                </button>
+                <div className="flex justify-end gap-1">
+                  <button
+                    onClick={() => onEdit(book)}
+                    className="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-lg transition-all"
+                    title="Edit Book"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button
+                    onClick={() => book.id && onDelete(book.id)}
+                    className="text-slate-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-all"
+                    title="Delete Book"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

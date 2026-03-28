@@ -17,4 +17,6 @@ interface CategoryRepository : BaseRepository<Category, Long> {
     """)
     override fun search(@Param("query") query: String, pageable: Pageable): Page<Category>
     fun existsByName(name: String): Boolean
+    @Query("SELECT COUNT(b) FROM Book b WHERE b.category.id = :categoryId")
+    fun countBooksByCategoryId(@Param("categoryId") categoryId: Long): Long
 }

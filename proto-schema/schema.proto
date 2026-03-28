@@ -62,6 +62,7 @@ message BookProto {
   CategoryProto category = 8;
   AuthorProto author = 9;
   string created_at = 10;
+  bool is_notable = 11;
 }
 
 message OrderItemProto {
@@ -177,8 +178,38 @@ message WebSettingProto {
   string updated_at = 8; // ISO String
 }
 
+message ActivityLogProto {
+  // Long? maps to int64. In proto3, 0 is the default,
+  // so we use optional to track if the ID is actually present.
+  optional int64 id = 1;
+
+  // e.g., "CREATE", "UPDATE", "DELETE"
+  string action = 2;
+
+  // e.g., "Book", "Author"
+  string entity_name = 3;
+
+  // e.g., "Updated book 'The Great Gatsby'"
+  string details = 4;
+
+  // Maps to performedBy: String? = "Admin"
+  // Using StringValue or optional string to handle nullability
+  string performed_by = 5;
+
+  // Maps to LocalDateTime (CreationTimestamp)
+  string created_at = 6;
+}
+
 message WebSettingPageResponse {
   repeated WebSettingProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message ActivityLogPageResponse {
+  repeated ActivityLogProto content = 1;
   int64 totalElements = 2;
   int32 totalPages = 3;
   int32 pageNumber = 4;
@@ -205,4 +236,7 @@ message VoucherProtoList {
 }
 message WebSettingProtoList {
   repeated WebSettingProto data = 1;
+}
+message ActivityLogProtoList {
+  repeated ActivityLogProto data = 1;
 }

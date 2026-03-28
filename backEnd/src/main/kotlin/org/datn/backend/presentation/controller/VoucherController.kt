@@ -3,11 +3,10 @@ package org.datn.backend.presentation.controller
 import org.datn.backend.domain.entity.DiscountType
 import org.datn.backend.domain.entity.Voucher
 import org.datn.backend.domain.usecase.VoucherService
-import org.datn.backend.proto.DiscountTypeProto
+import org.datn.backend.presentation.mapper.toPageResponse
+import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.VoucherPageResponse
 import org.datn.backend.proto.VoucherProto
-import org.slf4j.LoggerFactory
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,39 +16,26 @@ import java.time.OffsetDateTime
 @RestController
 @RequestMapping("/api/vouchers")
 class VoucherController(private val voucherService: VoucherService) {
-    private val log = LoggerFactory.getLogger(javaClass)
 
     @GetMapping("/all", produces = ["application/x-protobuf"])
-    fun getAll(pageable: Pageable): ResponseEntity<VoucherPageResponse> {
-        val page = voucherService.getAll(pageable)
-        log.info("page: ${page.content}")
-        log.info("pageable: $pageable")
-        return ResponseEntity.ok(toPageResponse(page))
-    }
+    fun getAll(pageable: Pageable): ResponseEntity<VoucherPageResponse> =
+        ResponseEntity.ok(voucherService.getAll(pageable).toPageResponse())
 
     @GetMapping("/search", produces = ["application/x-protobuf"])
     fun search(
         @RequestParam query: String,
         pageable: Pageable
-    ): ResponseEntity<VoucherPageResponse> {
-        val page = voucherService.search(query, pageable)
-        return ResponseEntity.ok(toPageResponse(page))
-    }
+    ): ResponseEntity<VoucherPageResponse> = ResponseEntity.ok(voucherService.search(query, pageable).toPageResponse())
 
     @GetMapping("/{id}", produces = ["application/x-protobuf"])
-    fun getById(@PathVariable id: Long): ResponseEntity<VoucherProto> {
-        val voucher = voucherService.findById(id)
-        return ResponseEntity.ok(toProto(voucher))
-    }
+    fun getById(@PathVariable id: Long): ResponseEntity<VoucherProto> =
+        ResponseEntity.ok(voucherService.findById(id).toProto())
 
     @GetMapping("/validate", produces = ["application/x-protobuf"])
     fun validateVoucher(
         @RequestParam code: String,
         @RequestParam amount: Double
-    ): ResponseEntity<VoucherProto> {
-        val voucher = voucherService.validateVoucher(code, amount)
-        return ResponseEntity.ok(toProto(voucher))
-    }
+    ): ResponseEntity<VoucherProto> = ResponseEntity.ok(voucherService.validateVoucher(code, amount).toProto())
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
     fun create(@RequestBody proto: VoucherProto): ResponseEntity<VoucherProto> {
@@ -73,41 +59,12 @@ class VoucherController(private val voucherService: VoucherService) {
                 isActive = proto.isActive
             )
         )
-        return ResponseEntity.status(HttpStatus.CREATED).body(toProto(savedVoucher))
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedVoucher?.toProto())
     }
 
     @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
     fun update(
         @PathVariable id: Long,
         @RequestBody updates: Map<String, Any>
-    ): ResponseEntity<VoucherProto> {
-        log.info("updating $id $updates")
-        val updatedUser = voucherService.update(id, updates)
-        return ResponseEntity.ok(toProto(updatedUser))
-    }
-
-    // --- Mapper Helpers ---
-
-    private fun toProto(entity: Voucher): VoucherProto {
-        return VoucherProto.newBuilder()
-            .setId(entity.id ?: 0L)
-            .setCode(entity.code)
-            .setDiscountType(DiscountTypeProto.valueOf(entity.discountType.name))
-            .setDiscountValue(entity.discountValue)
-            .setMinOrderValue(entity.minOrderValue ?: 0.0)
-            .setMaxUses(entity.maxUses)
-            .setUsedCount(entity.usedCount)
-            .setStartDate(entity.startDate.toString())
-            .setExpirationDate(entity.expirationDate.toString())
-            .setIsActive(entity.isActive)
-            .build()
-    }
-
-    private fun toPageResponse(page: Page<Voucher>): VoucherPageResponse {
-        return VoucherPageResponse.newBuilder()
-            .addAllContent(page.content.map { toProto(it) })
-            .setTotalPages(page.totalPages)
-            .setTotalElements(page.totalElements)
-            .build()
-    }
+    ): ResponseEntity<VoucherProto> = ResponseEntity.ok(voucherService.update(id, updates)?.toProto())
 }

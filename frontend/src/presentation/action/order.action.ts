@@ -1,28 +1,31 @@
 'use server';
 
 import { OrderItem } from "@/src/domain/entity/order-item.entity";
+import { OrderStatus } from "@/src/domain/entity/order-status.enum";
 import { Order } from "@/src/domain/entity/order.entity";
 import { PaymentMethod } from "@/src/domain/entity/payment.method";
 import { Voucher } from "@/src/domain/entity/voucher.entity";
-import { OrderStatus } from "@/src/domain/entity/order-status.enum";
 import { AppProviders } from "@/src/provider/provider";
+import { logActivity } from "@/src/shared/logOrderActivity";
 
 export interface CreateOrderDto {
-  user: { id: number }; // Chuyển từ userId: string sang object User matching entity
+  user: { id: number; fullName?: string; email?: string };
   fullName: string;
   phone: string;
   address: string;
   voucher?: Voucher | null;
-  items: OrderItem[];   // Đổi tên từ orderItems -> items
+  items: OrderItem[];
   paymentMethod: PaymentMethod;
-  totalAmount: number;  // Đổi tên từ totalPrice -> totalAmount
+  totalAmount: number;
 }
 
 export async function createOrderAction(formData: CreateOrderDto) {
+  const actor = formData.user.email || formData.fullName || `User ID: ${formData.user.id}`;
+
   try {
-    // 1. Lọc sạch dữ liệu (Chỉ giữ lại ID để giảm dung lượng gói tin)
+    // 1. Clean data (ID only)
     const cleanItems = formData.items.map(item => ({
-      book: { id: item.book.id }, // QUAN TRỌNG: Chỉ gửi ID, loại bỏ imageUrl và description
+      book: { id: item.book.id },
       quantity: item.quantity,
       unitPrice: item.unitPrice,
       discount: item.discount
@@ -30,28 +33,31 @@ export async function createOrderAction(formData: CreateOrderDto) {
 
     const order: Partial<Order> = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      user: { id: formData.user.id } as any, // Tương tự, chỉ gửi ID user
+      user: { id: formData.user.id } as any,
       fullName: formData.fullName,
       phone: formData.phone,
       address: formData.address,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      items: cleanItems as any, // Sử dụng mảng đã lọc sạch
+      items: cleanItems as OrderItem[],
       totalAmount: formData.totalAmount,
       status: OrderStatus.UNPROCESSED,
     };
 
-    console.log("Cleaned Order Data:", JSON.stringify(order));
-
-    // 2. Thực thi tạo đơn hàng qua UseCase
+    // 2. Execute Order Creation
     const result = await AppProviders.CreateOrderUseCase.execute(order as Order);
+
+    // Log Order Success
+    await logActivity(actor, "Order", "CREATE", `Order #${result.id} created successfully. Total: ${result.totalAmount}`);
+
     if (formData.voucher) {
       const updateVoucher = formData.voucher;
       updateVoucher.usedCount += 1;
-      const updatedVoucher = await AppProviders.UpdateVoucherUseCase.execute(updateVoucher.id || 0, updateVoucher)
-      console.log("updateCount", updatedVoucher)
+      await AppProviders.UpdateVoucherUseCase.execute(updateVoucher.id || 0, updateVoucher);
+
+      // Log Voucher Usage
+      await logActivity(actor, "Order", "VOUCHER_USED", `Voucher ${updateVoucher.code} applied to Order #${result.id}`);
     }
 
-    // 3. Xử lý thanh toán trực tuyến (Ví dụ VietQR)
+    // 3. Payment Processing (VietQR)
     if (formData.paymentMethod === PaymentMethod.VNQR) {
       try {
         const generateQrCodeUseCase = AppProviders.GenerateQrCodeUseCase;
@@ -78,9 +84,14 @@ export async function createOrderAction(formData: CreateOrderDto) {
     }
 
     return { success: true, orderId: result.id };
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Order creation error:", error);
+
+    // Log Order Failure
+    await logActivity(actor, "Order", "ORDER_FAILURE", `Attempted order failed. Error: ${error.message}`);
+
     return {
       success: false,
       message: error.message || "Không thể đặt hàng, vui lòng thử lại."

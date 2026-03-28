@@ -35,14 +35,16 @@ export default function Page() {
         ? await AuthService.loginWithEmail(email, password, role)
         : await AuthService.signUpWithEmail(email, password, role); // Pass role to sign up
 
-      if (user) {
+      if (!user) throw new Error("No user returned");
+
+      if (isLogin) {
         router.push('/');
       } else {
-        setError("Authentication failed. Please check your credentials.");
+        setIsLogin(true);
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (e) {
+      console.error('auth', e);
+      setError('Authentication failed. Please check your credentials.'); // Use translated error message
     } finally {
       setLoading(false);
     }

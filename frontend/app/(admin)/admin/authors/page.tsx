@@ -4,6 +4,7 @@ import { Author } from '@/src/domain/entity/author.entity';
 import AuthorModal from '@/src/presentation/components/admin/authors/AuthorModal';
 import AuthorTable from '@/src/presentation/components/admin/authors/AuthorTable';
 import { AppProviders } from '@/src/provider/provider';
+import { useActivityLogger } from '@/src/presentation/hooks/useActivityLogger'; // Import Logger
 import { Plus, PenTool } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -15,10 +16,12 @@ const AuthorPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
 
+  // Initialize the activity logger
+  const { logAction } = useActivityLogger();
+
   const fetchAuthors = async (page: number) => {
     setLoading(true);
     try {
-      // Assuming AppProviders has Author UseCases mapped
       const result = await AppProviders.GetAuthorsByPageUseCase.execute(page - 1, 10);
       setAuthors(result.content);
       setTotalPages(result.totalPages);
@@ -34,17 +37,41 @@ const AuthorPage = () => {
   }, [currentPage]);
 
   const handleSave = async (data: Author) => {
+    let action: string= "UPDATE";
     try {
       if (selectedAuthor?.id) {
+        // Log Update Action
         await AppProviders.UpdateAuthorUseCase.execute(selectedAuthor.id, data);
-      } else {
-        await AppProviders.CreateAuthorUseCase.execute(data);
+        await logAction(action, "Author", `Updated author: ${data.name} (ID: ${selectedAuthor.id})`);
+      } else {       
+        action = "CREATE";
+        const newAuthor = await AppProviders.CreateAuthorUseCase.execute(data);
+        await logAction(action, "Author", `Created new author: ${data.name}`);
+        console.log(`newAuthorRes ${newAuthor}`)
       }
       fetchAuthors(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save author:", error);
+      // Log Failure (Optional but recommended)
+      logAction(`${action}_FAILURE`, "Author", `Failed to save author: ${data.name}`);
       alert("Operation failed. Please try again.");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    const authorToDelete = authors.find(a => a.id === id);
+    if (window.confirm(`Are you sure you want to delete ${authorToDelete?.name || 'this author'}?`)) {
+      try {
+        await AppProviders.DeleteAuthorUseCase.execute(id);
+        // Log Delete Action
+        await logAction("DELETE", "Author", `Deleted author: ${authorToDelete?.name || id}`);
+        fetchAuthors(currentPage);
+      } catch (error) {
+        console.error("Failed to delete author:", error);
+        logAction("DELETE_FAILURE", "Author", `Failed to delete author ID: ${id}`);
+        alert("Error deleting author.");
+      }
     }
   };
 
@@ -58,21 +85,8 @@ const AuthorPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this author? This may affect books linked to them.")) {
-      try {
-        await AppProviders.DeleteAuthorUseCase.execute(id);
-        fetchAuthors(currentPage);
-      } catch (error) {
-        console.error("Failed to delete author:", error);
-        alert("Error deleting author. They might still be linked to active books.");
-      }
-    }
-  };
-
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* Author Modal */}
       <AuthorModal 
         key={selectedAuthor?.id || 'new-author'} 
         isOpen={isModalOpen} 
@@ -81,7 +95,6 @@ const AuthorPage = () => {
         onSave={handleSave} 
       />
 
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -121,7 +134,6 @@ const AuthorPage = () => {
             onDelete={handleDelete}
           />
 
-          {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="flex justify-center mt-8 gap-3">
               <button

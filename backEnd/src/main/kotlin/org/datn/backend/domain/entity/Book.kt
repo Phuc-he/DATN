@@ -24,6 +24,7 @@ data class Book(
     val price: BigDecimal,
     val stock: Int = 0,
     val discount: BigDecimal = BigDecimal.ZERO,
+    val isNotable: Boolean = false,
     @Lob
     @Column(name = "image_url", columnDefinition = "LONGTEXT")
     val imageUrl: String? = null,

@@ -189,6 +189,7 @@ export interface BookProto {
   category?: CategoryProto | undefined;
   author?: AuthorProto | undefined;
   createdAt?: string | undefined;
+  isNotable?: boolean | undefined;
 }
 
 export interface OrderItemProto {
@@ -311,8 +312,47 @@ export interface WebSettingProto {
   updatedAt?: string | undefined;
 }
 
+export interface ActivityLogProto {
+  /**
+   * Long? maps to int64. In proto3, 0 is the default,
+   * so we use optional to track if the ID is actually present.
+   */
+  id?:
+    | number
+    | undefined;
+  /** e.g., "CREATE", "UPDATE", "DELETE" */
+  action?:
+    | string
+    | undefined;
+  /** e.g., "Book", "Author" */
+  entityName?:
+    | string
+    | undefined;
+  /** e.g., "Updated book 'The Great Gatsby'" */
+  details?:
+    | string
+    | undefined;
+  /**
+   * Maps to performedBy: String? = "Admin"
+   * Using StringValue or optional string to handle nullability
+   */
+  performedBy?:
+    | string
+    | undefined;
+  /** Maps to LocalDateTime (CreationTimestamp) */
+  createdAt?: string | undefined;
+}
+
 export interface WebSettingPageResponse {
   content?: WebSettingProto[] | undefined;
+  totalElements?: number | undefined;
+  totalPages?: number | undefined;
+  pageNumber?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export interface ActivityLogPageResponse {
+  content?: ActivityLogProto[] | undefined;
   totalElements?: number | undefined;
   totalPages?: number | undefined;
   pageNumber?: number | undefined;
@@ -345,6 +385,10 @@ export interface VoucherProtoList {
 
 export interface WebSettingProtoList {
   data?: WebSettingProto[] | undefined;
+}
+
+export interface ActivityLogProtoList {
+  data?: ActivityLogProto[] | undefined;
 }
 
 function createBaseUserProto(): UserProto {
@@ -795,6 +839,7 @@ function createBaseBookProto(): BookProto {
     category: undefined,
     author: undefined,
     createdAt: "",
+    isNotable: false,
   };
 }
 
@@ -829,6 +874,9 @@ export const BookProto: MessageFns<BookProto> = {
     }
     if (message.createdAt !== undefined && message.createdAt !== "") {
       writer.uint32(82).string(message.createdAt);
+    }
+    if (message.isNotable !== undefined && message.isNotable !== false) {
+      writer.uint32(88).bool(message.isNotable);
     }
     return writer;
   },
@@ -920,6 +968,14 @@ export const BookProto: MessageFns<BookProto> = {
           message.createdAt = reader.string();
           continue;
         }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.isNotable = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -949,6 +1005,11 @@ export const BookProto: MessageFns<BookProto> = {
         : isSet(object.created_at)
         ? globalThis.String(object.created_at)
         : "",
+      isNotable: isSet(object.isNotable)
+        ? globalThis.Boolean(object.isNotable)
+        : isSet(object.is_notable)
+        ? globalThis.Boolean(object.is_notable)
+        : false,
     };
   },
 
@@ -984,6 +1045,9 @@ export const BookProto: MessageFns<BookProto> = {
     if (message.createdAt !== undefined && message.createdAt !== "") {
       obj.createdAt = message.createdAt;
     }
+    if (message.isNotable !== undefined && message.isNotable !== false) {
+      obj.isNotable = message.isNotable;
+    }
     return obj;
   },
 
@@ -1006,6 +1070,7 @@ export const BookProto: MessageFns<BookProto> = {
       ? AuthorProto.fromPartial(object.author)
       : undefined;
     message.createdAt = object.createdAt ?? "";
+    message.isNotable = object.isNotable ?? false;
     return message;
   },
 };
@@ -2857,6 +2922,158 @@ export const WebSettingProto: MessageFns<WebSettingProto> = {
   },
 };
 
+function createBaseActivityLogProto(): ActivityLogProto {
+  return { id: undefined, action: "", entityName: "", details: "", performedBy: "", createdAt: "" };
+}
+
+export const ActivityLogProto: MessageFns<ActivityLogProto> = {
+  encode(message: ActivityLogProto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== undefined) {
+      writer.uint32(8).int64(message.id);
+    }
+    if (message.action !== undefined && message.action !== "") {
+      writer.uint32(18).string(message.action);
+    }
+    if (message.entityName !== undefined && message.entityName !== "") {
+      writer.uint32(26).string(message.entityName);
+    }
+    if (message.details !== undefined && message.details !== "") {
+      writer.uint32(34).string(message.details);
+    }
+    if (message.performedBy !== undefined && message.performedBy !== "") {
+      writer.uint32(42).string(message.performedBy);
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      writer.uint32(50).string(message.createdAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ActivityLogProto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseActivityLogProto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = longToNumber(reader.int64());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.action = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.entityName = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.details = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.performedBy = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.createdAt = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ActivityLogProto {
+    return {
+      id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
+      action: isSet(object.action) ? globalThis.String(object.action) : "",
+      entityName: isSet(object.entityName)
+        ? globalThis.String(object.entityName)
+        : isSet(object.entity_name)
+        ? globalThis.String(object.entity_name)
+        : "",
+      details: isSet(object.details) ? globalThis.String(object.details) : "",
+      performedBy: isSet(object.performedBy)
+        ? globalThis.String(object.performedBy)
+        : isSet(object.performed_by)
+        ? globalThis.String(object.performed_by)
+        : "",
+      createdAt: isSet(object.createdAt)
+        ? globalThis.String(object.createdAt)
+        : isSet(object.created_at)
+        ? globalThis.String(object.created_at)
+        : "",
+    };
+  },
+
+  toJSON(message: ActivityLogProto): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = Math.round(message.id);
+    }
+    if (message.action !== undefined && message.action !== "") {
+      obj.action = message.action;
+    }
+    if (message.entityName !== undefined && message.entityName !== "") {
+      obj.entityName = message.entityName;
+    }
+    if (message.details !== undefined && message.details !== "") {
+      obj.details = message.details;
+    }
+    if (message.performedBy !== undefined && message.performedBy !== "") {
+      obj.performedBy = message.performedBy;
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ActivityLogProto>, I>>(base?: I): ActivityLogProto {
+    return ActivityLogProto.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ActivityLogProto>, I>>(object: I): ActivityLogProto {
+    const message = createBaseActivityLogProto();
+    message.id = object.id ?? undefined;
+    message.action = object.action ?? "";
+    message.entityName = object.entityName ?? "";
+    message.details = object.details ?? "";
+    message.performedBy = object.performedBy ?? "";
+    message.createdAt = object.createdAt ?? "";
+    return message;
+  },
+};
+
 function createBaseWebSettingPageResponse(): WebSettingPageResponse {
   return { content: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
 }
@@ -2980,6 +3197,137 @@ export const WebSettingPageResponse: MessageFns<WebSettingPageResponse> = {
   fromPartial<I extends Exact<DeepPartial<WebSettingPageResponse>, I>>(object: I): WebSettingPageResponse {
     const message = createBaseWebSettingPageResponse();
     message.content = object.content?.map((e) => WebSettingProto.fromPartial(e)) || [];
+    message.totalElements = object.totalElements ?? 0;
+    message.totalPages = object.totalPages ?? 0;
+    message.pageNumber = object.pageNumber ?? 0;
+    message.pageSize = object.pageSize ?? 0;
+    return message;
+  },
+};
+
+function createBaseActivityLogPageResponse(): ActivityLogPageResponse {
+  return { content: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
+}
+
+export const ActivityLogPageResponse: MessageFns<ActivityLogPageResponse> = {
+  encode(message: ActivityLogPageResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.content !== undefined && message.content.length !== 0) {
+      for (const v of message.content) {
+        ActivityLogProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    if (message.totalElements !== undefined && message.totalElements !== 0) {
+      writer.uint32(16).int64(message.totalElements);
+    }
+    if (message.totalPages !== undefined && message.totalPages !== 0) {
+      writer.uint32(24).int32(message.totalPages);
+    }
+    if (message.pageNumber !== undefined && message.pageNumber !== 0) {
+      writer.uint32(32).int32(message.pageNumber);
+    }
+    if (message.pageSize !== undefined && message.pageSize !== 0) {
+      writer.uint32(40).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ActivityLogPageResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseActivityLogPageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = ActivityLogProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.content!.push(el);
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.totalElements = longToNumber(reader.int64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.totalPages = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.pageNumber = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.pageSize = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ActivityLogPageResponse {
+    return {
+      content: globalThis.Array.isArray(object?.content)
+        ? object.content.map((e: any) => ActivityLogProto.fromJSON(e))
+        : [],
+      totalElements: isSet(object.totalElements) ? globalThis.Number(object.totalElements) : 0,
+      totalPages: isSet(object.totalPages) ? globalThis.Number(object.totalPages) : 0,
+      pageNumber: isSet(object.pageNumber) ? globalThis.Number(object.pageNumber) : 0,
+      pageSize: isSet(object.pageSize) ? globalThis.Number(object.pageSize) : 0,
+    };
+  },
+
+  toJSON(message: ActivityLogPageResponse): unknown {
+    const obj: any = {};
+    if (message.content?.length) {
+      obj.content = message.content.map((e) => ActivityLogProto.toJSON(e));
+    }
+    if (message.totalElements !== undefined && message.totalElements !== 0) {
+      obj.totalElements = Math.round(message.totalElements);
+    }
+    if (message.totalPages !== undefined && message.totalPages !== 0) {
+      obj.totalPages = Math.round(message.totalPages);
+    }
+    if (message.pageNumber !== undefined && message.pageNumber !== 0) {
+      obj.pageNumber = Math.round(message.pageNumber);
+    }
+    if (message.pageSize !== undefined && message.pageSize !== 0) {
+      obj.pageSize = Math.round(message.pageSize);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ActivityLogPageResponse>, I>>(base?: I): ActivityLogPageResponse {
+    return ActivityLogPageResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ActivityLogPageResponse>, I>>(object: I): ActivityLogPageResponse {
+    const message = createBaseActivityLogPageResponse();
+    message.content = object.content?.map((e) => ActivityLogProto.fromPartial(e)) || [];
     message.totalElements = object.totalElements ?? 0;
     message.totalPages = object.totalPages ?? 0;
     message.pageNumber = object.pageNumber ?? 0;
@@ -3431,6 +3779,71 @@ export const WebSettingProtoList: MessageFns<WebSettingProtoList> = {
   fromPartial<I extends Exact<DeepPartial<WebSettingProtoList>, I>>(object: I): WebSettingProtoList {
     const message = createBaseWebSettingProtoList();
     message.data = object.data?.map((e) => WebSettingProto.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseActivityLogProtoList(): ActivityLogProtoList {
+  return { data: [] };
+}
+
+export const ActivityLogProtoList: MessageFns<ActivityLogProtoList> = {
+  encode(message: ActivityLogProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        ActivityLogProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ActivityLogProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseActivityLogProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = ActivityLogProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ActivityLogProtoList {
+    return {
+      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => ActivityLogProto.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: ActivityLogProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => ActivityLogProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ActivityLogProtoList>, I>>(base?: I): ActivityLogProtoList {
+    return ActivityLogProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ActivityLogProtoList>, I>>(object: I): ActivityLogProtoList {
+    const message = createBaseActivityLogProtoList();
+    message.data = object.data?.map((e) => ActivityLogProto.fromPartial(e)) || [];
     return message;
   },
 };

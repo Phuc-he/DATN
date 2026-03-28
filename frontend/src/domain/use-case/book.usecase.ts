@@ -92,3 +92,11 @@ export class GetAllBooksUseCase {
     return this.bookRepository.findAll();
   }
 }
+
+export class GetCategoryStatsUseCase {
+  constructor(private readonly bookRepository: BookRepository) {}
+
+  async execute(categotyId: number): Promise<number> {
+    return this.bookRepository.getCategoryStats(categotyId);
+  }
+}

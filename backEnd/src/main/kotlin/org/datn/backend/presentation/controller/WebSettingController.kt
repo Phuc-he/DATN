@@ -2,9 +2,10 @@ package org.datn.backend.presentation.controller
 
 import org.datn.backend.domain.entity.WebSetting
 import org.datn.backend.domain.usecase.WebSettingService
+import org.datn.backend.presentation.mapper.toPageResponse
+import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.WebSettingPageResponse
 import org.datn.backend.proto.WebSettingProto
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,61 +20,30 @@ class WebSettingController(private val webSettingService: WebSettingService) {
      * Used by Next.js Layout/Header components.
      */
     @GetMapping("/active", produces = ["application/x-protobuf"])
-    fun getActive(): ResponseEntity<WebSettingProto> {
-        val active = webSettingService.getActiveSetting()
-        return ResponseEntity.ok(toProto(active))
-    }
+    fun getActive(): ResponseEntity<WebSettingProto> = ResponseEntity.ok(webSettingService.getActiveSetting().toProto())
 
     @GetMapping("all", produces = ["application/x-protobuf"])
-    fun getAll(pageable: Pageable): ResponseEntity<WebSettingPageResponse> {
-        val page = webSettingService.getAll(pageable)
-        return ResponseEntity.ok(toPageResponse(page))
-    }
+    fun getAll(pageable: Pageable): ResponseEntity<WebSettingPageResponse> =
+        ResponseEntity.ok(webSettingService.getAll(pageable).toPageResponse())
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
-    fun create(@RequestBody setting: WebSettingProto): ResponseEntity<WebSettingProto> {
-        val saved = webSettingService.create(
-            WebSetting(
-                webName = setting.webName,
-                logoUrl = setting.logoUrl,
-                headerIcon = setting.headerIcon,
-                contactEmail = setting.contactEmail,
-                footerText = setting.footerText,
-                isActive = setting.isActive,
-            )
+    fun create(@RequestBody setting: WebSettingProto): ResponseEntity<WebSettingProto> =
+        ResponseEntity.status(HttpStatus.CREATED).body(
+            webSettingService.create(
+                WebSetting(
+                    webName = setting.webName,
+                    logoUrl = setting.logoUrl,
+                    headerIcon = setting.headerIcon,
+                    contactEmail = setting.contactEmail,
+                    footerText = setting.footerText,
+                    isActive = setting.isActive,
+                )
+            )?.toProto()
         )
-        return ResponseEntity.status(HttpStatus.CREATED).body(toProto(saved))
-    }
 
     @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
     fun update(
         @PathVariable id: Long,
         @RequestBody updates: Map<String, Any>
-    ): ResponseEntity<WebSettingProto> {
-        val updated = webSettingService.update(id, updates)
-        return ResponseEntity.ok(toProto(updated))
-    }
-
-    // --- Mapper Helpers ---
-
-    private fun toProto(entity: WebSetting): WebSettingProto {
-        return WebSettingProto.newBuilder()
-            .setId(entity.id ?: 0L)
-            .setWebName(entity.webName)
-            .setLogoUrl(entity.logoUrl ?: "")
-            .setHeaderIcon(entity.headerIcon ?: "BookOpen")
-            .setContactEmail(entity.contactEmail ?: "")
-            .setFooterText(entity.footerText ?: "")
-            .setIsActive(entity.isActive)
-            .setUpdatedAt(entity.updatedAt?.toString() ?: "")
-            .build()
-    }
-
-    private fun toPageResponse(page: Page<WebSetting>): WebSettingPageResponse {
-        return WebSettingPageResponse.newBuilder()
-            .addAllContent(page.content.map { toProto(it) })
-            .setTotalPages(page.totalPages)
-            .setTotalElements(page.totalElements)
-            .build()
-    }
+    ): ResponseEntity<WebSettingProto> = ResponseEntity.ok(webSettingService.update(id, updates)?.toProto())
 }

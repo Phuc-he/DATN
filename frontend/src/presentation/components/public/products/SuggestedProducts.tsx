@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Book } from '@/src/domain/entity/book.entity';
-import ProductCard from './ProductCard'; // Import component bạn vừa cung cấp
+import React from 'react';
+import ProductSection from './ProductSection';
 
 interface SuggestedProductsProps {
   suggestions: Book[];
@@ -28,17 +28,7 @@ export const SuggestedProducts: React.FC<SuggestedProductsProps> = ({ suggestion
 
       {/* Grid hiển thị 4 sản phẩm mỗi hàng */}
       {/* Increased columns to 5 or 6 and reduced gap from 8 to 4 */}
-      <div className='flex flex-col items-center justify-center min-h-[200px] w-full'>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {suggestions.map((product, index) => (
-            <ProductCard
-              key={`${product.id}_${index}`}
-              product={product}
-              onAddToCart={(p) => console.log(`Added ${p.title} to cart`)}
-            />
-          ))}
-        </div>
-      </div>
+      <ProductSection title={''} products={suggestions} viewAllHref={'#'} />
     </div>
   );
 };

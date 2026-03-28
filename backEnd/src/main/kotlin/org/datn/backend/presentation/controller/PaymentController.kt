@@ -3,6 +3,7 @@ package org.datn.backend.presentation.controller
 import org.datn.backend.config.component.PaymentWebSocketHandler
 import org.datn.backend.domain.entity.OrderStatus
 import org.datn.backend.domain.usecase.OrderService
+import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.presentation.service.PaymentService
 import org.datn.backend.proto.QrPaymentResponseProto
 import org.springframework.http.ResponseEntity
@@ -21,19 +22,8 @@ class PaymentController(
     fun getPaymentQr(
         @PathVariable orderId: String,
         @RequestParam amount: Long
-    ): ResponseEntity<QrPaymentResponseProto> {
-        val response = paymentService.generateQrCode(orderId, amount)
-
-        // Convert your Data Class to Proto Builder
-        val proto = QrPaymentResponseProto.newBuilder()
-            .setQrUrl(response.qrUrl)
-            .setAmount(response.amount)
-            .setOrderId(response.orderId)
-            .setDescription(response.description)
-            .build()
-
-        return ResponseEntity.ok(proto)
-    }
+    ): ResponseEntity<QrPaymentResponseProto> =
+        ResponseEntity.ok(paymentService.generateQrCode(orderId, amount).toProto())
 
     /**
      * POST /api/payments/webhook

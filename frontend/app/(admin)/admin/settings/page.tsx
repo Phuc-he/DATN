@@ -5,6 +5,7 @@ import { WebSetting } from '@/src/domain/entity/web-setting.entity';
 import WebSettingModal from '@/src/presentation/components/admin/settings/WebSettingModal';
 import WebSettingTable from '@/src/presentation/components/admin/settings/WebSettingTable';
 import { AppProviders } from '@/src/provider/provider';
+import { useActivityLogger } from '@/src/presentation/hooks/useActivityLogger'; // Import Logger
 import { Plus, Settings, LayoutGrid } from 'lucide-react';
 
 const WebSettingPage = () => {
@@ -16,10 +17,12 @@ const WebSettingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSetting, setSelectedSetting] = useState<WebSetting | null>(null);
 
+  // Initialize the activity logger
+  const { logAction } = useActivityLogger();
+
   const fetchSettings = async (page: number) => {
     setLoading(true);
     try {
-      // Assuming your graduation project uses the same pagination pattern as Vouchers
       const result = await AppProviders.GetWebSettingsByPageUseCase.execute(page - 1, 10);
       setSettings(result.content);
       setTotalPages(result.totalPages);
@@ -45,27 +48,35 @@ const WebSettingPage = () => {
   };
 
   const handleSave = async (data: WebSetting) => {
+    let action = "UPDATE";
     try {
       if (selectedSetting && selectedSetting.id !== 0) {
         await AppProviders.UpdateWebSettingUseCase.execute(selectedSetting.id, data);
+        await logAction(action, "WebSetting", `Updated site config: ${data.webName} (ID: ${selectedSetting.id})`);
       } else {
+        action = "CREATE";
         await AppProviders.CreateWebSettingUseCase.execute(data);
+        await logAction(action, "WebSetting", `Created new site config: ${data.webName}`);
       }
       fetchSettings(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save web settings:", error);
+      logAction(`${action}_FAILURE`, "WebSetting", `Failed to save configuration: ${data.webName}`);
       alert("Error saving settings. Please try again.");
     }
   };
 
   const handleDelete = async (id: number) => {
+    const settingToDelete = settings.find(s => s.id === id);
     if (window.confirm("Are you sure you want to delete this configuration?")) {
       try {
         await AppProviders.DeleteWebSettingUseCase.execute(id);
+        await logAction("DELETE", "WebSetting", `Deleted configuration: ${settingToDelete?.webName || id}`);
         fetchSettings(currentPage);
       } catch (error) {
         console.error("Failed to delete setting:", error);
+        logAction("DELETE_FAILURE", "WebSetting", `Failed to delete configuration ID: ${id}`);
         alert("Error deleting configuration.");
       }
     }
@@ -73,7 +84,6 @@ const WebSettingPage = () => {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* Configuration Modal */}
       <WebSettingModal
         key={selectedSetting?.id || 'new'}
         isOpen={isModalOpen}
@@ -82,7 +92,6 @@ const WebSettingPage = () => {
         onSave={handleSave}
       />
 
-      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -94,7 +103,7 @@ const WebSettingPage = () => {
 
         <button
           onClick={handleCreate}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
         >
           <Plus size={20} />
           New Configuration
@@ -112,7 +121,7 @@ const WebSettingPage = () => {
                <LayoutGrid size={16} />
                <span className="text-xs font-semibold uppercase tracking-wider">Site Versions</span>
             </div>
-            <span className="text-xs font-medium text-slate-400 bg-slate-200/50 px-2 py-1 rounded">
+            <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
               Page {currentPage} of {totalPages}
             </span>
           </div>
@@ -123,22 +132,21 @@ const WebSettingPage = () => {
             onDelete={handleDelete}
           />
 
-          {/* Pagination */}
           <div className="flex justify-center mt-8 gap-3">
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => prev - 1)}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
             >
               Previous
             </button>
-            <div className="flex items-center px-4 bg-slate-200/30 rounded-lg text-slate-700 font-medium">
+            <div className="flex items-center px-4 bg-blue-600 rounded-lg text-white font-bold shadow-inner">
               {currentPage}
             </div>
             <button
               disabled={currentPage >= totalPages || totalPages === 0}
               onClick={() => setCurrentPage(prev => prev + 1)}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
             >
               Next
             </button>

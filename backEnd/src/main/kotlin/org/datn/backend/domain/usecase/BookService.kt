@@ -1,6 +1,8 @@
 package org.datn.backend.domain.usecase
 
+import org.datn.backend.domain.entity.ActivityLog
 import org.datn.backend.domain.entity.Book
+import org.datn.backend.domain.entity.LogAction
 import org.datn.backend.domain.repository.BookRepository
 import org.datn.backend.domain.repository.AuthorRepository
 import org.datn.backend.domain.repository.CategoryRepository
@@ -10,32 +12,36 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.math.BigDecimal
-import java.util.Optional
+import java.util.*
 
 @Service
 class BookService(
     private val bookRepository: BookRepository,
     private val authorRepository: AuthorRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val activityLogService: ActivityLogService // Injected logging service
 ) {
 
-    fun create(book: Book): Book {
-        // Business Logic: Verify Author exists before linking
-        book.author?.id?.let { authorId ->
-            if (!authorRepository.existsById(authorId)) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Author not found")
-            }
-        }
+    fun getCategoryStats(categoryId: Long): Long = bookRepository.countByCategoryId(categoryId)
 
-        // Business Logic: Verify Category exists before linking
-        book.category?.id?.let { categoryId ->
-            if (!categoryRepository.existsById(categoryId)) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found")
+    fun create(book: Book): Book? =
+        activityLogService.executeWithLog<Book>(LogAction.CREATE.name, "Book") {
+            // Business Logic: Verify Author exists before linking
+            book.author?.id?.let { authorId ->
+                if (!authorRepository.existsById(authorId)) {
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Author not found")
+                }
             }
-        }
 
-        return bookRepository.save(book)
-    }
+            // Business Logic: Verify Category exists before linking
+            book.category?.id?.let { categoryId ->
+                if (!categoryRepository.existsById(categoryId)) {
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found")
+                }
+            }
+
+            bookRepository.save(book)
+        }
 
     fun getAll(): List<Book> = bookRepository.findAll()
 
@@ -45,29 +51,31 @@ class BookService(
 
     fun search(query: String, pageable: Pageable): Page<Book> = bookRepository.search(query, pageable)
 
-    fun update(id: Long, updates: Map<String, Any>): Book {
-        val existingBook = bookRepository.findById(id)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found") }
+    fun update(id: Long, updates: Map<String, Any>): Book? =
+        activityLogService.executeWithLog<Book>(LogAction.UPDATE.name, "Book") {
+            val existingBook = bookRepository.findById(id)
+                .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found") }
 
-        // Logic to update specific fields using Kotlin's .copy()
-        val updatedBook = existingBook.copy(
-            title = updates["title"] as? String ?: existingBook.title,
-            description = updates["description"] as? String ?: existingBook.description,
-            price = (updates["price"] as? Number)?.toDouble()?.let { BigDecimal.valueOf(it) } ?: existingBook.price,
-            stock = updates["stock"] as? Int ?: existingBook.stock,
-            discount = (updates["discount"] as? Number)?.toDouble()?.let { BigDecimal.valueOf(it) } ?: existingBook.discount,
-            imageUrl = updates["imageUrl"] as? String ?: existingBook.imageUrl
-        )
+            val updatedBook = existingBook.copy(
+                title = updates["title"] as? String ?: existingBook.title,
+                description = updates["description"] as? String ?: existingBook.description,
+                price = (updates["price"] as? Number)?.toDouble()?.let { BigDecimal.valueOf(it) } ?: existingBook.price,
+                stock = updates["stock"] as? Int ?: existingBook.stock,
+                discount = (updates["discount"] as? Number)?.toDouble()?.let { BigDecimal.valueOf(it) } ?: existingBook.discount,
+                imageUrl = updates["imageUrl"] as? String ?: existingBook.imageUrl,
+                isNotable = updates["isNotable"] as? Boolean ?: existingBook.isNotable
+            )
 
-        return bookRepository.save(updatedBook)
-    }
-
-    fun delete(id: Long) {
-        if (!bookRepository.existsById(id)) {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found")
+            bookRepository.save(updatedBook)
         }
-        bookRepository.deleteById(id)
-    }
 
-    fun getById(id: Long): Optional<Book>? = bookRepository.findById(id)
+    fun delete(id: Long) =
+        activityLogService.executeWithLog<Unit>(LogAction.DELETE.name, "Book") {
+            if (!bookRepository.existsById(id)) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found")
+            }
+            bookRepository.deleteById(id)
+        }
+
+    fun getById(id: Long): Optional<Book> = bookRepository.findById(id)
 }

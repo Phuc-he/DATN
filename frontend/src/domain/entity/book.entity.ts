@@ -14,6 +14,7 @@ export interface Book {
   category?: Category;      // @ManyToOne
   author?: Author;          // @ManyToOne
   createdAt?: string; 
+  isNotable?: boolean
 }
 
 /**

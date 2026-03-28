@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Book } from '@/src/domain/entity/book.entity';
-import { ShoppingCart, Star, Heart, Bookmark } from 'lucide-react';
+import { ShoppingCart, Star, Heart, Bookmark, Award, BookOpen, Globe } from 'lucide-react'; 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/src/presentation/context/CartContext';
@@ -15,17 +15,39 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const { addToCart } = useCart();
 
-  // Khớp với logic: discount mặc định là 0 từ Entity
   const hasDiscount = product.discount && product.discount > 0;
   const discountedPrice = hasDiscount 
     ? product.price * (1 - product.discount / 100) 
     : product.price;
 
   return (
-    <div className="group relative bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+    <div className={`group relative bg-white rounded-2xl border ${product.isNotable ? 'border-amber-200 shadow-amber-50' : 'border-slate-100'} shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden`}>
       
-      {/* Badge: Giảm giá hoặc Hết hàng */}
+      {/* 1. HOVER POPUP (Quick Info) */}
+      <div className="absolute inset-x-0 top-0 z-20 p-4 bg-white/95 backdrop-blur-md translate-y-[-100%] group-hover:translate-y-0 transition-transform duration-300 border-b border-slate-100 shadow-lg">
+        <p className="text-[10px] font-bold text-blue-600 mb-1 uppercase">Thông tin nhanh</p>
+        <p className="text-xs text-slate-600 line-clamp-3 mb-3 italic">
+          &quot;{product.description || 'Chưa có mô tả cho sản phẩm này.'}&quot;
+        </p>
+        <div className="flex gap-4">
+           <div className="flex items-center gap-1 text-slate-500">
+              <BookOpen size={12} />
+              <span className="text-[10px] font-bold">320 Trang</span>
+           </div>
+           <div className="flex items-center gap-1 text-slate-500">
+              <Globe size={12} />
+              <span className="text-[10px] font-bold">Tiếng Việt</span>
+           </div>
+        </div>
+      </div>
+
+      {/* Badges */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+        {product.isNotable && (
+          <span className="bg-amber-400 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md flex items-center gap-1">
+            <Star size={10} fill="currentColor" /> NỔI BẬT
+          </span>
+        )}
         {hasDiscount && (
           <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-sm">
             -{product.discount}%
@@ -39,33 +61,39 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       </div>
 
       {/* Wishlist Button */}
-      <button className="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white shadow-sm transition-all opacity-0 group-hover:opacity-100">
+      <button className="absolute top-3 right-3 z-30 p-2 bg-white/80 backdrop-blur-sm rounded-full text-slate-400 hover:text-red-500 hover:bg-white shadow-sm transition-all opacity-0 group-hover:opacity-100">
         <Heart size={18} />
       </button>
 
-      {/* Link tới chi tiết sản phẩm - Dùng product.id từ Kotlin Entity */}
+      {/* Image Section */}
       <Link href={`/products/${product.id}`} className="block aspect-[3/4] relative overflow-hidden bg-slate-100">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
             alt={product.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <Bookmark size={40} className="text-slate-300" />
           </div>
         )}
+        {product.isNotable && (
+          <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent pointer-events-none" />
+        )}
       </Link>
 
-      {/* Thông tin sản phẩm */}
-      <div className="p-4 space-y-2">
+      {/* Product Info */}
+      <div className="p-4 space-y-2 relative bg-white z-10">
         <div className="flex justify-between items-start gap-2">
-          <div>
-            <p className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">
-              {product.category?.name || 'Sách'}
-            </p>
+          <div className="w-full">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <p className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">
+                {product.category?.name || 'Sách'}
+              </p>
+              {product.isNotable && <Award size={12} className="text-amber-500" />}
+            </div>
             <h3 className="text-sm font-bold text-slate-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
               {product.title}
             </h3>
@@ -75,18 +103,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           </div>
         </div>
 
-        {/* Rating & Sales (Giữ lại UI nếu bạn có mở rộng thêm sau này) */}
+        {/* Rating */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 text-amber-500">
             <Star size={12} fill="currentColor" />
             <span className="text-xs font-bold">5.0</span> 
           </div>
-          <span className="text-[10px] text-slate-400 font-medium">
-            Đã bán 0
+          <span className="text-[10px] text-slate-400 font-bold uppercase">
+              {product.isNotable ? 'Đề xuất' : 'Đã bán 0'}
           </span>
         </div>
 
-        {/* Giá và Hành động */}
+        {/* Price and Actions */}
         <div className="flex items-center justify-between pt-2">
           <div className="flex flex-col">
             {hasDiscount && (
@@ -94,7 +122,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 {product.price.toLocaleString('vi-VN')}₫
               </span>
             )}
-            <span className="text-lg font-black text-slate-900">
+            <span className={`text-lg font-black ${product.isNotable ? 'text-amber-600' : 'text-slate-900'}`}>
               {discountedPrice.toLocaleString('vi-VN')}₫
             </span>
           </div>
@@ -103,11 +131,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             disabled={product.stock === 0}
             onClick={(e) => {
               e.preventDefault();
-              // Lưu ý: Đảm bảo CartContext của bạn nhận object Book mới này
               addToCart(product, 1);
               onAddToCart?.(product);
             }}
-            className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-blue-600 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors shadow-sm active:scale-90"
+            className={`p-2.5 rounded-xl z-30 transition-all shadow-sm active:scale-90 ${
+              product.isNotable 
+                ? 'bg-amber-500 hover:bg-amber-600 text-white' 
+                : 'bg-slate-900 hover:bg-blue-600 text-white'
+            } disabled:bg-slate-200 disabled:cursor-not-allowed`}
           >
             <ShoppingCart size={18} />
           </button>

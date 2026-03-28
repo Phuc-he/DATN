@@ -1,3 +1,4 @@
+import { ActivityLogRepositoryImpl } from "../data/repository/activity-log.repository.impl";
 import { AuthorRepositoryImpl } from "../data/repository/author.repository.impl";
 import { BookRepositoryImpl } from "../data/repository/book.repository.impl";
 import { CategoryRepositoryImpl } from "../data/repository/category.repository.impl";
@@ -7,8 +8,9 @@ import { PaymentRepositoryImpl } from "../data/repository/payment.repository.imp
 import { UserRepositoryImpl } from "../data/repository/user.repository.impl";
 import { VoucherRepositoryImpl } from "../data/repository/voucher.repository.impl";
 import { WebSettingRepositoryImpl } from "../data/repository/web-setting.repository.impl";
+import { CreateActivityLogUseCase, GetAllActivityLogsUseCase, GetActivityLogUseCase, DeleteActivityLogUseCase, GetActivityLogsByPageUseCase, SearchActivityLogsUseCase } from "../domain/use-case/activity-log.usecase";
 import { CreateAuthorUseCase, DeleteAuthorUseCase, GetAllAuthorsUseCase, GetAuthorsByPageUseCase, GetAuthorUseCase, UpdateAuthorUseCase } from "../domain/use-case/author.usecase";
-import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByPageUseCase, GetBookUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
+import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByPageUseCase, GetBookUseCase, GetCategoryStatsUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
 import { CreateCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, GetCategoriesByPageUseCase, GetCategoryUseCase, SearchCategoriesUseCase, UpdateCategoryUseCase } from "../domain/use-case/category.usecase";
 import { CreateOrderItemUseCase, DeleteOrderItemUseCase, GetAllOrderItemsUseCase, GetOrderItemsByPageUseCase, GetOrderItemUseCase, UpdateOrderItemUseCase } from "../domain/use-case/order-item.usecase";
 import { CancelOrderUseCase, CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderStatusUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
@@ -36,6 +38,7 @@ const authorRepository = new AuthorRepositoryImpl();
 const paymentRepository = new PaymentRepositoryImpl();
 const voucherRepository = new VoucherRepositoryImpl();
 const webSettingRepository = new WebSettingRepositoryImpl();
+const activityLogRepository = new ActivityLogRepositoryImpl();
 
 export const AppProviders = {
   // --- User Domain ---
@@ -80,6 +83,7 @@ export const AppProviders = {
   GetBooksByPageUseCase: new GetBooksByPageUseCase(bookRepository),
   SearchBooksUseCase: new SearchBooksUseCase(bookRepository),
   GetAllBooksUseCase: new GetAllBooksUseCase(bookRepository),
+  GetCategoryStatsUseCase: new GetCategoryStatsUseCase(bookRepository),
 
   // --- OrderItem Domain ---
   OrderItemRepository: orderItemRepository,
@@ -125,4 +129,13 @@ export const AppProviders = {
   GetWebSettingsByPageUseCase: new GetWebSettingsByPageUseCase(webSettingRepository),
   SearchWebSettingsUseCase: new SearchWebSettingsUseCase(webSettingRepository),
   GetActiveWebSettingUseCase: new GetActiveWebSettingUseCase(webSettingRepository),
+
+  // --- ActivityLog Domain ---
+  ActivityLogRepository: activityLogRepository,
+  CreateActivityLogUseCase: new CreateActivityLogUseCase(activityLogRepository),
+  GetAllActivityLogsUseCase: new GetAllActivityLogsUseCase(activityLogRepository),
+  GetActivityLogUseCase: new GetActivityLogUseCase(activityLogRepository),
+  DeleteActivityLogUseCase: new DeleteActivityLogUseCase(activityLogRepository),
+  GetActivityLogsByPageUseCase: new GetActivityLogsByPageUseCase(activityLogRepository),
+  SearchActivityLogsUseCase: new SearchActivityLogsUseCase(activityLogRepository),
 }
