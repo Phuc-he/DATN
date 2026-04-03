@@ -120,13 +120,7 @@ fun Order.toProto(): OrderProto {
             .setQuantity(item.quantity)
             .setUnitPrice(item.unitPrice.toString())
             .setDiscount(item.discount.toString())
-            .setBook(
-                BookProto.newBuilder().setId(item.book.id ?: 0L).setTitle(item.book.title)
-                    .setImageUrl(item.book.imageUrl ?: "").setCategory(
-                        CategoryProto.newBuilder().setName(item.book.category?.name ?: "")
-                            .setImage(item.book.category?.image ?: "").build()
-                    ).build()
-            )
+            .setBook(item.book.toProto())
             .build()
         builder.addItems(itemProto)
     }

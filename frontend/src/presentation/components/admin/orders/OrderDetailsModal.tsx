@@ -87,19 +87,40 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
               <div className="flex items-center gap-2 text-orange-600 mb-3 font-bold text-xs uppercase tracking-wider">
                 <Truck size={14} /> Logistics
               </div>
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black text-white shadow-sm ${details.color}`}>
-                <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
-                {details.label.toUpperCase()}
-              </span>
 
-              {onUpdateStatus && order.status !== OrderStatus.DELIVERED && (
-                <button
-                  onClick={() => onUpdateStatus(order.id!, OrderStatus.PROCESSING)}
-                  className="mt-3 text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                >
-                  <RefreshCw size={10} /> Move to Shipping
-                </button>
-              )}
+              <div className="flex flex-col gap-3">
+                {/* Current Status Badge */}
+                <div>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black text-white shadow-sm ${details.color}`}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
+                    {details.label.toUpperCase()}
+                  </span>
+                </div>
+
+                {/* Status Update Select */}
+                {onUpdateStatus && (
+                  <div className="relative flex flex-col gap-1">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Update Status</label>
+                    <select
+                      value={order.status}
+                      onChange={(e) => onUpdateStatus(order.id!, Number(e.target.value))}
+                      className="appearance-none bg-white border border-slate-200 text-slate-700 text-[11px] font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 cursor-pointer hover:bg-slate-50 transition-colors"
+                    >
+                      {Object.entries(OrderStatus)
+                        .filter(([key]) => isNaN(Number(key))) // Filter out the numeric keys from the enum
+                        .map(([key, value]) => (
+                          <option key={value} value={value}>
+                            {key.replace('_', ' ')}
+                          </option>
+                        ))}
+                    </select>
+                    {/* Custom arrow icon for the select */}
+                    <div className="pointer-events-none absolute right-2 bottom-2 text-slate-400">
+                      <RefreshCw size={10} />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
