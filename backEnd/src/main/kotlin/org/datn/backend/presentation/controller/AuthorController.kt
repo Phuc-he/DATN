@@ -1,12 +1,15 @@
 package org.datn.backend.presentation.controller
 
 import org.datn.backend.domain.entity.Author
+import org.datn.backend.domain.usecase.ActivityLogService
 import org.datn.backend.domain.usecase.AuthorService
 import org.datn.backend.presentation.mapper.toPageResponse
 import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.AuthorPageResponse
 import org.datn.backend.proto.AuthorProto
 import org.datn.backend.proto.AuthorProtoList
+import org.datn.backend.proto.BookProto
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,6 +18,17 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/authors")
 class AuthorController(private val authorService: AuthorService) {
+    private val logger = LoggerFactory.getLogger(AuthorController::class.java)
+    @GetMapping("/{id}", produces = ["application/x-protobuf"])
+    fun getById(@PathVariable id: Long): ResponseEntity<AuthorProto> {
+        logger.info("hxt id $id")
+        val optional = authorService.getById(id)
+        return if (optional.isPresent) {
+            ResponseEntity.ok(optional.get().toProto())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 
     /**
      * GET /api/authors

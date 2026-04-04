@@ -4,6 +4,8 @@ import org.datn.backend.domain.entity.ActivityLog
 import org.datn.backend.domain.entity.Author
 import org.datn.backend.domain.entity.Book
 import org.datn.backend.domain.entity.Category
+import org.datn.backend.domain.entity.Message
+import org.datn.backend.domain.entity.MessageSender
 import org.datn.backend.domain.entity.Order
 import org.datn.backend.domain.entity.OrderItem
 import org.datn.backend.domain.entity.QrPaymentResponse
@@ -19,6 +21,9 @@ import org.datn.backend.proto.BookProto
 import org.datn.backend.proto.CategoryPageResponse
 import org.datn.backend.proto.CategoryProto
 import org.datn.backend.proto.DiscountTypeProto
+import org.datn.backend.proto.MessageResponsePageResponse
+import org.datn.backend.proto.MessageResponseProto
+import org.datn.backend.proto.MessageSenderProto
 import org.datn.backend.proto.OrderItemProto
 import org.datn.backend.proto.OrderPageResponse
 import org.datn.backend.proto.OrderProto
@@ -32,6 +37,8 @@ import org.datn.backend.proto.VoucherProto
 import org.datn.backend.proto.WebSettingPageResponse
 import org.datn.backend.proto.WebSettingProto
 import org.springframework.data.domain.Page
+import java.math.BigDecimal
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
@@ -172,6 +179,73 @@ fun User.toProto(): UserProto {
         .setCreatedAt(createdAt?.format(dateFormatter) ?: "")
         .build()
 }
+
+fun MessageSender.toProto(): MessageSenderProto = when (this) {
+    MessageSender.USER -> MessageSenderProto.USER
+    MessageSender.AI -> MessageSenderProto.AI
+}
+
+fun Message.toProto(): MessageResponseProto = MessageResponseProto.newBuilder()
+    .setId(id ?: 0L)
+    .setUser(user?.toProto())
+    .setSender(sender.toProto())
+    .setContent(content)
+    .setRelatedBook(relatedBook?.toProto() ?: Book(title = "", price = BigDecimal.ZERO).toProto())
+    .setCreatedAt(createdAt?.format(dateFormatter) ?: "")
+    .build()
+
+fun UserProto.toEntity(): User {
+    val entityRole = when (role) {
+        Role.ADMIN -> org.datn.backend.domain.entity.Role.ADMIN
+        Role.CUSTOMER -> org.datn.backend.domain.entity.Role.CUSTOMER
+        Role.AUTHOR_ROLE -> org.datn.backend.domain.entity.Role.AUTHOR
+        else -> org.datn.backend.domain.entity.Role.CUSTOMER
+    }
+
+    return User(
+        username = this.username,
+        email = this.email,
+        password = "", // Service sẽ đảm nhận việc mã hóa password
+        fullName = this.fullName,
+        address = this.address,
+        phone = this.phone,
+        role = entityRole,
+        avatar = this.avatar
+    )
+}
+
+fun BookProto.toEntity(): Book {
+    return Book(
+        id = if (this.id != 0L) this.id else null, // Handle ID if present
+        title = this.title,
+        description = this.description,
+        price = if (this.price.isNotEmpty()) BigDecimal(this.price) else BigDecimal.ZERO,
+        stock = this.stock,
+        discount = if (this.discount.isNotEmpty()) BigDecimal(this.discount) else BigDecimal.ZERO,
+        imageUrl = this.imageUrl,
+        // Mapping Relations via Stubs
+        author = if (this.hasAuthor()) Author(id = this.author.id, name = "") else null,
+        category = if (this.hasCategory()) Category(id = this.category.id, name = "") else null,
+        isNotable = this.isNotable,
+        createdAt = if (createdAt.isNotBlank()) {
+            try {
+                LocalDateTime.parse(createdAt)
+            } catch (e: Exception) {
+                LocalDateTime.now() // Fallback nếu chuỗi string lỗi định dạng
+            }
+        } else {
+            LocalDateTime.now()
+        },
+    )
+}
+
+fun Page<Message>.toPageResponse(): MessageResponsePageResponse = MessageResponsePageResponse.newBuilder()
+    .addAllContent(content.map { it.toProto() })
+    .setTotalElements(totalElements)
+    .setTotalPages(totalPages)
+    .setPageNumber(number)
+    .setPageSize(size)
+    .build()
 
 fun Page<User>.toPageResponse(): UserPageResponse = UserPageResponse.newBuilder()
     .addAllContent(content.map { it.toProto() })

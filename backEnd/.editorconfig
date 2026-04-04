@@ -1,0 +1,7 @@
+[*.{kt,kts}]
+# Tắt quy tắc bắt buộc phải có Header
+ktlint_standard_no-consecutive-blank-lines = disabled
+# Quan trọng: Tắt kiểm tra Header Keyword
+ktlint_standard_filename = disabled
+# Nếu bạn dùng phiên bản Ktlint mới, quy tắc này thường là:
+ktlint_standard_no-header = disabled

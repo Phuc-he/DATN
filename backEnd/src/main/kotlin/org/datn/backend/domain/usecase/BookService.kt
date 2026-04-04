@@ -52,7 +52,7 @@ class BookService(
     fun search(query: String, pageable: Pageable): Page<Book> = bookRepository.search(query, pageable)
 
     fun update(id: Long, updates: Map<String, Any>): Book? =
-        activityLogService.executeWithLog<Book>(LogAction.UPDATE.name, "Book") {
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "Book") {
             val existingBook = bookRepository.findById(id)
                 .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found") }
 

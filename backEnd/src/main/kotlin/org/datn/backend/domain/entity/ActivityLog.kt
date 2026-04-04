@@ -12,6 +12,8 @@ data class ActivityLog(
 
     val action: String, // e.g., "CREATE", "UPDATE", "DELETE"
     val entityName: String, // e.g., "Book", "Author"
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     val details: String, // e.g., "Updated book 'The Great Gatsby'"
 
     @Column(name = "performed_by")

@@ -139,6 +139,39 @@ export function discountTypeProtoToJSON(object: DiscountTypeProto): string {
   }
 }
 
+export enum MessageSenderProto {
+  USER = 0,
+  AI = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function messageSenderProtoFromJSON(object: any): MessageSenderProto {
+  switch (object) {
+    case 0:
+    case "USER":
+      return MessageSenderProto.USER;
+    case 1:
+    case "AI":
+      return MessageSenderProto.AI;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MessageSenderProto.UNRECOGNIZED;
+  }
+}
+
+export function messageSenderProtoToJSON(object: MessageSenderProto): string {
+  switch (object) {
+    case MessageSenderProto.USER:
+      return "USER";
+    case MessageSenderProto.AI:
+      return "AI";
+    case MessageSenderProto.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface UserProto {
   id?: number | undefined;
   username?: string | undefined;
@@ -341,6 +374,37 @@ export interface ActivityLogProto {
     | undefined;
   /** Maps to LocalDateTime (CreationTimestamp) */
   createdAt?: string | undefined;
+}
+
+export interface MessageResponseProto {
+  /** Sử dụng optional cho các trường có thể null (nullable trong Kotlin) */
+  id?:
+    | number
+    | undefined;
+  /** Lưu trữ ID của User thay vì gửi cả Object User (để tối ưu băng thông) */
+  user?: UserProto | undefined;
+  sender?: MessageSenderProto | undefined;
+  content?:
+    | string
+    | undefined;
+  /** Lưu ID của sách liên quan (nếu có) */
+  relatedBook?:
+    | BookProto
+    | undefined;
+  /** Timestamp tương ứng với LocalDateTime */
+  createdAt?: string | undefined;
+}
+
+export interface MessageResponsePageResponse {
+  content?: MessageResponseProto[] | undefined;
+  totalElements?: number | undefined;
+  totalPages?: number | undefined;
+  pageNumber?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export interface MessageResponseProtoList {
+  data?: MessageResponseProto[] | undefined;
 }
 
 export interface WebSettingPageResponse {
@@ -3070,6 +3134,352 @@ export const ActivityLogProto: MessageFns<ActivityLogProto> = {
     message.details = object.details ?? "";
     message.performedBy = object.performedBy ?? "";
     message.createdAt = object.createdAt ?? "";
+    return message;
+  },
+};
+
+function createBaseMessageResponseProto(): MessageResponseProto {
+  return { id: undefined, user: undefined, sender: 0, content: "", relatedBook: undefined, createdAt: "" };
+}
+
+export const MessageResponseProto: MessageFns<MessageResponseProto> = {
+  encode(message: MessageResponseProto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== undefined) {
+      writer.uint32(8).int64(message.id);
+    }
+    if (message.user !== undefined) {
+      UserProto.encode(message.user, writer.uint32(18).fork()).join();
+    }
+    if (message.sender !== undefined && message.sender !== 0) {
+      writer.uint32(24).int32(message.sender);
+    }
+    if (message.content !== undefined && message.content !== "") {
+      writer.uint32(34).string(message.content);
+    }
+    if (message.relatedBook !== undefined) {
+      BookProto.encode(message.relatedBook, writer.uint32(42).fork()).join();
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      writer.uint32(50).string(message.createdAt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MessageResponseProto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMessageResponseProto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = longToNumber(reader.int64());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.user = UserProto.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.sender = reader.int32() as any;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.relatedBook = BookProto.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.createdAt = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MessageResponseProto {
+    return {
+      id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
+      user: isSet(object.user) ? UserProto.fromJSON(object.user) : undefined,
+      sender: isSet(object.sender) ? messageSenderProtoFromJSON(object.sender) : 0,
+      content: isSet(object.content) ? globalThis.String(object.content) : "",
+      relatedBook: isSet(object.relatedBook)
+        ? BookProto.fromJSON(object.relatedBook)
+        : isSet(object.related_book)
+        ? BookProto.fromJSON(object.related_book)
+        : undefined,
+      createdAt: isSet(object.createdAt)
+        ? globalThis.String(object.createdAt)
+        : isSet(object.created_at)
+        ? globalThis.String(object.created_at)
+        : "",
+    };
+  },
+
+  toJSON(message: MessageResponseProto): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = Math.round(message.id);
+    }
+    if (message.user !== undefined) {
+      obj.user = UserProto.toJSON(message.user);
+    }
+    if (message.sender !== undefined && message.sender !== 0) {
+      obj.sender = messageSenderProtoToJSON(message.sender);
+    }
+    if (message.content !== undefined && message.content !== "") {
+      obj.content = message.content;
+    }
+    if (message.relatedBook !== undefined) {
+      obj.relatedBook = BookProto.toJSON(message.relatedBook);
+    }
+    if (message.createdAt !== undefined && message.createdAt !== "") {
+      obj.createdAt = message.createdAt;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MessageResponseProto>, I>>(base?: I): MessageResponseProto {
+    return MessageResponseProto.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MessageResponseProto>, I>>(object: I): MessageResponseProto {
+    const message = createBaseMessageResponseProto();
+    message.id = object.id ?? undefined;
+    message.user = (object.user !== undefined && object.user !== null) ? UserProto.fromPartial(object.user) : undefined;
+    message.sender = object.sender ?? 0;
+    message.content = object.content ?? "";
+    message.relatedBook = (object.relatedBook !== undefined && object.relatedBook !== null)
+      ? BookProto.fromPartial(object.relatedBook)
+      : undefined;
+    message.createdAt = object.createdAt ?? "";
+    return message;
+  },
+};
+
+function createBaseMessageResponsePageResponse(): MessageResponsePageResponse {
+  return { content: [], totalElements: 0, totalPages: 0, pageNumber: 0, pageSize: 0 };
+}
+
+export const MessageResponsePageResponse: MessageFns<MessageResponsePageResponse> = {
+  encode(message: MessageResponsePageResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.content !== undefined && message.content.length !== 0) {
+      for (const v of message.content) {
+        MessageResponseProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    if (message.totalElements !== undefined && message.totalElements !== 0) {
+      writer.uint32(16).int64(message.totalElements);
+    }
+    if (message.totalPages !== undefined && message.totalPages !== 0) {
+      writer.uint32(24).int32(message.totalPages);
+    }
+    if (message.pageNumber !== undefined && message.pageNumber !== 0) {
+      writer.uint32(32).int32(message.pageNumber);
+    }
+    if (message.pageSize !== undefined && message.pageSize !== 0) {
+      writer.uint32(40).int32(message.pageSize);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MessageResponsePageResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMessageResponsePageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = MessageResponseProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.content!.push(el);
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.totalElements = longToNumber(reader.int64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.totalPages = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.pageNumber = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.pageSize = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MessageResponsePageResponse {
+    return {
+      content: globalThis.Array.isArray(object?.content)
+        ? object.content.map((e: any) => MessageResponseProto.fromJSON(e))
+        : [],
+      totalElements: isSet(object.totalElements) ? globalThis.Number(object.totalElements) : 0,
+      totalPages: isSet(object.totalPages) ? globalThis.Number(object.totalPages) : 0,
+      pageNumber: isSet(object.pageNumber) ? globalThis.Number(object.pageNumber) : 0,
+      pageSize: isSet(object.pageSize) ? globalThis.Number(object.pageSize) : 0,
+    };
+  },
+
+  toJSON(message: MessageResponsePageResponse): unknown {
+    const obj: any = {};
+    if (message.content?.length) {
+      obj.content = message.content.map((e) => MessageResponseProto.toJSON(e));
+    }
+    if (message.totalElements !== undefined && message.totalElements !== 0) {
+      obj.totalElements = Math.round(message.totalElements);
+    }
+    if (message.totalPages !== undefined && message.totalPages !== 0) {
+      obj.totalPages = Math.round(message.totalPages);
+    }
+    if (message.pageNumber !== undefined && message.pageNumber !== 0) {
+      obj.pageNumber = Math.round(message.pageNumber);
+    }
+    if (message.pageSize !== undefined && message.pageSize !== 0) {
+      obj.pageSize = Math.round(message.pageSize);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MessageResponsePageResponse>, I>>(base?: I): MessageResponsePageResponse {
+    return MessageResponsePageResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MessageResponsePageResponse>, I>>(object: I): MessageResponsePageResponse {
+    const message = createBaseMessageResponsePageResponse();
+    message.content = object.content?.map((e) => MessageResponseProto.fromPartial(e)) || [];
+    message.totalElements = object.totalElements ?? 0;
+    message.totalPages = object.totalPages ?? 0;
+    message.pageNumber = object.pageNumber ?? 0;
+    message.pageSize = object.pageSize ?? 0;
+    return message;
+  },
+};
+
+function createBaseMessageResponseProtoList(): MessageResponseProtoList {
+  return { data: [] };
+}
+
+export const MessageResponseProtoList: MessageFns<MessageResponseProtoList> = {
+  encode(message: MessageResponseProtoList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.data !== undefined && message.data.length !== 0) {
+      for (const v of message.data) {
+        MessageResponseProto.encode(v!, writer.uint32(10).fork()).join();
+      }
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MessageResponseProtoList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMessageResponseProtoList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const el = MessageResponseProto.decode(reader, reader.uint32());
+          if (el !== undefined) {
+            message.data!.push(el);
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MessageResponseProtoList {
+    return {
+      data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => MessageResponseProto.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: MessageResponseProtoList): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => MessageResponseProto.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MessageResponseProtoList>, I>>(base?: I): MessageResponseProtoList {
+    return MessageResponseProtoList.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MessageResponseProtoList>, I>>(object: I): MessageResponseProtoList {
+    const message = createBaseMessageResponseProtoList();
+    message.data = object.data?.map((e) => MessageResponseProto.fromPartial(e)) || [];
     return message;
   },
 };

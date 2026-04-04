@@ -33,7 +33,7 @@ class UserService(
      * Logs the registration event.
      */
     fun create(user: User): User? =
-        activityLogService.executeWithLog<User>(LogAction.CREATE.name, "User") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "User") {
             if (userRepository.existsByUsername(user.username)) {
                 throw ResponseStatusException(HttpStatus.CONFLICT, "Username is already taken")
             }

@@ -8,6 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class WebConfig : WebMvcConfigurer {
+    @Suppress("removal")
+    @Deprecated("Deprecated in Java")
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val protoConverter = ProtobufHttpMessageConverter()
 

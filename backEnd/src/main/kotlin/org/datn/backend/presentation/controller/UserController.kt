@@ -1,10 +1,9 @@
 package org.datn.backend.presentation.controller
 
-import org.datn.backend.domain.entity.User
 import org.datn.backend.domain.usecase.UserService
+import org.datn.backend.presentation.mapper.toEntity
 import org.datn.backend.presentation.mapper.toPageResponse
 import org.datn.backend.presentation.mapper.toProto
-import org.datn.backend.proto.Role
 import org.datn.backend.proto.UserPageResponse
 import org.datn.backend.proto.UserProto
 import org.datn.backend.proto.UserProtoList
@@ -48,23 +47,7 @@ class UserController(private val userService: UserService) {
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
     fun register(@RequestBody proto: UserProto): ResponseEntity<UserProto> {
-        val role = when (proto.role) {
-            Role.ADMIN -> org.datn.backend.domain.entity.Role.ADMIN
-            Role.CUSTOMER -> org.datn.backend.domain.entity.Role.CUSTOMER
-            Role.AUTHOR_ROLE -> org.datn.backend.domain.entity.Role.AUTHOR
-            else -> org.datn.backend.domain.entity.Role.CUSTOMER
-        }
-        val entity = User(
-            username = proto.username,
-            email = proto.email,
-            password = "", // Ensure your Service handles hashing!
-            fullName = proto.fullName,
-            address = proto.address,
-            phone = proto.phone,
-            role = role
-        )
-
-        val savedUser = userService.create(entity)
+        val savedUser = userService.create(proto.toEntity())
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser?.toProto())
     }
 

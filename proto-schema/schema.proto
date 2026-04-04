@@ -200,6 +200,41 @@ message ActivityLogProto {
   string created_at = 6;
 }
 
+enum MessageSenderProto {
+  USER = 0;
+  AI = 1;
+}
+
+message MessageResponseProto {
+  // Sử dụng optional cho các trường có thể null (nullable trong Kotlin)
+  optional int64 id = 1;
+  
+  // Lưu trữ ID của User thay vì gửi cả Object User (để tối ưu băng thông)
+  optional UserProto user = 2;
+  
+  MessageSenderProto sender = 3;
+  
+  string content = 4;
+  
+  // Lưu ID của sách liên quan (nếu có)
+  optional BookProto related_book = 5;
+  
+  // Timestamp tương ứng với LocalDateTime
+  string created_at = 6;
+}
+
+message MessageResponsePageResponse {
+  repeated MessageResponseProto content = 1;
+  int64 totalElements = 2;
+  int32 totalPages = 3;
+  int32 pageNumber = 4;
+  int32 pageSize = 5;
+}
+
+message MessageResponseProtoList {
+  repeated MessageResponseProto data = 1;
+}
+
 message WebSettingPageResponse {
   repeated WebSettingProto content = 1;
   int64 totalElements = 2;

@@ -1,0 +1,81 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+  weights:
+  # Bạn có thể cấu hình trọng số lỗi ở đây
+
+complexity:
+  active: true
+  # Giới hạn độ dài của một hàm (phù hợp cho Clean Code)
+  LongMethod:
+    active: true
+    threshold: 60
+  # Giới hạn số lượng hàm trong một Class
+  TooManyFunctions:
+    active: true
+    threshold: 20
+  # Độ phức tạp vòng lặp/nhánh (Cyclomatic Complexity)
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 15
+  # Giới hạn số lượng tham số trong 1 hàm
+  LongParameterList:
+    active: true
+    threshold: 6
+    ignoreDefaultParameters: true
+
+naming:
+  active: true
+  # Quy tắc đặt tên Class (PascalCase)
+  ClassNaming:
+    active: true
+    classPattern: '[A-Z][a-zA-Z0-9]*'
+  # Quy tắc đặt tên hàm (camelCase)
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+  # Quy tắc đặt tên biến
+  VariableNaming:
+    active: true
+    variablePattern: '[a-z][a-zA-Z0-9]*'
+
+style:
+  active: true
+  # Bắt buộc có dòng trống cuối file
+  NewLineAtEndOfFile:
+    active: true
+  # Không để các hàm rỗng không có giải trình
+  EmptyFunctionBlock:
+    active: true
+    ignoreOverridden: true
+  # Giới hạn độ dài một dòng code (thường là 120 cho màn hình rộng)
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+
+potential-bugs:
+  active: true
+  # Cảnh báo khi dùng các hàm cast không an toàn
+  UnsafeCast:
+    active: true
+  # Cảnh báo khi so sánh các kiểu dữ liệu khác nhau
+  EqualsWithHashCodeExist:
+    active: true
+
+coroutines:
+  active: true
+  # Quy tắc quan trọng cho suspend functions trong dự án của bạn
+  GlobalCoroutineUsage:
+    active: true
+  # Cảnh báo khi dùng sleep() trong coroutine (nên dùng delay())
+  SleepInCoroutine:
+    active: true
+
+exceptions:
+  active: true
+  # Không nuốt lỗi (catch mà không xử lý)
+  EmptyCatchBlock:
+    active: true
+  # Không throw các Exception chung chung như Throwable hay Error
+  TooGenericExceptionThrown:
+    active: true

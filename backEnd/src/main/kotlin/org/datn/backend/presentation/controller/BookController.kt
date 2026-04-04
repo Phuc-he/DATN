@@ -4,6 +4,7 @@ import org.datn.backend.domain.entity.Author
 import org.datn.backend.domain.entity.Book
 import org.datn.backend.domain.entity.Category
 import org.datn.backend.domain.usecase.BookService
+import org.datn.backend.presentation.mapper.toEntity
 import org.datn.backend.presentation.mapper.toPageResponse
 import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.BookPageResponse
@@ -55,19 +56,8 @@ class BookController(private val bookService: BookService) {
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
     fun create(@RequestBody bookProto: BookProto): ResponseEntity<BookProto> {
-        // Convert Proto to Entity
-        val entity = Book(
-            title = bookProto.title,
-            description = bookProto.description,
-            price = BigDecimal(bookProto.price),
-            stock = bookProto.stock,
-            discount = BigDecimal(bookProto.discount),
-            imageUrl = bookProto.imageUrl,
-            author = if (bookProto.hasAuthor()) Author(id = bookProto.author.id, name = "") else null,
-            category = if (bookProto.hasCategory()) Category(id = bookProto.category.id, name = "") else null
-        )
 
-        val savedBook = bookService.create(entity)
+        val savedBook = bookService.create(bookProto.toEntity())
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook?.toProto())
     }
 

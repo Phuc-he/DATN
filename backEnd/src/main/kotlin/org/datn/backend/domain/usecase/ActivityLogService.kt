@@ -84,6 +84,7 @@ class ActivityLogService(
             )
         )
     }.onFailure { exception ->
+        logger.error("", exception)
         create(
             ActivityLog(
                 action = "${action}_FAILURE",

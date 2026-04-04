@@ -77,7 +77,7 @@ export class GetBooksByAuthorUseCase {
   constructor(private readonly bookRepository: BookRepository) {}
 
   async execute(
-    authorId: string, // Passed from URL or selection
+    authorId: number, // Passed from URL or selection
     page: number = Constants.PAGE,
     limit: number = Constants.LIMIT,
   ): Promise<PaginatedResult<Book>> {

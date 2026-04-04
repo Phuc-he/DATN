@@ -16,7 +16,6 @@ interface ActivityLogRepository : BaseRepository<ActivityLog, Long> {
         SELECT a FROM ActivityLog a 
         WHERE LOWER(a.action) LIKE LOWER(CONCAT('%', :query, '%')) 
            OR LOWER(a.entityName) LIKE LOWER(CONCAT('%', :query, '%')) 
-           OR LOWER(a.details) LIKE LOWER(CONCAT('%', :query, '%')) 
            OR LOWER(a.performedBy) LIKE LOWER(CONCAT('%', :query, '%'))
     """)
     override fun search(@Param("query") query: String, pageable: Pageable): Page<ActivityLog>

@@ -12,7 +12,8 @@ import {
   Ticket,
   Users,
   Bell,
-  Clock
+  Clock,
+  MessageSquare
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -46,6 +47,7 @@ const AdminSidebar = () => {
     { name: 'Vouchers', icon: <Ticket size={20} />, path: '/admin/vouchers' },
     { name: 'Setting', icon: <Settings size={20} />, path: '/admin/settings' },
     { name: 'Logs', icon: <Bell size={20} />, path: '/admin/activity-logs' },
+    { name: 'Messages', icon: <MessageSquare size={20} />, path: '/admin/messages' },
   ];
 
   return (

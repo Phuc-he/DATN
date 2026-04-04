@@ -8,9 +8,9 @@ import { PaymentRepositoryImpl } from "../data/repository/payment.repository.imp
 import { UserRepositoryImpl } from "../data/repository/user.repository.impl";
 import { VoucherRepositoryImpl } from "../data/repository/voucher.repository.impl";
 import { WebSettingRepositoryImpl } from "../data/repository/web-setting.repository.impl";
-import { CreateActivityLogUseCase, GetAllActivityLogsUseCase, GetActivityLogUseCase, DeleteActivityLogUseCase, GetActivityLogsByPageUseCase, SearchActivityLogsUseCase } from "../domain/use-case/activity-log.usecase";
+import { CreateActivityLogUseCase, DeleteActivityLogUseCase, GetActivityLogsByPageUseCase, GetActivityLogUseCase, GetAllActivityLogsUseCase, SearchActivityLogsUseCase } from "../domain/use-case/activity-log.usecase";
 import { CreateAuthorUseCase, DeleteAuthorUseCase, GetAllAuthorsUseCase, GetAuthorsByPageUseCase, GetAuthorUseCase, UpdateAuthorUseCase } from "../domain/use-case/author.usecase";
-import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByPageUseCase, GetBookUseCase, GetCategoryStatsUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
+import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByAuthorUseCase, GetBooksByPageUseCase, GetBookUseCase, GetCategoryStatsUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
 import { CreateCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, GetCategoriesByPageUseCase, GetCategoryUseCase, SearchCategoriesUseCase, UpdateCategoryUseCase } from "../domain/use-case/category.usecase";
 import { CreateOrderItemUseCase, DeleteOrderItemUseCase, GetAllOrderItemsUseCase, GetOrderItemsByPageUseCase, GetOrderItemUseCase, UpdateOrderItemUseCase } from "../domain/use-case/order-item.usecase";
 import { CancelOrderUseCase, CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderStatusUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
@@ -28,6 +28,17 @@ import {
 import { CreateVoucherUseCase, DeleteVoucherUseCase, GetAllVouchersUseCase, GetVouchersByPageUseCase, GetVoucherUseCase, SearchVouchersUseCase, UpdateVoucherUseCase, ValidateVoucherUseCase } from "../domain/use-case/voucher.use-case";
 import { CreateWebSettingUseCase, DeleteWebSettingUseCase, GetActiveWebSettingUseCase, GetAllWebSettingsUseCase, GetWebSettingsByPageUseCase, GetWebSettingUseCase, SearchWebSettingsUseCase, UpdateWebSettingUseCase } from "../domain/use-case/web-setting.use-case";
 
+import { MessageRepositoryImpl } from "../data/repository/message.repository.impl";
+import {
+  CreateMessageUseCase,
+  DeleteMessageUseCase,
+  GetMessagesByPageUseCase,
+  GetMessagesByUserUseCase,
+  RequestMessageUseCase,
+  SearchMessagesUseCase,
+  TrainAiModelUseCase,
+  UpdateMessageUseCase
+} from "../domain/use-case/message.usecase";
 // --- Repository Instantiation ---
 const userRepository = new UserRepositoryImpl();
 const categoryRepository = new CategoryRepositoryImpl();
@@ -39,6 +50,7 @@ const paymentRepository = new PaymentRepositoryImpl();
 const voucherRepository = new VoucherRepositoryImpl();
 const webSettingRepository = new WebSettingRepositoryImpl();
 const activityLogRepository = new ActivityLogRepositoryImpl();
+const messageRepository = new MessageRepositoryImpl();
 
 export const AppProviders = {
   // --- User Domain ---
@@ -84,6 +96,7 @@ export const AppProviders = {
   SearchBooksUseCase: new SearchBooksUseCase(bookRepository),
   GetAllBooksUseCase: new GetAllBooksUseCase(bookRepository),
   GetCategoryStatsUseCase: new GetCategoryStatsUseCase(bookRepository),
+  GetBooksByAuthorUseCase: new GetBooksByAuthorUseCase(bookRepository),
 
   // --- OrderItem Domain ---
   OrderItemRepository: orderItemRepository,
@@ -138,4 +151,15 @@ export const AppProviders = {
   DeleteActivityLogUseCase: new DeleteActivityLogUseCase(activityLogRepository),
   GetActivityLogsByPageUseCase: new GetActivityLogsByPageUseCase(activityLogRepository),
   SearchActivityLogsUseCase: new SearchActivityLogsUseCase(activityLogRepository),
+
+  // --- Message Domain (AI Chat & Training) ---
+  MessageRepository: messageRepository,
+  RequestMessageUseCase: new RequestMessageUseCase(messageRepository),
+  CreateMessageUseCase: new CreateMessageUseCase(messageRepository),
+  UpdateMessageUseCase: new UpdateMessageUseCase(messageRepository),
+  TrainAiModelUseCase: new TrainAiModelUseCase(messageRepository),
+  GetMessagesByPageUseCase: new GetMessagesByPageUseCase(messageRepository),
+  SearchMessagesUseCase: new SearchMessagesUseCase(messageRepository),
+  DeleteMessageUseCase: new DeleteMessageUseCase(messageRepository),
+  GetMessagesByUserUseCase: new GetMessagesByUserUseCase(messageRepository),
 }

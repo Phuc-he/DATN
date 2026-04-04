@@ -1,4 +1,5 @@
 // src/app/(public)/layout.tsx
+import { ChatWidget } from '@/src/presentation/components/public/chat/ChatWidget';
 import Footer from '@/src/presentation/components/public/layout/Footer';
 import { Navbar } from '@/src/presentation/components/public/layout/Navbar';
 
@@ -9,6 +10,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <ChatWidget />
       </div>
     </>
   );

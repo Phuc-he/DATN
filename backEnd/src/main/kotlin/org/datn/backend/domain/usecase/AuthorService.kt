@@ -14,6 +14,7 @@ class AuthorService(
     private val authorRepository: AuthorRepository,
     private val activityLogService: ActivityLogService
 ) {
+    fun getById(id: Long) = authorRepository.findById(id)
 
     fun getAll(): List<Author> = authorRepository.findAll()
 

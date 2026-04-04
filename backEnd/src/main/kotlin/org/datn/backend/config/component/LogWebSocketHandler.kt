@@ -1,4 +1,3 @@
-// package org.datn.backend.config.component
 package org.datn.backend.config.component
 
 import org.springframework.stereotype.Component

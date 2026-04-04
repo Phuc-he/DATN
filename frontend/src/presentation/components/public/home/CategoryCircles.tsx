@@ -31,7 +31,7 @@ const CategoryCircles: React.FC<CategoryCircleProps> = ({ categories }) => {
           {categories.map((category, index) => (
             <Link 
               key={category.id || index}
-              href={`/categories/${category.id}`} 
+              href={`/shop/search?category=${category.id}`} 
               className="group flex flex-col items-center gap-4 min-w-[100px]"
             >
               {/* Circle Image Wrapper */}
