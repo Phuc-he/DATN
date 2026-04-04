@@ -7,8 +7,10 @@ import java.nio.charset.StandardCharsets
 
 @Service
 class PaymentService {
-
-    fun generateQrCode(orderId: String, amount: Long): QrPaymentResponse {
+    fun generateQrCode(
+        orderId: String,
+        amount: Long,
+    ): QrPaymentResponse {
         val description = "Thanh toan don hang $orderId"
 
         // Encode parameters for the URL to handle spaces and special characters
@@ -16,7 +18,8 @@ class PaymentService {
         val encodedName = URLEncoder.encode(ACCOUNT_NAME, StandardCharsets.UTF_8.toString())
 
         // Build the VietQR URL using the 'qr_only' template
-        val qrUrl = "https://img.vietqr.io/image/$VCB_BANK_ID-$ACCOUNT_NO-qr_only.png" +
+        val qrUrl =
+            "https://img.vietqr.io/image/$VCB_BANK_ID-$ACCOUNT_NO-qr_only.png" +
                 "?amount=$amount" +
                 "&addInfo=$encodedDescription" +
                 "&accountName=$encodedName"
@@ -25,7 +28,7 @@ class PaymentService {
             qrUrl = qrUrl,
             amount = amount,
             orderId = orderId,
-            description = description
+            description = description,
         )
     }
 

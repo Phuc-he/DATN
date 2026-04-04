@@ -14,29 +14,33 @@ import java.time.LocalDateTime
 @Service
 class WebSettingService(
     private val webSettingRepository: WebSettingRepository,
-    private val activityLogService: ActivityLogService // Injected logging service
+    private val activityLogService: ActivityLogService, // Injected logging service
 ) {
-
     // READ operations: No logging to avoid cluttering the activity feed
     fun getAll(pageable: Pageable): Page<WebSetting> = webSettingRepository.findByPage(pageable)
 
-    fun search(query: String, pageable: Pageable): Page<WebSetting> =
-        webSettingRepository.search(query, pageable)
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<WebSetting> = webSettingRepository.search(query, pageable)
 
-    fun findById(id: Long): WebSetting = webSettingRepository.findById(id)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Setting not found") }
+    fun findById(id: Long): WebSetting =
+        webSettingRepository
+            .findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Setting not found") }
 
-    fun getActiveSetting(): WebSetting = webSettingRepository.findFirstByIsActiveTrue()
-        ?: WebSetting(
-            id = 0L,
-            webName = "Book shop",
-            logoUrl = "",
-            headerIcon = "",
-            contactEmail = "",
-            footerText = "",
-            isActive = true,
-            updatedAt = LocalDateTime.now(),
-        )
+    fun getActiveSetting(): WebSetting =
+        webSettingRepository.findFirstByIsActiveTrue()
+            ?: WebSetting(
+                id = 0L,
+                webName = "Book shop",
+                logoUrl = "",
+                headerIcon = "",
+                contactEmail = "",
+                footerText = "",
+                isActive = true,
+                updatedAt = LocalDateTime.now(),
+            )
 
     /**
      * Creates a new configuration. If set to active, logs the change.
@@ -55,7 +59,10 @@ class WebSettingService(
      * Transactional to ensure 'deactivateAllOthers' and 'save' happen together.
      */
     @Transactional
-    fun update(id: Long, updates: Map<String, Any>): WebSetting? =
+    fun update(
+        id: Long,
+        updates: Map<String, Any>,
+    ): WebSetting? =
         activityLogService.executeWithLog<WebSetting>(LogAction.UPDATE.name, "WebSetting") {
             val existing = findById(id)
 
@@ -64,15 +71,16 @@ class WebSettingService(
                 deactivateAllOthers()
             }
 
-            val updated = existing.copy(
-                webName = updates["webName"] as? String ?: existing.webName,
-                logoUrl = updates["logoUrl"] as? String ?: existing.logoUrl,
-                headerIcon = updates["headerIcon"] as? String ?: existing.headerIcon,
-                contactEmail = updates["contactEmail"] as? String ?: existing.contactEmail,
-                footerText = updates["footerText"] as? String ?: existing.footerText,
-                isActive = willBeActive,
-                updatedAt = LocalDateTime.now()
-            )
+            val updated =
+                existing.copy(
+                    webName = updates["webName"] as? String ?: existing.webName,
+                    logoUrl = updates["logoUrl"] as? String ?: existing.logoUrl,
+                    headerIcon = updates["headerIcon"] as? String ?: existing.headerIcon,
+                    contactEmail = updates["contactEmail"] as? String ?: existing.contactEmail,
+                    footerText = updates["footerText"] as? String ?: existing.footerText,
+                    isActive = willBeActive,
+                    updatedAt = LocalDateTime.now(),
+                )
 
             webSettingRepository.save(updated)
         }

@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 @Service
 class VoucherService(
     private val voucherRepository: VoucherRepository,
-    private val activityLogService: ActivityLogService // Injected logging service
+    private val activityLogService: ActivityLogService, // Injected logging service
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -25,10 +25,15 @@ class VoucherService(
 
     fun getAll(pageable: Pageable): Page<Voucher> = voucherRepository.findByPage(pageable)
 
-    fun search(query: String, pageable: Pageable): Page<Voucher> = voucherRepository.search(query, pageable)
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<Voucher> = voucherRepository.search(query, pageable)
 
-    fun findById(id: Long): Voucher = voucherRepository.findById(id)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher not found") }
+    fun findById(id: Long): Voucher =
+        voucherRepository
+            .findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher not found") }
 
     /**
      * Creates a new voucher and logs the action.
@@ -44,7 +49,10 @@ class VoucherService(
     /**
      * Updates voucher details and logs the action.
      */
-    fun update(id: Long, updates: Map<String, Any>): Voucher? =
+    fun update(
+        id: Long,
+        updates: Map<String, Any>,
+    ): Voucher? =
         activityLogService.executeWithLog<Voucher>(LogAction.UPDATE.name, "Voucher") {
             val existing = findById(id)
 
@@ -56,17 +64,18 @@ class VoucherService(
                 }
             }
 
-            val updated = existing.copy(
-                usedCount = updates["usedCount"] as? Int ?: existing.usedCount,
-                code = updates["code"] as? String ?: existing.code,
-                isActive = updates["isActive"] as? Boolean ?: existing.isActive,
-                maxUses = updates["maxUses"] as? Int ?: existing.maxUses,
-                discountType = (updates["discountType"] as? Int)?.let { DiscountType.entries[it] } ?: existing.discountType,
-                discountValue = (updates["discountValue"] as? Number)?.toDouble() ?: existing.discountValue,
-                minOrderValue = (updates["minOrderValue"] as? Number)?.toDouble() ?: existing.minOrderValue,
-                startDate = (updates["startDate"] as? String)?.let { dateParser(it) } ?: existing.startDate,
-                expirationDate = (updates["expirationDate"] as? String)?.let { dateParser(it) } ?: existing.expirationDate
-            )
+            val updated =
+                existing.copy(
+                    usedCount = updates["usedCount"] as? Int ?: existing.usedCount,
+                    code = updates["code"] as? String ?: existing.code,
+                    isActive = updates["isActive"] as? Boolean ?: existing.isActive,
+                    maxUses = updates["maxUses"] as? Int ?: existing.maxUses,
+                    discountType = (updates["discountType"] as? Int)?.let { DiscountType.entries[it] } ?: existing.discountType,
+                    discountValue = (updates["discountValue"] as? Number)?.toDouble() ?: existing.discountValue,
+                    minOrderValue = (updates["minOrderValue"] as? Number)?.toDouble() ?: existing.minOrderValue,
+                    startDate = (updates["startDate"] as? String)?.let { dateParser(it) } ?: existing.startDate,
+                    expirationDate = (updates["expirationDate"] as? String)?.let { dateParser(it) } ?: existing.expirationDate,
+                )
 
             log.info("Updated Voucher: $updated")
             voucherRepository.save(updated)
@@ -76,9 +85,13 @@ class VoucherService(
      * Validates voucher usage.
      * Note: We don't log this as a "READ" usually, as it's a frequent check during checkout.
      */
-    fun validateVoucher(code: String, orderAmount: Double): Voucher {
-        val voucher = voucherRepository.findByCodeAndIsActiveTrue(code)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher is invalid or expired")
+    fun validateVoucher(
+        code: String,
+        orderAmount: Double,
+    ): Voucher {
+        val voucher =
+            voucherRepository.findByCodeAndIsActiveTrue(code)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Voucher is invalid or expired")
 
         val now = LocalDateTime.now()
 

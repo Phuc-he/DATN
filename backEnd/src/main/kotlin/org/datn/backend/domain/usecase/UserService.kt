@@ -13,20 +13,24 @@ import org.springframework.web.server.ResponseStatusException
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val activityLogService: ActivityLogService // Injected logging service
+    private val activityLogService: ActivityLogService, // Injected logging service
 ) {
-
     // READ operations: Kept standard to maintain high performance and clean logs
     fun getAll(pageable: Pageable): Page<User> = userRepository.findByPage(pageable)
 
-    fun search(query: String, pageable: Pageable): Page<User> = userRepository.search(query, pageable)
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<User> = userRepository.search(query, pageable)
 
     fun getAll(): List<User> = userRepository.findAll()
 
     fun findByEmail(email: String): User? = userRepository.findByEmail(email)
 
-    fun getById(id: Long): User = userRepository.findById(id)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "User not found") }
+    fun getById(id: Long): User =
+        userRepository
+            .findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "User not found") }
 
     /**
      * Use Case: Register a new user.
@@ -49,17 +53,21 @@ class UserService(
      * Use Case: Update user profile details.
      * Logs profile changes or role escalations.
      */
-    fun update(id: Long, updates: Map<String, Any>): User? =
+    fun update(
+        id: Long,
+        updates: Map<String, Any>,
+    ): User? =
         activityLogService.executeWithLog<User>(LogAction.UPDATE.name, "User") {
             val existingUser = getById(id)
 
-            val updatedUser = existingUser.copy(
-                fullName = updates["fullName"] as? String ?: existingUser.fullName,
-                address = updates["address"] as? String ?: existingUser.address,
-                phone = updates["phone"] as? String ?: existingUser.phone,
-                role = (updates["role"] as? String)?.let { Role.valueOf(it.uppercase()) } ?: existingUser.role,
-                avatar = updates["avatar"] as? String ?: existingUser.avatar
-            )
+            val updatedUser =
+                existingUser.copy(
+                    fullName = updates["fullName"] as? String ?: existingUser.fullName,
+                    address = updates["address"] as? String ?: existingUser.address,
+                    phone = updates["phone"] as? String ?: existingUser.phone,
+                    role = (updates["role"] as? String)?.let { Role.valueOf(it.uppercase()) } ?: existingUser.role,
+                    avatar = updates["avatar"] as? String ?: existingUser.avatar,
+                )
 
             userRepository.save(updatedUser)
         }

@@ -72,15 +72,19 @@ tasks.withType<Test> {
 
 // --- Cấu hình Ktlint ---
 ktlint {
+    version.set("1.4.1")
     verbose.set(true)
     outputToConsole.set(true)
     coloredOutput.set(true)
+
     reporters {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
     }
+
     filter {
-        exclude { it.file.path.contains("generated") } // Loại bỏ file từ Protobuf
+        // Ensure we exclude the build directory entirely to avoid linting generated proto code
+        exclude { it.file.path.contains("generated") || it.file.path.contains("build") }
     }
 }
 

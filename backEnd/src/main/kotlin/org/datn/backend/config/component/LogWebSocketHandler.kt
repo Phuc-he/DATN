@@ -5,12 +5,11 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import java.util.concurrent.ConcurrentHashMap
 import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class LogWebSocketHandler : TextWebSocketHandler() {
-
     // Store all active admin dashboard sessions
     private val adminSessions = Collections.newSetFromMap(ConcurrentHashMap<WebSocketSession, Boolean>())
 
@@ -19,7 +18,10 @@ class LogWebSocketHandler : TextWebSocketHandler() {
         println("Admin Dashboard connected: ${session.id}")
     }
 
-    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+    override fun afterConnectionClosed(
+        session: WebSocketSession,
+        status: CloseStatus,
+    ) {
         adminSessions.remove(session)
         println("Admin Dashboard disconnected: ${session.id}")
     }

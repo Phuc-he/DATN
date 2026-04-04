@@ -7,12 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class CorsConfig {
-
     @Bean
-    fun corsConfigurer(): WebMvcConfigurer {
-        return object : WebMvcConfigurer {
+    fun corsConfigurer(): WebMvcConfigurer =
+        object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
-                registry.addMapping("/**") // Allow all endpoints
+                registry
+                    .addMapping("/**") // Allow all endpoints
                     .allowedOrigins("http://localhost:3000") // Your Next.js URL
                     .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
@@ -20,5 +20,4 @@ class CorsConfig {
                     .exposedHeaders("Authorization") // Important if you use JWT later
             }
         }
-    }
 }

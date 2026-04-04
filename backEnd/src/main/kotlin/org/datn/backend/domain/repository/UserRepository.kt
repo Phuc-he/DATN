@@ -10,14 +10,23 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserRepository : BaseRepository<User, Long> {
     override fun findByPage(pageable: Pageable): Page<User> = findAll(pageable)
-    @Query("""
+
+    @Query(
+        """
         SELECT u FROM User u 
         WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%')) 
         OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%')) 
         OR LOWER(u.fullName) LIKE LOWER(CONCAT('%', :query, '%'))
-    """)
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<User>
+    """,
+    )
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<User>
+
     fun findByEmail(email: String): User?
+
     fun existsByUsername(username: String): Boolean
+
     fun existsByEmail(email: String): Boolean
 }

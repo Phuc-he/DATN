@@ -18,5 +18,5 @@ data class Author(
     val bio: String? = null,
     @Lob
     @Column(name = "profile_image", columnDefinition = "LONGTEXT")
-    val profileImage: String? = null
+    val profileImage: String? = null,
 )

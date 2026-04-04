@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/users")
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService,
+) {
     private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     @GetMapping("/all", produces = ["application/x-protobuf"])
-    fun getAll(pageable: Pageable): ResponseEntity<UserPageResponse> =
-        ResponseEntity.ok(userService.getAll(pageable).toPageResponse())
+    fun getAll(pageable: Pageable): ResponseEntity<UserPageResponse> = ResponseEntity.ok(userService.getAll(pageable).toPageResponse())
 
     @GetMapping("/search", produces = ["application/x-protobuf"])
-    fun search(@RequestParam query: String, pageable: Pageable): ResponseEntity<UserPageResponse> =
-        ResponseEntity.ok(userService.search(query, pageable).toPageResponse())
+    fun search(
+        @RequestParam query: String,
+        pageable: Pageable,
+    ): ResponseEntity<UserPageResponse> = ResponseEntity.ok(userService.search(query, pageable).toPageResponse())
 
     @GetMapping(produces = ["application/x-protobuf"])
     fun getAll(): ResponseEntity<UserProtoList> {
@@ -32,21 +35,28 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/email/{email}", produces = ["application/x-protobuf"])
-    fun getByEmail(@PathVariable email: String): ResponseEntity<UserProto> {
-        val user = userService.findByEmail(email)
-            ?: return ResponseEntity.notFound().build()
+    fun getByEmail(
+        @PathVariable email: String,
+    ): ResponseEntity<UserProto> {
+        val user =
+            userService.findByEmail(email)
+                ?: return ResponseEntity.notFound().build()
 
         return ResponseEntity.ok(user.toProto())
     }
 
     @GetMapping("/{id}", produces = ["application/x-protobuf"])
-    fun getById(@PathVariable id: Long): ResponseEntity<UserProto> {
+    fun getById(
+        @PathVariable id: Long,
+    ): ResponseEntity<UserProto> {
         val user = userService.getById(id)
         return ResponseEntity.ok(user.toProto())
     }
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
-    fun register(@RequestBody proto: UserProto): ResponseEntity<UserProto> {
+    fun register(
+        @RequestBody proto: UserProto,
+    ): ResponseEntity<UserProto> {
         val savedUser = userService.create(proto.toEntity())
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser?.toProto())
     }
@@ -54,11 +64,13 @@ class UserController(private val userService: UserService) {
     @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
     fun updateProfile(
         @PathVariable id: Long,
-        @RequestBody updates: Map<String, Any>
+        @RequestBody updates: Map<String, Any>,
     ): ResponseEntity<UserProto> = ResponseEntity.ok(userService.update(id, updates)?.toProto())
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<Unit> {
+    fun deleteUser(
+        @PathVariable id: Long,
+    ): ResponseEntity<Unit> {
         userService.delete(id)
         return ResponseEntity.noContent().build()
     }

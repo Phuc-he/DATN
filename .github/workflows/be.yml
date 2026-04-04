@@ -57,6 +57,9 @@ jobs:
       run: ./gradlew build -x test 
       # Build project, tạm thời bỏ qua test nếu bạn chưa cấu hình xong DB kết nối
 
+    - name: Run Ktlint Check
+      run: ./gradlew ktlintCheck
+
     - name: Run Tests
       run: ./gradlew test
       env:

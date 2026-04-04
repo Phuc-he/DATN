@@ -9,9 +9,11 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface WebSettingRepository : BaseRepository<WebSetting, Long> {
-
     @Query("SELECT w FROM WebSetting w WHERE LOWER(w.webName) LIKE LOWER(CONCAT('%', :query, '%'))")
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<WebSetting>
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<WebSetting>
 
     override fun findByPage(pageable: Pageable): Page<WebSetting> = findAll(pageable)
 

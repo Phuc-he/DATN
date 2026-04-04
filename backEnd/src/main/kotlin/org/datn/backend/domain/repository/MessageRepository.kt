@@ -21,10 +21,17 @@ interface MessageRepository : BaseRepository<Message, Long> {
                OR b.title LIKE %:query%
         """,
         countQuery = "SELECT count(*) FROM messages m",
-        nativeQuery = true
+        nativeQuery = true,
     )
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<Message>
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<Message>
 
-    @Query("SELECT m FROM Message m LEFT JOIN FETCH m.user LEFT JOIN FETCH m.relatedBook WHERE m.user.id = :userId ORDER BY m.createdAt ASC")
-    fun findByUserId(@Param("userId") userId: Long): List<Message>
+    @Query(
+        "SELECT m FROM Message m LEFT JOIN FETCH m.user LEFT JOIN FETCH m.relatedBook WHERE m.user.id = :userId ORDER BY m.createdAt ASC",
+    )
+    fun findByUserId(
+        @Param("userId") userId: Long,
+    ): List<Message>
 }

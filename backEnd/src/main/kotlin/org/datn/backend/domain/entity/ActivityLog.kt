@@ -9,16 +9,13 @@ import java.time.LocalDateTime
 data class ActivityLog(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     val action: String, // e.g., "CREATE", "UPDATE", "DELETE"
     val entityName: String, // e.g., "Book", "Author"
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     val details: String, // e.g., "Updated book 'The Great Gatsby'"
-
     @Column(name = "performed_by")
     val performedBy: String? = "Admin",
-
     @CreationTimestamp
-    val createdAt: LocalDateTime? = null
+    val createdAt: LocalDateTime? = null,
 )

@@ -16,19 +16,22 @@ class WebSocketConfig(
     private val logHandler: LogWebSocketHandler,
     private val trainHandler: TrainWebSocketHandler,
     private val messageHandler: MessageWebSocketHandler,
-) :
-    WebSocketConfigurer {
+) : WebSocketConfigurer {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(paymentHandler, "/payment-status")
+        registry
+            .addHandler(paymentHandler, "/payment-status")
             .setAllowedOrigins("*") // Cần thiết để tránh lỗi CORS từ React
 
-        registry.addHandler(logHandler, "/activity-logs")
+        registry
+            .addHandler(logHandler, "/activity-logs")
             .setAllowedOrigins("*")
 
-        registry.addHandler(trainHandler, "/train")
+        registry
+            .addHandler(trainHandler, "/train")
             .setAllowedOrigins("*")
 
-        registry.addHandler(messageHandler, "/message")
+        registry
+            .addHandler(messageHandler, "/message")
             .setAllowedOrigins("*")
     }
 }

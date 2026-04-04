@@ -7,7 +7,9 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 class AiConfig {
     @Bean
-    fun webClient(): WebClient = WebClient.builder()
-        .baseUrl("http://localhost:11434") // Địa chỉ Ollama của bạn
-        .build()
+    fun webClient(): WebClient =
+        WebClient // This was moved to its own line
+            .builder()
+            .baseUrl("http://localhost:11434")
+            .build()
 }

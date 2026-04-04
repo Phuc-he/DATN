@@ -20,22 +20,17 @@ import java.time.LocalDateTime
 data class Order(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @ManyToOne @JoinColumn(name = "user_id", nullable = false)
     val user: User,
-
     val fullName: String,
     val phone: String,
     val address: String,
     val cartId: String? = null,
     val totalAmount: BigDecimal,
-
     @Enumerated(EnumType.STRING)
     val status: OrderStatus = OrderStatus.UNPROCESSED,
-
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
     val items: MutableList<OrderItem> = mutableListOf(),
-
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
 )

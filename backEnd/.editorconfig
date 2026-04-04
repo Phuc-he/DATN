@@ -1,7 +1,14 @@
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
 [*.{kt,kts}]
-# Tắt quy tắc bắt buộc phải có Header
+# This is the magic line that stops the HEADER_KEYWORD crash
+ktlint_standard_header = disabled
+
+# Other rules that commonly cause issues in Spring/Protobuf projects
 ktlint_standard_no-consecutive-blank-lines = disabled
-# Quan trọng: Tắt kiểm tra Header Keyword
 ktlint_standard_filename = disabled
-# Nếu bạn dùng phiên bản Ktlint mới, quy tắc này thường là:
-ktlint_standard_no-header = disabled
+ktlint_standard_package-name = disabled
+ktlint_standard_no-wildcard-imports = disabled

@@ -1,14 +1,12 @@
 package org.datn.backend.presentation.controller
 
 import org.datn.backend.domain.entity.Author
-import org.datn.backend.domain.usecase.ActivityLogService
 import org.datn.backend.domain.usecase.AuthorService
 import org.datn.backend.presentation.mapper.toPageResponse
 import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.AuthorPageResponse
 import org.datn.backend.proto.AuthorProto
 import org.datn.backend.proto.AuthorProtoList
-import org.datn.backend.proto.BookProto
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -17,10 +15,15 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/authors")
-class AuthorController(private val authorService: AuthorService) {
+class AuthorController(
+    private val authorService: AuthorService,
+) {
     private val logger = LoggerFactory.getLogger(AuthorController::class.java)
+
     @GetMapping("/{id}", produces = ["application/x-protobuf"])
-    fun getById(@PathVariable id: Long): ResponseEntity<AuthorProto> {
+    fun getById(
+        @PathVariable id: Long,
+    ): ResponseEntity<AuthorProto> {
         logger.info("hxt id $id")
         val optional = authorService.getById(id)
         return if (optional.isPresent) {
@@ -39,37 +42,43 @@ class AuthorController(private val authorService: AuthorService) {
         ResponseEntity.ok(AuthorProtoList.newBuilder().addAllData(authorService.getAll().map { it.toProto() }).build())
 
     @GetMapping("/all", produces = ["application/x-protobuf"])
-    fun getAll(pageable: Pageable): ResponseEntity<AuthorPageResponse> =
-        ResponseEntity.ok(authorService.getAll(pageable).toPageResponse())
+    fun getAll(pageable: Pageable): ResponseEntity<AuthorPageResponse> = ResponseEntity.ok(authorService.getAll(pageable).toPageResponse())
 
     @GetMapping("/search", produces = ["application/x-protobuf"])
-    fun search(@RequestParam query: String, pageable: Pageable): ResponseEntity<AuthorPageResponse> =
-        ResponseEntity.ok(authorService.search(query, pageable).toPageResponse())
+    fun search(
+        @RequestParam query: String,
+        pageable: Pageable,
+    ): ResponseEntity<AuthorPageResponse> = ResponseEntity.ok(authorService.search(query, pageable).toPageResponse())
 
     /**
      * POST /api/authors
      * Receives Protobuf binary and creates an author
      */
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
-    fun createAuthor(@RequestBody authorProto: AuthorProto): ResponseEntity<AuthorProto> =
+    fun createAuthor(
+        @RequestBody authorProto: AuthorProto,
+    ): ResponseEntity<AuthorProto> =
         ResponseEntity.status(HttpStatus.CREATED).body(
-            authorService.create(
-                Author(
-                    name = authorProto.name,
-                    bio = authorProto.bio,
-                    profileImage = authorProto.profileImage
-                )
-            )?.toProto()
+            authorService
+                .create(
+                    Author(
+                        name = authorProto.name,
+                        bio = authorProto.bio,
+                        profileImage = authorProto.profileImage,
+                    ),
+                )?.toProto(),
         )
 
     @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
     fun updateAuthor(
         @PathVariable id: Long,
-        @RequestBody updates: Map<String, Any>
+        @RequestBody updates: Map<String, Any>,
     ): ResponseEntity<AuthorProto> = ResponseEntity.ok(authorService.update(id, updates)?.toProto())
 
     @DeleteMapping("/{id}")
-    fun deleteAuthor(@PathVariable id: Long): ResponseEntity<Unit> {
+    fun deleteAuthor(
+        @PathVariable id: Long,
+    ): ResponseEntity<Unit> {
         authorService.delete(id)
         return ResponseEntity.noContent().build()
     }

@@ -5,7 +5,7 @@ import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
@@ -17,7 +17,10 @@ class MessageWebSocketHandler : TextWebSocketHandler() {
         sessions.add(session)
     }
 
-    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+    override fun afterConnectionClosed(
+        session: WebSocketSession,
+        status: CloseStatus,
+    ) {
         sessions.remove(session)
     }
 

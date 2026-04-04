@@ -11,11 +11,17 @@ import org.springframework.stereotype.Repository
 interface AuthorRepository : BaseRepository<Author, Long> {
     override fun findByPage(pageable: Pageable): Page<Author> = findAll(pageable)
 
-    @Query("""
+    @Query(
+        """
         SELECT a FROM Author a 
         WHERE LOWER(a.name) LIKE LOWER(CONCAT('%', :query, '%')) 
         OR LOWER(a.bio) LIKE LOWER(CONCAT('%', :query, '%'))
-    """)
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<Author>
+    """,
+    )
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<Author>
+
     fun existsByName(name: String): Boolean
 }

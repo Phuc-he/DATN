@@ -18,29 +18,22 @@ import java.time.LocalDateTime
 data class User(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @Column(nullable = false, unique = true)
     val username: String,
-
     @Column(nullable = false, unique = true)
     val email: String,
-
     @Column(nullable = false)
     val password: String,
-
     @Enumerated(EnumType.STRING)
     val role: Role = Role.CUSTOMER,
-
     val fullName: String? = null,
     val address: String? = null,
     val phone: String? = null,
     @Lob
     @Column(name = "avatar", columnDefinition = "LONGTEXT")
     val avatar: String? = null,
-
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
-
     @UpdateTimestamp
-    val updatedAt: LocalDateTime? = null
+    val updatedAt: LocalDateTime? = null,
 )

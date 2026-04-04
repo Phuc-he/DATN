@@ -2,7 +2,6 @@ package org.datn.backend.domain.usecase
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.datn.backend.config.component.MessageWebSocketHandler
-import org.datn.backend.domain.entity.Book
 import org.datn.backend.domain.entity.LogAction
 import org.datn.backend.domain.entity.Message
 import org.datn.backend.domain.entity.MessageSender
@@ -40,39 +39,47 @@ class MessageService(
      * Cập nhật thông tin tin nhắn (Ví dụ: sửa nội dung hoặc gắn thêm sách liên quan)
      */
     @Transactional
-    fun update(id: Long, updates: Map<String, Any>): Message? =
+    fun update(
+        id: Long,
+        updates: Map<String, Any>,
+    ): Message? =
         activityLogService.executeWithLog(LogAction.UPDATE.name, "Message") {
-            val existingMessage = messageRepository.findById(id)
-                .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found") }
+            val existingMessage =
+                messageRepository
+                    .findById(id)
+                    .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found") }
             // Cập nhật các field dựa trên Map (giống AuthorService)
-            var updatedMessage: Message? = if (updates.containsKey("relatedBook")) {
-                val bookMap = updates["relatedBook"] as? Map<*, *>
+            var updatedMessage: Message? =
+                if (updates.containsKey("relatedBook")) {
+                    val bookMap = updates["relatedBook"] as? Map<*, *>
 
-                if (bookMap != null) {
-                    // Lấy ID từ trong LinkedHashMap (nhìn vào ảnh của bạn: "id" -> 1)
-                    val bookId = (bookMap["id"] as? Number)?.toLong()
+                    if (bookMap != null) {
+                        // Lấy ID từ trong LinkedHashMap (nhìn vào ảnh của bạn: "id" -> 1)
+                        val bookId = (bookMap["id"] as? Number)?.toLong()
 
-                    if (bookId != null) {
-                        // QUAN TRỌNG: Phải tìm Book thực sự từ DB bằng ID này
-                        existingMessage.copy(relatedBook = bookService.getById(bookId).orElse(null))
+                        if (bookId != null) {
+                            // QUAN TRỌNG: Phải tìm Book thực sự từ DB bằng ID này
+                            existingMessage.copy(relatedBook = bookService.getById(bookId).orElse(null))
+                        } else {
+                            existingMessage.copy(relatedBook = null)
+                        }
                     } else {
+                        // Nếu admin chọn null/None
                         existingMessage.copy(relatedBook = null)
                     }
                 } else {
-                    // Nếu admin chọn null/None
                     existingMessage.copy(relatedBook = null)
                 }
-            } else {
-                existingMessage.copy(relatedBook = null)
-            }
-            updatedMessage = updatedMessage?.copy(
-                content = updates["content"] as? String ?: existingMessage.content,
-                sender = updates["sender"] as? MessageSender ?: existingMessage.sender,
-            )
+            updatedMessage =
+                updatedMessage?.copy(
+                    content = updates["content"] as? String ?: existingMessage.content,
+                    sender = updates["sender"] as? MessageSender ?: existingMessage.sender,
+                )
 
-            val result: Message? = updatedMessage?.let {
-                messageRepository.save(it)
-            }
+            val result: Message? =
+                updatedMessage?.let {
+                    messageRepository.save(it)
+                }
             logger.info("id $id result ${result?.relatedBook} updatedMessage $updatedMessage existingMessage $existingMessage")
             // Gửi cập nhật qua WebSocket để UI đồng bộ thời gian thực
             runCatching {
@@ -89,11 +96,14 @@ class MessageService(
      */
     @Transactional
     suspend fun chatWithAI(userMessage: Message): Message =
-        modelMessageRepository.request(messageRepository.save(userMessage).also {
-            messageWebSocketHandler.sendMessage(objectMapper.writeValueAsString(it))
-        }).also {
-            messageWebSocketHandler.sendMessage(objectMapper.writeValueAsString(it))
-        }
+        modelMessageRepository
+            .request(
+                messageRepository.save(userMessage).also {
+                    messageWebSocketHandler.sendMessage(objectMapper.writeValueAsString(it))
+                },
+            ).also {
+                messageWebSocketHandler.sendMessage(objectMapper.writeValueAsString(it))
+            }
 
     /**
      * Kích hoạt quá trình huấn luyện/cập nhật tri thức cho AI
@@ -103,7 +113,10 @@ class MessageService(
     /**
      * Tìm kiếm lịch sử tin nhắn (phục vụ Admin hoặc User tìm lại hội thoại)
      */
-    fun search(query: String, pageable: Pageable): Page<Message> = messageRepository.search(query, pageable)
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<Message> = messageRepository.search(query, pageable)
 
     /**
      * Lấy tất cả tin nhắn theo phân trang

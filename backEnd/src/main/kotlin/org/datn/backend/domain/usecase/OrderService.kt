@@ -16,18 +16,22 @@ import org.springframework.web.server.ResponseStatusException
 class OrderService(
     private val orderRepository: OrderRepository,
     private val bookRepository: BookRepository,
-    private val activityLogService: ActivityLogService // Injected logging service
+    private val activityLogService: ActivityLogService, // Injected logging service
 ) {
-
     // READ operations: Kept clean without logging to avoid dashboard noise
     fun getAll(pageable: Pageable): Page<Order> = orderRepository.findByPage(pageable)
 
-    fun search(query: String, pageable: Pageable): Page<Order> = orderRepository.search(query, pageable)
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<Order> = orderRepository.search(query, pageable)
 
     fun getAll(): List<Order> = orderRepository.findAll()
 
-    fun getById(id: Long): Order = orderRepository.findById(id)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found") }
+    fun getById(id: Long): Order =
+        orderRepository
+            .findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found") }
 
     /**
      * Use Case: Placing a new order.
@@ -38,8 +42,10 @@ class OrderService(
         activityLogService.executeWithLog<Order>(LogAction.CREATE.name, "Order") {
             // 1. Validate Stock for each item
             orderRequest.items.forEach { item ->
-                val book = bookRepository.findById(item.book.id!!)
-                    .orElseThrow { ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found") }
+                val book =
+                    bookRepository
+                        .findById(item.book.id!!)
+                        .orElseThrow { ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found") }
 
                 if (book.stock < item.quantity) {
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient stock for: ${book.title}")
@@ -57,18 +63,25 @@ class OrderService(
     /**
      * Use Case: Update Order Status
      */
-    fun updateStatus(id: Long, newStatus: String): Order? =
+    fun updateStatus(
+        id: Long,
+        newStatus: String,
+    ): Order? =
         activityLogService.executeWithLog<Order>(LogAction.UPDATE.name, "Order") {
             val existingOrder = getById(id)
 
-            val statusEnum = try {
-                // Adjusting to handle both String names and Integer indices safely
-                val index = newStatus.toIntOrNull()
-                if (index != null) OrderStatus.entries[index]
-                else OrderStatus.valueOf(newStatus.uppercase())
-            } catch (e: Exception) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: $newStatus")
-            }
+            val statusEnum =
+                try {
+                    // Adjusting to handle both String names and Integer indices safely
+                    val index = newStatus.toIntOrNull()
+                    if (index != null) {
+                        OrderStatus.entries[index]
+                    } else {
+                        OrderStatus.valueOf(newStatus.uppercase())
+                    }
+                } catch (e: Exception) {
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: $newStatus")
+                }
 
             val updatedOrder = existingOrder.copy(status = statusEnum)
             orderRepository.save(updatedOrder)

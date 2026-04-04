@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Primary
 
 @Configuration
 class JacksonConfig {
-
     @Bean
     @Primary
     fun objectMapper(): ObjectMapper {

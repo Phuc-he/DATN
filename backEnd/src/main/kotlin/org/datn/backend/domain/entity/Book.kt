@@ -28,15 +28,12 @@ data class Book(
     @Lob
     @Column(name = "image_url", columnDefinition = "LONGTEXT")
     val imageUrl: String? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     val category: Category? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     val author: Author? = null,
-
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
 )

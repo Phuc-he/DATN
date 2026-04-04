@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.NoRepositoryBean
 
 @NoRepositoryBean
-interface BaseRepository<T : Any, ID : Any>: JpaRepository<T, ID> {
+interface BaseRepository<T : Any, ID : Any> : JpaRepository<T, ID> {
     fun findByPage(pageable: Pageable): Page<T>
-    fun search(query: String, pageable: Pageable): Page<T>
+
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<T>
 }

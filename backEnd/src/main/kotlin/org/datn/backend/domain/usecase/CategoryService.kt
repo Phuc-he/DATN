@@ -14,9 +14,8 @@ import org.springframework.web.server.ResponseStatusException
 class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val bookRepository: BookRepository,
-    private val activityLogService: ActivityLogService // Injected logging service
+    private val activityLogService: ActivityLogService, // Injected logging service
 ) {
-
     /**
      * Creates a new category and logs the action.
      */
@@ -33,25 +32,32 @@ class CategoryService(
 
     fun getAll(pageable: Pageable): Page<Category> = categoryRepository.findByPage(pageable)
 
-    fun search(query: String, pageable: Pageable): Page<Category> = categoryRepository.search(query, pageable)
+    fun search(
+        query: String,
+        pageable: Pageable,
+    ): Page<Category> = categoryRepository.search(query, pageable)
 
-    fun getById(id: Long): Category {
-        return categoryRepository.findById(id)
+    fun getById(id: Long): Category =
+        categoryRepository
+            .findById(id)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found") }
-    }
 
     /**
      * Updates an existing category and logs the action.
      */
-    fun update(id: Long, updates: Map<String, Any>): Category? =
+    fun update(
+        id: Long,
+        updates: Map<String, Any>,
+    ): Category? =
         activityLogService.executeWithLog<Category>(LogAction.UPDATE.name, "Category") {
             val existingCategory = getById(id)
 
-            val updatedCategory = existingCategory.copy(
-                name = updates["name"] as? String ?: existingCategory.name,
-                description = updates["description"] as? String ?: existingCategory.description,
-                image = updates["image"] as? String ?: existingCategory.image,
-            )
+            val updatedCategory =
+                existingCategory.copy(
+                    name = updates["name"] as? String ?: existingCategory.name,
+                    description = updates["description"] as? String ?: existingCategory.description,
+                    image = updates["image"] as? String ?: existingCategory.image,
+                )
 
             categoryRepository.save(updatedCategory)
         }
@@ -68,7 +74,7 @@ class CategoryService(
             if (bookCount > 0) {
                 throw ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Cannot delete category: it still contains $bookCount books."
+                    "Cannot delete category: it still contains $bookCount books.",
                 )
             }
 

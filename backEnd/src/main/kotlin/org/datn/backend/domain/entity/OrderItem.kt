@@ -14,14 +14,11 @@ import java.math.BigDecimal
 data class OrderItem(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @ManyToOne @JoinColumn(name = "order_id")
     val order: Order,
-
     @ManyToOne @JoinColumn(name = "book_id")
     val book: Book,
-
     val quantity: Int,
     val unitPrice: BigDecimal,
-    val discount: BigDecimal = BigDecimal.ZERO
+    val discount: BigDecimal = BigDecimal.ZERO,
 )

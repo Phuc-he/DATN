@@ -10,11 +10,17 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OrderRepository : BaseRepository<Order, Long> {
     override fun findByPage(pageable: Pageable): Page<Order> = findAll(pageable)
-    @Query("""
+
+    @Query(
+        """
         SELECT o FROM Order o 
         WHERE CAST(o.id AS string) LIKE %:query% 
         OR LOWER(o.fullName) LIKE LOWER(CONCAT('%', :query, '%')) 
         OR o.phone LIKE %:query%
-    """)
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<Order>
+    """,
+    )
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<Order>
 }

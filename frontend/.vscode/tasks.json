@@ -21,6 +21,44 @@
       }
     },
     {
+      "label": "lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": {
+          "regexp": "^.*"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "starting",
+          "endsPattern": "successfully|listening|started"
+        }
+      }
+    },
+    {
+      "label": "lint:fix",
+      "type": "shell",
+      "command": "npx eslint . --fix",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": {
+          "regexp": "^.*"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "starting",
+          "endsPattern": "successfully|listening|started"
+        }
+      }
+    },
+    {
       "label": "fe",
       "type": "shell",
       "command": "npm run dev",

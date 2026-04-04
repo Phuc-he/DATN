@@ -13,8 +13,16 @@ interface BookRepository : BaseRepository<Book, Long> {
 
     // Implementation for the abstract search
     @Query("SELECT b FROM Book b WHERE b.title LIKE %:query% OR b.description LIKE %:query%")
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<Book>
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<Book>
+
     // You can add custom query methods here
-    fun findByAuthorId(authorId: Long, pageable: Pageable): Page<Book>
+    fun findByAuthorId(
+        authorId: Long,
+        pageable: Pageable,
+    ): Page<Book>
+
     fun countByCategoryId(id: Long): Long
 }

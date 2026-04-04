@@ -14,11 +14,12 @@ class WebConfig : WebMvcConfigurer {
         val protoConverter = ProtobufHttpMessageConverter()
 
         // Add multiple variations of the media type to the whitelist
-        protoConverter.supportedMediaTypes = listOf(
-            MediaType("application", "x-protobuf"),
-            MediaType("application", "x-protobuf", Charsets.UTF_8),
-            MediaType.APPLICATION_OCTET_STREAM // Fallback for raw binary
-        )
+        protoConverter.supportedMediaTypes =
+            listOf(
+                MediaType("application", "x-protobuf"),
+                MediaType("application", "x-protobuf", Charsets.UTF_8),
+                MediaType.APPLICATION_OCTET_STREAM, // Fallback for raw binary
+            )
 
         converters.add(0, protoConverter)
     }

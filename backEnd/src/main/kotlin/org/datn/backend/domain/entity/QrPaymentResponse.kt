@@ -4,5 +4,5 @@ data class QrPaymentResponse(
     val qrUrl: String,
     val amount: Long,
     val orderId: String,
-    val description: String
+    val description: String,
 )

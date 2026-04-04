@@ -16,22 +16,21 @@ class PaymentController(
     private val paymentHandler: PaymentWebSocketHandler,
     private val orderService: OrderService,
 ) {
-
     // In PaymentController.kt
     @GetMapping("/generate/{orderId}", produces = ["application/x-protobuf"])
     fun getPaymentQr(
         @PathVariable orderId: String,
-        @RequestParam amount: Long
-    ): ResponseEntity<QrPaymentResponseProto> =
-        ResponseEntity.ok(paymentService.generateQrCode(orderId, amount).toProto())
+        @RequestParam amount: Long,
+    ): ResponseEntity<QrPaymentResponseProto> = ResponseEntity.ok(paymentService.generateQrCode(orderId, amount).toProto())
 
     /**
      * POST /api/payments/webhook
      * Simulates receiving a notification from a payment gateway (VietQR/VNPay).
      */
-    // Trong PaymentController.kt
     @PostMapping("/webhook")
-    fun handlePaymentWebhook(@RequestBody body: Map<String, Any>): ResponseEntity<Map<String, Any>> {
+    fun handlePaymentWebhook(
+        @RequestBody body: Map<String, Any>,
+    ): ResponseEntity<Map<String, Any>> {
         val content = body["content"] as? String ?: ""
 
         // Giả sử mã đơn hàng của bạn chỉ gồm số (Long)

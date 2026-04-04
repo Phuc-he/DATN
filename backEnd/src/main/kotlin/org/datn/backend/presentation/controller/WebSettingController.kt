@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/settings")
-class WebSettingController(private val webSettingService: WebSettingService) {
-
+class WebSettingController(
+    private val webSettingService: WebSettingService,
+) {
     /**
      * The most important endpoint: Gets the active logo, name, etc.
      * Used by Next.js Layout/Header components.
@@ -27,23 +28,26 @@ class WebSettingController(private val webSettingService: WebSettingService) {
         ResponseEntity.ok(webSettingService.getAll(pageable).toPageResponse())
 
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
-    fun create(@RequestBody setting: WebSettingProto): ResponseEntity<WebSettingProto> =
+    fun create(
+        @RequestBody setting: WebSettingProto,
+    ): ResponseEntity<WebSettingProto> =
         ResponseEntity.status(HttpStatus.CREATED).body(
-            webSettingService.create(
-                WebSetting(
-                    webName = setting.webName,
-                    logoUrl = setting.logoUrl,
-                    headerIcon = setting.headerIcon,
-                    contactEmail = setting.contactEmail,
-                    footerText = setting.footerText,
-                    isActive = setting.isActive,
-                )
-            )?.toProto()
+            webSettingService
+                .create(
+                    WebSetting(
+                        webName = setting.webName,
+                        logoUrl = setting.logoUrl,
+                        headerIcon = setting.headerIcon,
+                        contactEmail = setting.contactEmail,
+                        footerText = setting.footerText,
+                        isActive = setting.isActive,
+                    ),
+                )?.toProto(),
         )
 
     @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
     fun update(
         @PathVariable id: Long,
-        @RequestBody updates: Map<String, Any>
+        @RequestBody updates: Map<String, Any>,
     ): ResponseEntity<WebSettingProto> = ResponseEntity.ok(webSettingService.update(id, updates)?.toProto())
 }

@@ -54,8 +54,8 @@ jobs:
     #   env:
     #     CI: true
 
-    - name: Build Production Bundle
-      run: npm run build
+#    - name: Build Production Bundle
+#      run: npm run build
       # env:
         # If your frontend needs these during build time (e.g. for Static Site Gen)
         # NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}

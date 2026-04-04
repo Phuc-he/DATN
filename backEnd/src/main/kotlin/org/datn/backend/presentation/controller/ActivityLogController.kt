@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/activity-logs")
-class ActivityLogController(private val activityLogService: ActivityLogService) {
-
+class ActivityLogController(
+    private val activityLogService: ActivityLogService,
+) {
     /**
      * GET /api/activity-logs
      * Returns a simple list of all activity logs in Protobuf format
@@ -23,9 +24,10 @@ class ActivityLogController(private val activityLogService: ActivityLogService) 
     @GetMapping(produces = ["application/x-protobuf"])
     fun getAllLogs(): ResponseEntity<ActivityLogProtoList> =
         ResponseEntity.ok(
-            ActivityLogProtoList.newBuilder()
+            ActivityLogProtoList
+                .newBuilder()
                 .addAllData(activityLogService.getAll().map { it.toProto() })
-                .build()
+                .build(),
         )
 
     /**
@@ -41,24 +43,29 @@ class ActivityLogController(private val activityLogService: ActivityLogService) 
      * Search logs by action, entity name, or details
      */
     @GetMapping("/search", produces = ["application/x-protobuf"])
-    fun search(@RequestParam query: String, pageable: Pageable): ResponseEntity<ActivityLogPageResponse> =
-        ResponseEntity.ok(activityLogService.search(query, pageable).toPageResponse())
+    fun search(
+        @RequestParam query: String,
+        pageable: Pageable,
+    ): ResponseEntity<ActivityLogPageResponse> = ResponseEntity.ok(activityLogService.search(query, pageable).toPageResponse())
 
     /**
      * POST /api/activity-logs
      * Manually create a log entry via Protobuf
      */
     @PostMapping(consumes = ["application/x-protobuf"], produces = ["application/x-protobuf"])
-    fun createLog(@RequestBody logProto: ActivityLogProto): ResponseEntity<ActivityLogProto> =
+    fun createLog(
+        @RequestBody logProto: ActivityLogProto,
+    ): ResponseEntity<ActivityLogProto> =
         ResponseEntity.status(HttpStatus.CREATED).body(
-            activityLogService.create(
-                ActivityLog(
-                    action = logProto.action,
-                    entityName = logProto.entityName,
-                    details = logProto.details,
-                    performedBy = logProto.performedBy ?: "Unknown",
-                )
-            ).toProto()
+            activityLogService
+                .create(
+                    ActivityLog(
+                        action = logProto.action,
+                        entityName = logProto.entityName,
+                        details = logProto.details,
+                        performedBy = logProto.performedBy ?: "Unknown",
+                    ),
+                ).toProto(),
         )
 
     /**
@@ -68,16 +75,17 @@ class ActivityLogController(private val activityLogService: ActivityLogService) 
     @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
     fun updateLog(
         @PathVariable id: Long,
-        @RequestBody updates: Map<String, Any>
-    ): ResponseEntity<ActivityLogProto> =
-        ResponseEntity.ok(activityLogService.update(id, updates).toProto())
+        @RequestBody updates: Map<String, Any>,
+    ): ResponseEntity<ActivityLogProto> = ResponseEntity.ok(activityLogService.update(id, updates).toProto())
 
     /**
      * DELETE /api/activity-logs/{id}
      * Remove a log entry
      */
     @DeleteMapping("/{id}")
-    fun deleteLog(@PathVariable id: Long): ResponseEntity<Unit> {
+    fun deleteLog(
+        @PathVariable id: Long,
+    ): ResponseEntity<Unit> {
         activityLogService.delete(id)
         return ResponseEntity.noContent().build()
     }

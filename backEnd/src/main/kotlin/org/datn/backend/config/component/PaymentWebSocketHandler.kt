@@ -9,16 +9,21 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class PaymentWebSocketHandler : TextWebSocketHandler() {
-
     // Simulating "Rooms": Map<OrderId, Set<WebSocketSession>>
     private val orderRooms = ConcurrentHashMap<String, MutableSet<WebSocketSession>>()
 
-    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+    override fun afterConnectionClosed(
+        session: WebSocketSession,
+        status: CloseStatus,
+    ) {
         // Cleanup: remove session from all rooms on disconnect
         orderRooms.values.forEach { it.remove(session) }
     }
 
-    override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
+    override fun handleTextMessage(
+        session: WebSocketSession,
+        message: TextMessage,
+    ) {
         val payload = message.payload // Expected format: "joinOrderRoom:ORD123"
 
         if (payload.startsWith("joinOrderRoom:")) {

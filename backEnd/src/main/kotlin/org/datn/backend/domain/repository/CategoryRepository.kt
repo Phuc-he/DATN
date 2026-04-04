@@ -10,13 +10,23 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CategoryRepository : BaseRepository<Category, Long> {
     override fun findByPage(pageable: Pageable): Page<Category> = findAll(pageable)
-    @Query("""
+
+    @Query(
+        """
         SELECT c FROM Category c 
         WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) 
         OR LOWER(c.description) LIKE LOWER(CONCAT('%', :query, '%'))
-    """)
-    override fun search(@Param("query") query: String, pageable: Pageable): Page<Category>
+    """,
+    )
+    override fun search(
+        @Param("query") query: String,
+        pageable: Pageable,
+    ): Page<Category>
+
     fun existsByName(name: String): Boolean
+
     @Query("SELECT COUNT(b) FROM Book b WHERE b.category.id = :categoryId")
-    fun countBooksByCategoryId(@Param("categoryId") categoryId: Long): Long
+    fun countBooksByCategoryId(
+        @Param("categoryId") categoryId: Long,
+    ): Long
 }
