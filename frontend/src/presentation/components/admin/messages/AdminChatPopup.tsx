@@ -51,8 +51,10 @@ export const AdminChatPopup = ({ targetUser, onClose }: AdminChatPopupProps) => 
         // CRITICAL: Only add message if it belongs to the user we are currently chatting with
         if (receivedMessage.user?.id === targetUser.id) {
           setMessages((prev) => {
-            const exists = prev.find(m => m.id === receivedMessage.id);
-            if (exists) return prev; // Avoid duplicates if DB save and WS trigger coincide
+            const exists = prev.find((m) => m.content === receivedMessage.content && m.createdAt === receivedMessage.createdAt);
+            if (exists) {
+              return prev.map((m) => m.id === receivedMessage.id ? receivedMessage : m);
+            }
             return [...prev, receivedMessage];
           });
         }
@@ -77,7 +79,7 @@ export const AdminChatPopup = ({ targetUser, onClose }: AdminChatPopupProps) => 
 
     const adminMsg: Message = {
       content: inputValue,
-      sender: MessageSender.AI, 
+      sender: MessageSender.AI,
       createdAt: new Date().toISOString(),
       user: targetUser,
     };
@@ -98,7 +100,7 @@ export const AdminChatPopup = ({ targetUser, onClose }: AdminChatPopupProps) => 
   return (
     <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
       <div className="w-96 h-[550px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-right-5">
-        
+
         {/* Header */}
         <div className="bg-slate-800 p-4 text-white flex justify-between items-center shadow-lg">
           <div className="flex items-center gap-3">
@@ -130,11 +132,10 @@ export const AdminChatPopup = ({ targetUser, onClose }: AdminChatPopupProps) => 
           ) : (
             messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.sender === MessageSender.AI ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm transition-all ${
-                  msg.sender === MessageSender.AI
+                <div className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm transition-all ${msg.sender === MessageSender.AI
                     ? 'bg-blue-600 text-white rounded-tr-none'
                     : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'
-                }`}>
+                  }`}>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                   <span className="text-[9px] mt-1.5 block opacity-60 text-right font-medium">
                     {formatMessageTime(msg.createdAt)}
@@ -155,8 +156,8 @@ export const AdminChatPopup = ({ targetUser, onClose }: AdminChatPopupProps) => 
               placeholder="Write a message..."
               className="flex-1 px-4 py-2.5 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={!inputValue.trim() || isLoading}
               className="p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-md shadow-blue-200"
             >

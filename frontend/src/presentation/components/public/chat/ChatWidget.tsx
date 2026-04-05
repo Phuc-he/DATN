@@ -49,14 +49,14 @@ export const ChatWidget = () => {
     socket.onmessage = (event) => {
       try {
         const receivedMessage: Message = JSON.parse(event.data);
-
+        console.log("Received real-time message:", receivedMessage);
         // SECURITY: Only process if the message belongs to THIS user
         if (receivedMessage.user?.id === currUser.id) {
           setMessages((prev) => {
             // Deduplication: check if message already exists by ID
-            const exists = prev.find(m => m.id === receivedMessage.id);
+            const exists = prev.find((m) => m.content === receivedMessage.content && m.createdAt === receivedMessage.createdAt);
             if (exists) {
-              return prev.map(m => m.id === receivedMessage.id ? receivedMessage : m);
+              return prev.map((m) => m.id === receivedMessage.id ? receivedMessage : m);
             }
             return [...prev, receivedMessage];
           });
