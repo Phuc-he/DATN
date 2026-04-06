@@ -51,7 +51,7 @@ export const AdminChatPopup = ({ targetUser, onClose }: AdminChatPopupProps) => 
         // CRITICAL: Only add message if it belongs to the user we are currently chatting with
         if (receivedMessage.user?.id === targetUser.id) {
           setMessages((prev) => {
-            const exists = prev.find((m) => m.content === receivedMessage.content && m.createdAt === receivedMessage.createdAt);
+            const exists = prev.find((m) => m.id === receivedMessage.id);
             if (exists) {
               return prev.map((m) => m.id === receivedMessage.id ? receivedMessage : m);
             }

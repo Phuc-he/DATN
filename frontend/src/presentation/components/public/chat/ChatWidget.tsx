@@ -4,7 +4,7 @@ import { MessageSender } from '@/src/domain/entity/message-sender.enum';
 import { Message } from '@/src/domain/entity/message.entity';
 import { useAuth } from '@/src/presentation/hooks/useAuth';
 import { AppProviders } from '@/src/provider/provider';
-import { formatMessageTime } from '@/src/shared/date.utils';
+import { formatMessageTime, parseServerDate } from '@/src/shared/date.utils';
 import { BookOpen, Bot, Loader2, MessageCircle, Send, X } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
@@ -49,25 +49,36 @@ export const ChatWidget = () => {
     socket.onmessage = (event) => {
       try {
         const receivedMessage: Message = JSON.parse(event.data);
-        console.log("Received real-time message:", receivedMessage);
-        // SECURITY: Only process if the message belongs to THIS user
+
         if (receivedMessage.user?.id === currUser.id) {
           setMessages((prev) => {
-            // Deduplication: check if message already exists by ID
-            const exists = prev.find((m) => m.content === receivedMessage.content && m.createdAt === receivedMessage.createdAt);
-            if (exists) {
-              return prev.map((m) => m.id === receivedMessage.id ? receivedMessage : m);
+            const receivedTime = parseServerDate(receivedMessage.createdAt);
+
+            const existingIndex = prev.findIndex((m) => {
+              // 1. Check by ID (If backend sends the tempId back)
+              if (m.id === receivedMessage.id) return true;
+
+              // 2. Fallback: Fuzzy match (If backend replaced tempId with MySQL ID)
+              if (!m.createdAt || receivedTime === null) return false;
+              const mTime = parseServerDate(m.createdAt);
+              const timeDiff = Math.abs((mTime ?? 0) - receivedTime);
+
+              return m.content.trim() === receivedMessage.content.trim() && timeDiff < 5000;
+            });
+
+            if (existingIndex !== -1) {
+              return prev;
             }
+
             return [...prev, receivedMessage];
           });
 
-          // If the AI/Admin replied, stop the local loading spinner
           if (receivedMessage.sender !== MessageSender.USER) {
             setIsLoading(false);
           }
         }
       } catch (error) {
-        console.error("Error parsing real-time message:", error);
+        console.error("Error parsing message:", error);
       }
     };
 
@@ -85,7 +96,11 @@ export const ChatWidget = () => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
+    // Use a high-precision timestamp as a temporary ID
+    const tempId = Date.now();
+
     const userMsg: Message = {
+      id: tempId, // Assign timestamp as temporary ID
       content: inputValue,
       sender: MessageSender.USER,
       createdAt: new Date().toISOString(),
@@ -98,12 +113,13 @@ export const ChatWidget = () => {
     setIsLoading(true);
 
     try {
-      // Send message to backend
+      // IMPORTANT: Your Backend/API must accept this 'id' 
+      // and broadcast it back via WebSocket.
       await AppProviders.RequestMessageUseCase.execute(userMsg);
-      // We don't necessarily need to setMessages(response) here 
-      // because the WebSocket will broadcast the response back to us.
     } catch (error) {
       console.error("Chat error:", error);
+      // Remove the optimistic message if sending fails
+      setMessages((prev) => prev.filter(m => m.id !== tempId));
       setIsLoading(false);
     }
   };
@@ -156,8 +172,8 @@ export const ChatWidget = () => {
                 {messages.map((msg, idx) => (
                   <div key={idx} className={`flex ${msg.sender === MessageSender.USER ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${msg.sender === MessageSender.USER
-                        ? 'bg-blue-600 text-white rounded-tr-none'
-                        : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'
+                      ? 'bg-blue-600 text-white rounded-tr-none'
+                      : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'
                       }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
 

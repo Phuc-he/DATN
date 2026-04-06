@@ -11,13 +11,15 @@ import org.springframework.stereotype.Repository
 interface MessageRepository : BaseRepository<Message, Long> {
     override fun findByPage(pageable: Pageable): Page<Message> = findAll(pageable)
 
+    fun findAllByOrderByIdDesc(pageable: Pageable): Page<Message>
+
     @Query(
         value = """
-            SELECT m.* FROM messages m 
-            LEFT JOIN users u ON m.user_id = u.id 
-            LEFT JOIN books b ON m.related_book_id = b.id 
-            WHERE m.content LIKE %:query% 
-               OR u.full_name LIKE %:query% 
+            SELECT m.* FROM messages m
+            LEFT JOIN users u ON m.user_id = u.id
+            LEFT JOIN books b ON m.related_book_id = b.id
+            WHERE m.content LIKE %:query%
+               OR u.full_name LIKE %:query%
                OR b.title LIKE %:query%
         """,
         countQuery = "SELECT count(*) FROM messages m",

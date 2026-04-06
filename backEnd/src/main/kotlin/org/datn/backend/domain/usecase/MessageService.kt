@@ -121,7 +121,7 @@ class MessageService(
     /**
      * Lấy tất cả tin nhắn theo phân trang
      */
-    fun getAll(pageable: Pageable): Page<Message> = messageRepository.findByPage(pageable)
+    fun getAll(pageable: Pageable): Page<Message> = messageRepository.findAllByOrderByIdDesc(pageable)
 
     @Transactional
     fun delete(id: Long) = messageRepository.deleteById(id)

@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository
 interface ActivityLogRepository : BaseRepository<ActivityLog, Long> {
     override fun findByPage(pageable: Pageable): Page<ActivityLog> = findAll(pageable)
 
+    fun findAllByOrderByIdDesc(pageable: Pageable): Page<ActivityLog>
+
     @Query(
         """
-        SELECT a FROM ActivityLog a 
-        WHERE LOWER(a.action) LIKE LOWER(CONCAT('%', :query, '%')) 
-           OR LOWER(a.entityName) LIKE LOWER(CONCAT('%', :query, '%')) 
+        SELECT a FROM ActivityLog a
+        WHERE LOWER(a.action) LIKE LOWER(CONCAT('%', :query, '%'))
+           OR LOWER(a.entityName) LIKE LOWER(CONCAT('%', :query, '%'))
            OR LOWER(a.performedBy) LIKE LOWER(CONCAT('%', :query, '%'))
     """,
     )

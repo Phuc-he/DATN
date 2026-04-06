@@ -20,7 +20,7 @@ class ActivityLogService(
 
     fun getAll(): List<ActivityLog> = activityLogRepository.findAll()
 
-    fun getAll(pageable: Pageable): Page<ActivityLog> = activityLogRepository.findByPage(pageable)
+    fun getAll(pageable: Pageable): Page<ActivityLog> = activityLogRepository.findAllByOrderByIdDesc(pageable)
 
     fun search(
         query: String,

@@ -128,13 +128,13 @@ class ModelMessageRepositoryImpl(
         // 2. Định nghĩa nội dung Modelfile
         val modelFileContent =
             """
-            FROM llama3 
+            FROM qwen2.5:3b
             PARAMETER temperature 0.1
             SYSTEM ""${'"'}
-            Bạn là trợ lý ảo của nhà sách DATN. Bạn có nhiệm vụ tư vấn khách hàng dựa trên dữ liệu thật sau đây. 
-            Nếu thông tin khách hỏi nằm trong danh sách này, bạn PHẢI trả lời chính xác. 
+            Bạn là trợ lý ảo của nhà sách DATN. Bạn có nhiệm vụ tư vấn khách hàng dựa trên dữ liệu thật sau đây.
+            Nếu thông tin khách hỏi nằm trong danh sách này, bạn PHẢI trả lời chính xác.
             Nếu không có, hãy nói bạn chưa có thông tin đó.
-            
+
             DANH SÁCH TRI THỨC CỦA HỆ THỐNG:
             $trainingContent
             ""${'"'}
