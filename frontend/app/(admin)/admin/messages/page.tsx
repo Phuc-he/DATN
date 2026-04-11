@@ -179,7 +179,7 @@ const MessagePage = () => {
   };
 
   return (
-    <div className="p-8 bg-slate-50 min-h-screen">
+    <div className="p-8 bg-emerald-50 min-h-screen">
       <div className="fixed top-4 right-4 z-50">
         <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${isConnected ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'
           }`}>
@@ -191,7 +191,7 @@ const MessagePage = () => {
       <div className="flex gap-4 mb-8">
         <button
           onClick={() => setShowTrainView(!showTrainView)}
-          className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-slate-900 transition-all shadow-md"
+          className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-slate-950 transition-all shadow-md"
         >
           <Terminal size={20} />
           {showTrainView ? "Hide Console" : "AI Training Console"}
@@ -228,24 +228,24 @@ const MessagePage = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <MessageSquare className="text-blue-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-900">Message Management</h1>
+            <MessageSquare className="text-emerald-600" size={24} />
+            <h1 className="text-2xl font-bold text-slate-950">Message Management</h1>
           </div>
-          <p className="text-sm text-slate-500">Monitor and manage communications between users and the system.</p>
+          <p className="text-sm text-emerald-900">Monitor and manage communications between users and the system.</p>
         </div>
 
         {/* View Switcher Tabs */}
         <div className="flex bg-slate-200/50 p-1 rounded-xl w-full md:w-auto shadow-inner">
           <button
             onClick={() => setView('messages')}
-            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'messages' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'messages' ? 'bg-white text-emerald-600 shadow-sm' : 'text-emerald-900 hover:text-slate-700'}`}
           >
             <List size={18} />
             All Messages
           </button>
           <button
             onClick={() => setView('rooms')}
-            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'rooms' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'rooms' ? 'bg-white text-emerald-600 shadow-sm' : 'text-emerald-900 hover:text-slate-700'}`}
           >
             <LayoutGrid size={18} />
             Chat Rooms
@@ -258,7 +258,7 @@ const MessagePage = () => {
       {/* Main Content Area */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
         </div>
       ) : (
         <div className="animate-in fade-in duration-500">
@@ -267,7 +267,7 @@ const MessagePage = () => {
               <div className="mb-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Mail size={16} className="text-slate-400" />
-                  <span className="text-sm text-slate-500 font-medium">Inbox: {messages.length} msgs</span>
+                  <span className="text-sm text-emerald-900 font-medium">Inbox: {messages.length} msgs</span>
                 </div>
               </div>
               <MessageTable
@@ -281,19 +281,19 @@ const MessagePage = () => {
                   <button
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(prev => prev - 1)}
-                    className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
+                    className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
                   >
                     Previous
                   </button>
 
-                  <div className="flex items-center px-4 bg-blue-600 rounded-lg text-white font-bold shadow-inner">
+                  <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
                     {currentPage}
                   </div>
 
                   <button
                     disabled={currentPage >= totalPages}
                     onClick={() => setCurrentPage(prev => prev + 1)}
-                    className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
+                    className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
                   >
                     Next
                   </button>

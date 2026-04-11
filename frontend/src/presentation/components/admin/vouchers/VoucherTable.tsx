@@ -18,14 +18,14 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+        <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Voucher Code</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Discount</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Usage</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Validity Period</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Voucher Code</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Discount</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Usage</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Validity Period</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -35,14 +35,14 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
             const usagePercent = Math.min(((voucher.usedCount || 0) / voucher.maxUses) * 100, 100);
 
             return (
-              <tr key={voucher.id} className="hover:bg-slate-50 transition-colors">
+              <tr key={voucher.id} className="hover:bg-emerald-50 transition-colors">
                 {/* Code */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${expired ? 'bg-slate-100 text-slate-400' : 'bg-blue-50 text-blue-600'}`}>
+                    <div className={`p-2 rounded-lg ${expired ? 'bg-slate-100 text-slate-400' : 'bg-emerald-50 text-emerald-600'}`}>
                       <Ticket size={20} />
                     </div>
-                    <span className={`text-sm font-black font-mono tracking-wider ${expired ? 'text-slate-400 line-through' : 'text-slate-900'}`}>
+                    <span className={`text-sm font-black font-mono tracking-wider ${expired ? 'text-slate-400 line-through' : 'text-slate-950'}`}>
                       {voucher.code}
                     </span>
                   </div>
@@ -50,7 +50,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
 
                 {/* Discount Value */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-bold text-slate-900">
+                  <div className="text-sm font-bold text-slate-950">
                     {voucher.discountType === DiscountType.PERCENTAGE
                       ? `${voucher.discountValue}%`
                       : `$${voucher.discountValue.toLocaleString()}`}
@@ -71,7 +71,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                   </div>
                   <div className="w-28 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${isFullyUsed ? 'bg-orange-500' : usagePercent > 80 ? 'bg-amber-400' : 'bg-blue-500'
+                      className={`h-full rounded-full transition-all duration-500 ${isFullyUsed ? 'bg-orange-500' : usagePercent > 80 ? 'bg-emerald-400' : 'bg-emerald-500'
                         }`}
                       style={{ width: `${usagePercent}%` }}
                     />
@@ -81,7 +81,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                 {/* Validity Dates */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-800">
                       <Calendar size={12} className="text-slate-300" />
                       <span>{new Date(voucher.startDate).toLocaleDateString('vi-VN')}</span>
                     </div>
@@ -99,7 +99,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                       <CheckCircle size={10} /> ACTIVE
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-500 border border-slate-200">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-emerald-800 border border-slate-200">
                       <XCircle size={10} />
                       {expired ? 'EXPIRED' : isFullyUsed ? 'MAXED OUT' : 'INACTIVE'}
                     </span>
@@ -110,7 +110,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => onEdit(voucher)}
-                    className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-all active:scale-90 mr-1"
+                    className="text-emerald-600 hover:text-emerald-900 p-2 hover:bg-emerald-50 rounded-lg transition-all active:scale-90 mr-1"
                     title="Edit Voucher"
                   >
                     <Edit size={18} />

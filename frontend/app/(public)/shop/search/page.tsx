@@ -38,16 +38,16 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   })
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-20">
+    <div className="bg-emerald-50 min-h-screen pb-20">
       <div className="container mx-auto px-4 md:px-8 py-10">
 
         {/* Header & Status */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-4xl font-black text-slate-950 tracking-tight">
               {q ? `Results for "${q}"` : "The Bookshop"}
             </h1>
-            <p className="text-slate-500 mt-2">
+            <p className="text-emerald-900 mt-2">
               Found {products.length} {products.length === 1 ? 'book' : 'books'} matching your selection.
             </p>
           </div>
@@ -80,12 +80,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               </div>
             ) : (
               <div className="bg-white rounded-[2rem] py-32 px-10 text-center border border-dashed border-slate-300 flex flex-col items-center">
-                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
                   <Filter size={32} className="text-slate-300" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">No books found</h3>
+                <h3 className="text-xl font-bold text-slate-950">No books found</h3>
                 <p className="text-slate-400 mt-2 max-w-xs mx-auto">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
-                <Link href="/shop" className="mt-8 px-8 py-3 bg-slate-900 text-white rounded-full font-bold hover:bg-blue-600 transition-all">
+                <Link href="/shop" className="mt-8 px-8 py-3 bg-slate-950 text-white rounded-full font-bold hover:bg-emerald-600 transition-all">
                   Browse All Books
                 </Link>
               </div>

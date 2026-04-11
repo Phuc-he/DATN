@@ -84,27 +84,27 @@ const CategoryPage = () => {
   };
 
   return (
-    <div className="p-8 bg-slate-50 min-h-screen">
-      <CategoryModal 
+    <div className="p-8 bg-emerald-50 min-h-screen">
+      <CategoryModal
         key={selectedCategory?.id}
-        isOpen={isModalOpen} 
-        initialData={selectedCategory} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={handleSave} 
+        isOpen={isModalOpen}
+        initialData={selectedCategory}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSave}
       />
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Layers className="text-blue-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-900">Category Management</h1>
+            <Layers className="text-emerald-600" size={24} />
+            <h1 className="text-2xl font-bold text-slate-950">Category Management</h1>
           </div>
-          <p className="text-sm text-slate-500">Organize and manage your product categories.</p>
+          <p className="text-sm text-emerald-900">Organize and manage your product categories.</p>
         </div>
 
         <button
           onClick={handleCreate}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95"
+          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95"
         >
           <Plus size={20} />
           Add Category
@@ -113,7 +113,7 @@ const CategoryPage = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
         </div>
       ) : (
         <>
@@ -133,19 +133,19 @@ const CategoryPage = () => {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => prev - 1)}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm"
             >
               Previous
             </button>
 
-            <div className="flex items-center px-4 bg-slate-200/30 rounded-lg text-slate-700 font-medium">
+            <div className="flex items-center px-4 bg-slate-200 rounded-lg text-slate-700 font-medium">
               {currentPage}
             </div>
 
             <button
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage(prev => prev + 1)}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm"
             >
               Next
             </button>

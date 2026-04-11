@@ -10,7 +10,7 @@ interface ActivityLogTableProps {
 }
 
 const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) => {
-  
+
   const getActionBadge = (action: string) => {
     const baseClasses = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm";
     const status = action.toUpperCase();
@@ -22,21 +22,21 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
       return <span className={`${baseClasses} bg-emerald-50 text-emerald-700 border border-emerald-200`}>{action}</span>;
     }
     if (status.includes('UPDATE')) {
-      return <span className={`${baseClasses} bg-blue-50 text-blue-700 border border-blue-200`}>{action}</span>;
+      return <span className={`${baseClasses} bg-emerald-50 text-emerald-700 border border-emerald-200`}>{action}</span>;
     }
-    return <span className={`${baseClasses} bg-slate-50 text-slate-600 border border-slate-200`}>{action}</span>;
+    return <span className={`${baseClasses} bg-emerald-50 text-slate-600 border border-slate-200`}>{action}</span>;
   };
 
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50/80">
+        <thead className="bg-emerald-50/80">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-tight">Event</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-tight">Performed By</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-tight">Details</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-tight">Time (Local)</th>
-            {onDelete && <th className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-tight">Actions</th>}
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Event</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Performed By</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Details</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Time (Local)</th>
+            {onDelete && <th className="px-6 py-4 text-right text-xs font-bold text-emerald-800 uppercase tracking-tight">Actions</th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -46,15 +46,15 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
             const isValidDate = !isNaN(dateObj.getTime());
 
             return (
-              <tr key={log.id} className="hover:bg-blue-50/30 transition-colors group">
+              <tr key={log.id} className="hover:bg-emerald-50 transition-colors group">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="h-9 w-9 flex-shrink-0 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 group-hover:bg-white group-hover:text-blue-500 transition-colors shadow-inner">
+                    <div className="h-9 w-9 flex-shrink-0 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 group-hover:bg-white group-hover:text-emerald-900 transition-colors shadow-inner">
                       <Activity size={18} />
                     </div>
                     <div className="ml-4">
                       <div className="mb-1">{getActionBadge(log.action)}</div>
-                      <div className="text-sm font-semibold text-slate-900">{log.entityName}</div>
+                      <div className="text-sm font-semibold text-slate-950">{log.entityName}</div>
                     </div>
                   </div>
                 </td>
@@ -62,7 +62,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center text-sm text-slate-600">
                     <div className="h-6 w-6 rounded-full bg-slate-200 flex items-center justify-center mr-2">
-                      <User size={12} className="text-slate-500" />
+                      <User size={12} className="text-emerald-800" />
                     </div>
                     <span className="font-medium truncate max-w-[150px]">{log.performedBy}</span>
                   </div>
@@ -70,7 +70,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
 
                 <td className="px-6 py-4">
                   <div className="flex items-start max-w-xs">
-                    <Info size={14} className="mr-2 mt-0.5 text-blue-400 flex-shrink-0" />
+                    <Info size={14} className="mr-2 mt-0.5 text-emerald-400 flex-shrink-0" />
                     <span className="text-sm text-slate-600 line-clamp-2 italic leading-relaxed">
                       {log.details}
                     </span>
@@ -81,7 +81,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
                   {isValidDate ? (
                     <div className="flex flex-col text-xs">
                       <div className="text-slate-800 font-bold flex items-center">
-                        <Clock size={12} className="mr-1 text-blue-500" />
+                        <Clock size={12} className="mr-1 text-emerald-900" />
                         {dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                       </div>
                       <div className="text-slate-400 font-medium ml-[16px]">
@@ -113,7 +113,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
               <td colSpan={onDelete ? 5 : 4} className="px-6 py-20 text-center text-slate-400">
                 <div className="flex flex-col items-center">
                   <History className="mb-4 opacity-10" size={80} />
-                  <p className="text-lg font-semibold text-slate-500">Audit trail is empty</p>
+                  <p className="text-lg font-semibold text-emerald-800">Audit trail is empty</p>
                   <p className="text-sm">No system activities have been captured yet.</p>
                 </div>
               </td>

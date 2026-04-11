@@ -40,8 +40,8 @@ export const CategoryRevenueChart = ({ orders }: { orders: Order[] }) => {
   return (
     <div className="h-[450px] w-full bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
       <div className="mb-6">
-        <h3 className="font-black text-slate-900 uppercase tracking-wider text-sm">Doanh thu theo danh mục</h3>
-        <p className="text-xs text-slate-500 font-bold mt-1">Phân bổ nguồn thu dựa trên loại sách</p>
+        <h3 className="font-black text-slate-950 uppercase tracking-wider text-sm">Doanh thu theo danh mục</h3>
+        <p className="text-xs text-emerald-800 font-bold mt-1">Phân bổ nguồn thu dựa trên loại sách</p>
       </div>
 
       <div className="flex-1 min-h-0">

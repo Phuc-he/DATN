@@ -91,15 +91,15 @@ const ProfilePage = () => {
   );
 
   return (
-    <div className="bg-slate-50 min-h-screen py-12 px-4">
+    <div className="bg-emerald-50 min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <header className="mb-8 text-center md:text-left">
-          <h1 className="text-3xl font-black text-slate-900">Cài đặt tài khoản</h1>
-          <p className="text-slate-500">Quản lý thông tin cá nhân và địa chỉ giao hàng</p>
+          <h1 className="text-3xl font-black text-slate-950">Cài đặt tài khoản</h1>
+          <p className="text-emerald-900">Quản lý thông tin cá nhân và địa chỉ giao hàng</p>
         </header>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Cột trái: Avatar & Role */}
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center">
@@ -113,7 +113,7 @@ const ProfilePage = () => {
                     fill
                   />
                 ) : (
-                  <div className="h-full w-full bg-slate-200 flex items-center justify-center text-slate-500">
+                  <div className="h-full w-full bg-slate-200 flex items-center justify-center text-emerald-900">
                     <UserIcon size={64} />
                   </div>
                 )}
@@ -135,10 +135,10 @@ const ProfilePage = () => {
                 </button>
               </div>
 
-              <h2 className="font-bold text-xl text-slate-900">{formData.fullName || currUser.username}</h2>
+              <h2 className="font-bold text-xl text-slate-950">{formData.fullName || currUser.username}</h2>
               <p className="text-sm text-slate-400 font-medium mb-4">{formData.email}</p>
 
-              <div className="w-full pt-4 border-t border-slate-50">
+              <div className="w-full pt-4 border-t border-emerald-50">
                 <div className="flex items-center justify-center gap-2 text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-2 rounded-lg">
                   {currUser.role}
                 </div>
@@ -159,7 +159,7 @@ const ProfilePage = () => {
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     placeholder="Nhập họ tên"
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full p-3 bg-emerald-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
 
@@ -178,7 +178,7 @@ const ProfilePage = () => {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="0xxx xxx xxx"
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full p-3 bg-emerald-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
 
@@ -191,15 +191,14 @@ const ProfilePage = () => {
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     rows={3}
                     placeholder="Địa chỉ cụ thể (Số nhà, đường, phường/xã...)"
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
+                    className="w-full p-3 bg-emerald-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
                   />
                 </div>
               </div>
 
               {message && (
-                <div className={`mt-6 p-4 rounded-xl text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-1 ${
-                  message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
-                }`}>
+                <div className={`mt-6 p-4 rounded-xl text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-1 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
+                  }`}>
                   {message.text}
                 </div>
               )}
@@ -207,7 +206,7 @@ const ProfilePage = () => {
               <div className="mt-8 flex justify-end">
                 <button
                   disabled={isSubmitting}
-                  className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:bg-indigo-600 transition-all disabled:bg-slate-300 active:scale-95 shadow-xl shadow-slate-200"
+                  className="bg-slate-950 text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:bg-indigo-600 transition-all disabled:bg-slate-300 active:scale-95 shadow-xl shadow-slate-200"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
                   Lưu thay đổi

@@ -16,14 +16,14 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+        <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Order Info</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Items</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Total Amount</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Order Info</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Customer</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Items</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Total Amount</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-4 text-right text-xs font-bold text-emerald-800 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -31,10 +31,10 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
             const statusDetail = getOrderStatusDetails(order.status);
 
             return (
-              <tr key={order.id} className="hover:bg-slate-50 transition-colors text-slate-900">
+              <tr key={order.id} className="hover:bg-emerald-50 transition-colors text-slate-950">
                 {/* Order ID & Placeholder Date */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-black text-blue-600 font-mono">
+                  <div className="text-sm font-black text-emerald-600 font-mono">
                     #{order.id?.toString().padStart(6, '0')}
                   </div>
                   <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-1 uppercase font-bold">
@@ -47,12 +47,12 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
                 {/* Customer Info */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                    <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center text-emerald-800">
                       <User size={14} />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-slate-900">{order.fullName}</div>
-                      <div className="text-[10px] text-slate-500">{order.phone}</div>
+                      <div className="text-sm font-bold text-slate-950">{order.fullName}</div>
+                      <div className="text-[10px] text-emerald-800">{order.phone}</div>
                     </div>
                   </div>
                 </td>
@@ -90,8 +90,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
 
                 {/* Price */}
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-black text-slate-900">
-                    {order.totalAmount.toLocaleString()} <span className="text-[10px] font-medium text-slate-500">VND</span>
+                  <div className="text-sm font-black text-slate-950">
+                    {order.totalAmount.toLocaleString()} <span className="text-[10px] font-medium text-emerald-800">VND</span>
                   </div>
                   <div className="text-[10px] text-slate-400 italic">Incl. Taxes & Fees</div>
                 </td>
@@ -108,7 +108,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => onViewDetails(order)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-blue-600 transition-all shadow-md active:scale-95"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all shadow-md active:scale-95"
                   >
                     <Eye size={14} />
                     VIEW DETAILS

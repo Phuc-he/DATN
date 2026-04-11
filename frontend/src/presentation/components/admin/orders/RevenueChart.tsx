@@ -72,8 +72,8 @@ export const RevenueChart = ({ orders }: { orders: Order[] }) => {
       {/* Header & Tool */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h3 className="font-black text-slate-900 uppercase tracking-wider text-sm">Thống kê doanh thu</h3>
-          <p className="text-xs text-slate-500 font-bold mt-1">Tổng doanh thu theo thời gian (VNĐ)</p>
+          <h3 className="font-black text-slate-950 uppercase tracking-wider text-sm">Thống kê doanh thu</h3>
+          <p className="text-xs text-emerald-800 font-bold mt-1">Tổng doanh thu theo thời gian (VNĐ)</p>
         </div>
 
         <div className="flex bg-slate-100 p-1 rounded-xl">
@@ -83,7 +83,7 @@ export const RevenueChart = ({ orders }: { orders: Order[] }) => {
               onClick={() => setRange(item)}
               className={`px-4 py-1.5 rounded-lg text-xs font-black transition-all ${range === item
                   ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700'
+                  : 'text-emerald-800 hover:text-slate-700'
                 }`}
             >
               {item === 'all' ? 'TẤT CẢ' : item.toUpperCase()}

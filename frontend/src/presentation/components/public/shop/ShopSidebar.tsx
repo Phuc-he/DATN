@@ -9,46 +9,24 @@ interface SidebarProps {
   minPrice?: string;
   maxPrice?: string;
   query?: string;
-  baseUrl: string; // Truyền vào '/shop' hoặc '/shop/search'
+  baseUrl: string;
 }
 
 interface PriceRange {
   label: string;
-  min?: number; // Using optional or undefined for 'Any'
+  min?: number;
   max?: number;
-  currency?: string; // Optional: if you want to support multiple currencies later
 }
 
 const VND_PRICE_RANGES: PriceRange[] = [
-  { 
-    label: 'Tất cả mức giá', 
-    min: undefined, 
-    max: undefined 
-  },
-  { 
-    label: 'Dưới 500.000₫', 
-    min: 0, 
-    max: 500000 
-  },
-  { 
-    label: '500.000₫ - 1.000.000₫', 
-    min: 500000, 
-    max: 1000000 
-  },
-  { 
-    label: '1.000.000₫ - 2.000.000₫', 
-    min: 1000000, 
-    max: 2000000 
-  },
-  { 
-    label: 'Trên 2.000.000₫', 
-    min: 2000000, 
-    max: Infinity 
-  },
+  { label: 'All Prices', min: undefined, max: undefined },
+  { label: 'Under 500.000₫', min: 0, max: 500000 },
+  { label: '500.000₫ - 1.000.000₫', min: 500000, max: 1000000 },
+  { label: '1.000.000₫ - 2.000.000₫', min: 1000000, max: 2000000 },
+  { label: 'Over 2.000.000₫', min: 2000000, max: Infinity },
 ];
 
 export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, query }: SidebarProps) => {
-
 
   const getPriceUrl = (pMin?: number, pMax?: number) => {
     const params = new URLSearchParams();
@@ -63,15 +41,18 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
     <aside className="lg:col-span-3 space-y-6">
 
       {/* Genre Filter */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div className="flex items-center gap-2 mb-6 font-bold text-slate-900 uppercase text-[10px] tracking-[0.2em]">
-          <Filter size={14} className="text-blue-600" />
-          Filter by Genre
+      <div className="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100">
+        <div className="flex items-center gap-2 mb-6 font-black text-slate-950 uppercase text-[10px] tracking-[0.3em]">
+          <Filter size={14} className="text-emerald-600" />
+          Browse Genres
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Link
             href="/shop/search"
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!currentCategory ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50'}`}
+            className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${!currentCategory
+              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
+              : 'text-emerald-800 hover:text-emerald-600 hover:bg-emerald-50/50'
+              }`}
           >
             All Genres
           </Link>
@@ -79,7 +60,10 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
             <Link
               key={cat.id}
               href={`/shop/search?category=${cat.id}${query ? `&q=${query}` : ''}`}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${currentCategory === cat.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${currentCategory === cat.id
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
+                : 'text-emerald-800 hover:text-emerald-600 hover:bg-emerald-50/50'
+                }`}
             >
               {cat.name}
             </Link>
@@ -88,21 +72,21 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
       </div>
 
       {/* Price Filter */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div className="flex items-center gap-2 mb-5 font-bold text-slate-900 uppercase text-[10px] tracking-[0.2em]">
-          <Banknote size={14} className="text-green-600" />
+      <div className="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100">
+        <div className="flex items-center gap-2 mb-6 font-black text-slate-950 uppercase text-[10px] tracking-[0.3em]">
+          <Banknote size={14} className="text-emerald-600" />
           Price Range
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           {VND_PRICE_RANGES.map((range) => {
             const isActive = minPrice === range.min?.toString() && maxPrice === range.max?.toString();
             return (
               <Link
                 key={range.label}
                 href={getPriceUrl(range.min, range.max)}
-                className={`block text-sm py-2 px-3 rounded-xl transition-all ${isActive
-                  ? 'bg-green-50 text-green-700 font-bold border border-green-100'
-                  : 'text-slate-500 hover:text-blue-600 hover:bg-slate-50'
+                className={`block text-sm py-2.5 px-4 rounded-xl transition-all font-bold ${isActive
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                  : 'text-emerald-800 hover:text-emerald-600 hover:bg-emerald-50/50'
                   }`}
               >
                 {range.label}

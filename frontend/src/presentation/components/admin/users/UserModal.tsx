@@ -91,14 +91,14 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100">
           <h2 className="text-xl font-bold text-slate-800">
             {initialData ? 'Cập nhật người dùng' : 'Thêm người dùng mới'}
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -106,7 +106,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             
             <div className="space-y-4">
-              <div className="flex flex-col items-center p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <div className="flex flex-col items-center p-4 bg-emerald-50 rounded-xl border border-slate-100">
                 <div className="relative h-24 w-24 mb-3">
                   {formData.avatar ? (
                     <Image
@@ -120,12 +120,12 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                       <UserIcon size={40} />
                     </div>
                   )}
-                  <label className="absolute bottom-0 right-0 p-1.5 bg-blue-600 rounded-full text-white cursor-pointer hover:bg-blue-700 shadow-lg transition-all">
+                  <label className="absolute bottom-0 right-0 p-1.5 bg-emerald-600 rounded-full text-white cursor-pointer hover:bg-emerald-700 shadow-lg transition-all">
                     <Upload size={14} />
                     <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                   </label>
                 </div>
-                <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Ảnh đại diện</span>
+                <span className="text-xs font-medium text-emerald-800 uppercase tracking-wider">Ảnh đại diện</span>
               </div>
 
               {/* History Status Section with Refresh Button */}
@@ -141,7 +141,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                       type="button"
                       onClick={handleRefreshUserStatus}
                       disabled={refreshing}
-                      className="text-[10px] flex items-center gap-1 text-blue-600 hover:text-blue-800 font-bold uppercase tracking-tighter disabled:opacity-50"
+                      className="text-[10px] flex items-center gap-1 text-emerald-600 hover:text-emerald-800 font-bold uppercase tracking-tighter disabled:opacity-50"
                     >
                       <RefreshCw size={10} className={refreshing ? "animate-spin" : ""} />
                       Làm mới
@@ -150,7 +150,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                 </div>
                 
                 <select
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                   value={formData.historyStatus}
                   onChange={(e) => setFormData({ ...formData, historyStatus: Number(e.target.value) as UserHistoryStatus })}
                 >
@@ -167,7 +167,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                 <label className="text-sm font-semibold text-slate-700">Họ và tên</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.fullName || ''}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   placeholder="Nguyễn Văn A"
@@ -180,7 +180,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                   required
                   disabled={!!initialData}
                   type="text"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50 disabled:text-slate-400"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-emerald-50 disabled:text-slate-400"
                   value={formData.username || ''}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 />
@@ -189,7 +189,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Vai trò hệ thống</label>
                 <select
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: Number(e.target.value) as Role })}
                 >
@@ -205,7 +205,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                 <input
                   required
                   type="email"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.email || ''}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -215,7 +215,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                 <label className="text-sm font-semibold text-slate-700">Số điện thoại</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.phone || ''}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 />
@@ -227,7 +227,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                   <input
                     required
                     type="password"
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                     value={formData.password || ''}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
@@ -238,7 +238,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
                 <label className="text-sm font-semibold text-slate-700">Địa chỉ chi tiết</label>
                 <textarea
                   rows={2}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.address || ''}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 />
@@ -250,13 +250,13 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose, onSave, initialD
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition-colors"
+              className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95"
+              className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all active:scale-95"
             >
               {initialData ? 'Lưu thay đổi' : 'Tạo người dùng'}
             </button>

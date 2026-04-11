@@ -1,11 +1,11 @@
 'use client';
 
 import { Menu, X } from 'lucide-react';
-import * as Icons from 'lucide-react'; // Import all icons to find the dynamic one
-import { useRouter } from 'next/navigation'; // Use standard next/navigation
+import * as Icons from 'lucide-react'; 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
-import { useWebSettings } from '@/src/presentation/context/WebSettingContext'; // Import your hook
+import { useWebSettings } from '@/src/presentation/context/WebSettingContext';
 import CartIcon from './CartIcon';
 import SearchBar from './SearchBar';
 import UserMenu from './UserMenu';
@@ -16,11 +16,9 @@ export const Navbar = () => {
   const { currUser } = useAuth();
   const router = useRouter();
   
-  // 1. Get settings from context
   const { settings, loading } = useWebSettings();
 
-  // 2. Resolve the dynamic icon
-  // If headerIcon is 'Library', we get Icons['Library'], else fallback to BookOpen
+  // Resolve dynamic icon
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const DynamicIcon = (settings?.headerIcon && (Icons as any)[settings.headerIcon]) 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,18 +26,17 @@ export const Navbar = () => {
     : Icons.BookOpen;
 
   return (
-    <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+        <div className="flex justify-between h-20 items-center">
 
           {/* Logo Section */}
           <div 
-            className="flex items-center gap-2 cursor-pointer group" 
+            className="flex items-center gap-3 cursor-pointer group" 
             onClick={() => router.push("/")}
           >
-            {/* Show Base64 Image if exists, otherwise show resolved Icon */}
             {settings?.logoUrl ? (
-              <div className="relative h-8 w-8">
+              <div className="relative h-9 w-9">
                 <Image 
                   src={settings.logoUrl} 
                   alt="Logo" 
@@ -48,28 +45,35 @@ export const Navbar = () => {
                 />
               </div>
             ) : (
-              <DynamicIcon className="h-8 w-8 text-indigo-600 group-hover:scale-110 transition-transform" />
+              <div className="p-2 bg-emerald-50 rounded-xl group-hover:bg-emerald-100 transition-colors">
+                <DynamicIcon className="h-6 w-6 text-emerald-700 group-hover:scale-110 transition-transform" />
+              </div>
             )}
 
-            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-black tracking-tighter text-slate-950">
               {loading ? "..." : (settings?.webName || "BookHaven")}
+              <span className="text-emerald-600">.</span>
             </span>
           </div>
 
-          {/* Desktop Search (Centered) */}
-          <SearchBar />
+          {/* Desktop Search */}
+          <div className="hidden lg:block flex-1 max-w-md mx-8">
+             <SearchBar />
+          </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-5">
-            <CartIcon />
+          <div className="hidden md:flex items-center space-x-6">
+            <div className="hover:text-emerald-600 transition-colors">
+                <CartIcon />
+            </div>
 
             {currUser ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 border-l border-slate-200 pl-6">
                 <UserMenu />
               </div>
             ) : (
               <button 
-                className="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-all shadow-sm"
+                className="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition-all shadow-lg shadow-emerald-100 active:scale-95"
                 onClick={() => router.push('/auth')}
               >
                 Sign In
@@ -78,8 +82,12 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600">
+          <div className="md:hidden flex items-center gap-4">
+            <CartIcon />
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-2 rounded-lg bg-emerald-50 text-slate-600"
+            >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -88,14 +96,28 @@ export const Navbar = () => {
 
       {/* Mobile Menu Content */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-4">
-          <SearchBar /> {/* Reuse your search bar for mobile if it's responsive */}
-          <div className="flex flex-col space-y-3 font-medium text-gray-600">
-            <a href="#" className="hover:text-indigo-600">Categories</a>
-            <a href="#" className="hover:text-indigo-600">New Arrivals</a>
-            <a href="#" className="hover:text-indigo-600">Best Sellers</a>
+        <div className="md:hidden bg-white border-t border-slate-100 px-6 py-8 space-y-6 animate-in slide-in-from-top duration-300">
+          <SearchBar />
+          <div className="flex flex-col space-y-4 font-bold text-slate-600">
+            <a href="#" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
+                Categories <Icons.ChevronRight size={16} />
+            </a>
+            <a href="#" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
+                New Arrivals <Icons.ChevronRight size={16} />
+            </a>
+            <a href="#" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
+                Best Sellers <Icons.ChevronRight size={16} />
+            </a>
           </div>
-          <hr />
+          
+          {!currUser && (
+            <button 
+              className="w-full bg-emerald-700 text-white py-4 rounded-xl font-bold"
+              onClick={() => router.push('/auth')}
+            >
+              Sign In
+            </button>
+          )}
         </div>
       )}
     </nav>

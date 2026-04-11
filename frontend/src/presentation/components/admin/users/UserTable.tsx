@@ -40,20 +40,20 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+        <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">User</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Role</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">History</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Contact</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Location</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Joined</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">User</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Role</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">History</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Contact</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Location</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Joined</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
           {users.map((user) => (
-            <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+            <tr key={user.id} className="hover:bg-emerald-50 transition-colors">
               {/* Profile & Name */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -67,14 +67,14 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                         height={40} 
                       />
                     ) : (
-                      <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 ring-1 ring-slate-200">
+                      <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-emerald-800 ring-1 ring-slate-200">
                         <User size={20} />
                       </div>
                     )}
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-slate-900">{user.fullName || user.username}</div>
-                    <div className="text-sm text-slate-500">{user.email}</div>
+                    <div className="text-sm font-medium text-slate-950">{user.fullName || user.username}</div>
+                    <div className="text-sm text-emerald-800">{user.email}</div>
                   </div>
                 </div>
               </td>
@@ -82,7 +82,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
               {/* Dynamic Role Badges */}
               <td className="px-6 py-4 whitespace-nowrap">
                 {isAdmin(user.role) ? (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
                     <ShieldCheck size={12} className="mr-1" /> {RoleLabels[Role.ADMIN]}
                   </span>
                 ) : isAuthor(user.role) ? (
@@ -114,7 +114,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
               </td>
 
               {/* Date Joined */}
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-800">
                 {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : 'N/A'}
               </td>
 
@@ -122,7 +122,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button 
                   onClick={() => onEdit(user)}
-                  className="text-blue-600 hover:text-blue-900 mr-4 transition-all hover:scale-110 p-1 rounded-lg hover:bg-blue-50"
+                  className="text-emerald-600 hover:text-emerald-900 mr-4 transition-all hover:scale-110 p-1 rounded-lg hover:bg-emerald-50"
                   title="Edit User"
                 >
                   <Edit size={18} />

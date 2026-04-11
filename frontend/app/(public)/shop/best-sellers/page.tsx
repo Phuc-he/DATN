@@ -17,7 +17,7 @@ export default function BestSellersPage() {
         setLoading(true);
         // 1. Lấy tất cả đơn hàng từ UseCase
         const allOrders: Order[] = await AppProviders.GetAllOrdersUseCase.execute();
-        
+
         // 2. Logic tính toán số lượng bán ra của từng Book
         const salesMap: Record<number, { book: Book; totalSelled: number }> = {};
 
@@ -40,7 +40,7 @@ export default function BestSellersPage() {
           .sort((a, b) => b.totalSelled - a.totalSelled)
           .slice(0, 10) // Lấy Top 10
           .map(item => item.book);
-        
+
         setProducts(sortedBooks);
       } catch (error) {
         console.error("Failed to fetch best sellers:", error);
@@ -55,8 +55,8 @@ export default function BestSellersPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <Loader2 className="animate-spin text-blue-600" size={40} />
-        <p className="text-slate-500 font-medium">Đang phân tích dữ liệu bán chạy...</p>
+        <Loader2 className="animate-spin text-emerald-600" size={40} />
+        <p className="text-emerald-900 font-medium">Đang phân tích dữ liệu bán chạy...</p>
       </div>
     );
   }
@@ -72,17 +72,17 @@ export default function BestSellersPage() {
               Hot Trend
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900">
+          <h1 className="text-3xl md:text-4xl font-black text-slate-950">
             Sách Bán Chạy Nhất
           </h1>
-          <p className="text-slate-500 mt-2">
+          <p className="text-emerald-900 mt-2">
             Những tựa sách được cộng đồng chọn mua nhiều nhất thời gian qua.
           </p>
         </div>
-        
-        <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 px-4 py-2 rounded-2xl">
-          <Trophy className="text-amber-500" size={20} />
-          <span className="font-black text-slate-900 text-sm">
+
+        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-2xl">
+          <Trophy className="text-emerald-900" size={20} />
+          <span className="font-black text-slate-950 text-sm">
             Top {products.length} Thịnh hành
           </span>
         </div>
@@ -95,19 +95,19 @@ export default function BestSellersPage() {
             <div key={product.id || index} className="relative group">
               {/* Ranking Badge */}
               <div className={`absolute -top-2 -left-2 z-20 shadow-md w-9 h-9 rounded-full flex items-center justify-center border-2 transition-transform group-hover:scale-110 
-                ${index === 0 ? 'bg-amber-400 border-amber-500 text-white' : 
-                  index === 1 ? 'bg-slate-300 border-slate-400 text-white' : 
-                  index === 2 ? 'bg-orange-300 border-orange-400 text-white' : 
-                  'bg-white border-slate-200 text-slate-900'}`}>
+                ${index === 0 ? 'bg-emerald-400 border-emerald-500 text-white' :
+                  index === 1 ? 'bg-slate-300 border-slate-400 text-white' :
+                    index === 2 ? 'bg-orange-300 border-orange-400 text-white' :
+                      'bg-white border-slate-200 text-slate-950'}`}>
                 <span className="text-xs font-black">#{index + 1}</span>
               </div>
-              
+
               <ProductCard product={product} />
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+        <div className="text-center py-20 bg-emerald-50 rounded-3xl border-2 border-dashed border-slate-200">
           <p className="text-slate-400">Hiện chưa có dữ liệu giao dịch để xếp hạng.</p>
         </div>
       )}

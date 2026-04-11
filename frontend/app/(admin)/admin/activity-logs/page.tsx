@@ -14,7 +14,7 @@ const ActivityLogPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [unreadCount, setUnreadCount] = useState(0);
-  
+
   const socketRef = useRef<WebSocket | null>(null);
 
   // 1. WebSocket Setup for Real-time Monitoring
@@ -26,7 +26,7 @@ const ActivityLogPage = () => {
       try {
         const newLog: ActivityLog = JSON.parse(event.data);
         // Prepend new log and keep the UI fresh without full re-fetch
-        setLogs((prev) => [newLog, ...prev].slice(0, 15)); 
+        setLogs((prev) => [newLog, ...prev].slice(0, 15));
         setUnreadCount((prev) => prev + 1);
       } catch (err) {
         console.error("Error parsing WebSocket message:", err);
@@ -84,20 +84,20 @@ const ActivityLogPage = () => {
   };
 
   return (
-    <div className="p-8 bg-slate-50 min-h-screen">
+    <div className="p-8 bg-emerald-50 min-h-screen">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <History className="text-slate-700" size={24} />
-            <h1 className="text-2xl font-bold text-slate-900">System Activity Logs</h1>
+            <h1 className="text-2xl font-bold text-slate-950">System Activity Logs</h1>
             {unreadCount > 0 && (
               <span className="flex items-center gap-1 ml-2 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-bold rounded-full animate-bounce">
                 <Bell size={12} /> {unreadCount} new
               </span>
             )}
           </div>
-          <p className="text-sm text-slate-500">Monitor all administrative actions and system events in real-time.</p>
+          <p className="text-sm text-emerald-900">Monitor all administrative actions and system events in real-time.</p>
         </div>
 
         <div className="flex gap-2 w-full md:w-auto">
@@ -107,14 +107,14 @@ const ActivityLogPage = () => {
               placeholder="Search actions, entities..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
             />
             <Search className="absolute left-3 top-2.5 text-slate-400" size={16} />
           </form>
-          
+
           <button
             onClick={handleRefresh}
-            className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-all shadow-sm active:rotate-180 duration-500"
+            className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-emerald-50 transition-all shadow-sm active:rotate-180 duration-500"
             title="Refresh Logs"
           >
             <RefreshCw size={20} />
@@ -125,12 +125,12 @@ const ActivityLogPage = () => {
       {loading ? (
         <div className="flex flex-col justify-center items-center h-64 gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
-          <p className="text-slate-500 text-sm font-medium">Loading audit trail...</p>
+          <p className="text-emerald-900 text-sm font-medium">Loading audit trail...</p>
         </div>
       ) : (
         <>
           <div className="mb-4 flex justify-between items-center">
-            <span className="text-xs font-semibold text-slate-500 bg-slate-200/50 px-3 py-1.5 rounded-full">
+            <span className="text-xs font-semibold text-emerald-900 bg-slate-200/50 px-3 py-1.5 rounded-full">
               Total Pages: {totalPages}
             </span>
             <span className="text-xs font-medium text-slate-400">
@@ -148,19 +148,19 @@ const ActivityLogPage = () => {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => prev - 1)}
-              className="px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
+              className="px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
               Previous
             </button>
 
-            <div className="flex items-center px-6 bg-blue-600 rounded-lg text-white font-bold shadow-md">
+            <div className="flex items-center px-6 bg-emerald-600 rounded-lg text-white font-bold shadow-md">
               {currentPage}
             </div>
 
             <button
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage(prev => prev + 1)}
-              className="px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
+              className="px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
               Next
             </button>

@@ -12,42 +12,58 @@ interface AuthorSectionProps {
 
 const AuthorSection: React.FC<AuthorSectionProps> = ({ authors }) => {
   return (
-    <section className="py-16 bg-slate-50/50">
+    <section className="py-20 bg-emerald-50">
       <div className="container mx-auto px-8">
-        
+
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="h-1 w-12 bg-blue-600 rounded-full" />
-              <span className="text-blue-600 font-bold text-xs uppercase tracking-[0.2em]">Our Community</span>
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-1 w-12 bg-emerald-600 rounded-full" />
+              <span className="text-emerald-700 font-black text-[10px] uppercase tracking-[0.3em]">
+                Literary Community
+              </span>
             </div>
-            <h2 className="text-3xl font-black text-slate-900">Meet the Authors</h2>
-            <p className="text-slate-500 mt-2 max-w-md">
-              Discover the brilliant minds behind your favorite stories and technical insights.
+
+            <h2 className="text-4xl font-black text-slate-950 tracking-tighter">
+              Meet the <span className="text-emerald-600 font-serif italic font-medium">Visionaries</span>
+            </h2>
+
+            <p className="text-emerald-800 font-medium max-w-md leading-relaxed">
+              Discover the brilliant minds behind your favorite stories and the technical insights shaping our world.
             </p>
           </div>
 
-          <Link 
-            href="#" 
-            className="group flex items-center gap-2 bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-700 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm"
+          <Link
+            href="/authors"
+            className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-3.5 rounded-2xl text-sm font-black text-slate-950 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm hover:shadow-xl hover:shadow-emerald-100/50"
           >
             Explore All Authors
-            <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+            <ArrowRight size={18} className="transition-transform group-hover:translate-x-1 text-emerald-600" />
           </Link>
         </div>
 
         {/* Grid Container */}
         {authors.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {authors.slice(0, 4).map((author) => (
-              <AuthorCard key={author.id} author={author} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            {authors.slice(0, 4).map((author, index) => (
+              <div
+                key={author.id || index}
+                className="animate-in fade-in zoom-in duration-700"
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
+                <AuthorCard author={author} />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-3xl p-12 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
-            <Users size={48} className="text-slate-200 mb-4" />
-            <p className="text-slate-400 font-medium">No authors found in the spotlight yet.</p>
+          <div className="bg-white/50 backdrop-blur-sm rounded-[3rem] p-20 border-2 border-dashed border-emerald-100 flex flex-col items-center justify-center text-center">
+            <div className="p-6 bg-emerald-50 rounded-full mb-6">
+              <Users size={48} className="text-emerald-200" />
+            </div>
+            <p className="text-slate-400 font-bold tracking-tight">
+              No authors have stepped into the spotlight yet.
+            </p>
           </div>
         )}
       </div>

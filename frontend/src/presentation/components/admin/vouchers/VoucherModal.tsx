@@ -90,18 +90,18 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <Ticket className="text-blue-600" size={20} />
+            <Ticket className="text-emerald-600" size={20} />
             <h2 className="text-xl font-bold text-slate-800">
               {initialData ? 'Edit Voucher' : 'Create New Voucher'}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -113,7 +113,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               <input
                 required
                 type="text"
-                className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase"
+                className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-mono uppercase"
                 value={formData.code}
                 onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
               />
@@ -131,7 +131,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
             <div className="space-y-1">
               <label className="text-sm font-semibold text-slate-700">Type</label>
               <select
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                 // formData.discountType is a number (0 or 1)
                 value={formData.discountType}
                 onChange={(e) => {
@@ -157,7 +157,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
                   required
                   type="number"
                   step="0.01"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.discountValue}
                   onChange={(e) => setFormData({ ...formData, discountValue: e.target.value === '' ? 0 : Number(e.target.value) })}
                 />
@@ -174,7 +174,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               <input
                 type="number"
                 step="0.01"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                 value={formData.minOrderValue}
                 onChange={(e) => setFormData({ ...formData, minOrderValue: e.target.value === '' ? 0 : Number(e.target.value) })}
               />
@@ -184,7 +184,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               <input
                 required
                 type="number"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                 value={formData.maxUses}
                 onChange={(e) => setFormData({ ...formData, maxUses: e.target.value === '' ? 0 : Number(e.target.value) })}
               />
@@ -199,7 +199,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               <input
                 required
                 type="date"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                 value={formatDateForInput(formData.startDate)}
                 onChange={(e) => handleDateChange('startDate', e.target.value)}
               />
@@ -211,7 +211,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               <input
                 required
                 type="date"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                 value={formatDateForInput(formData.expirationDate)}
                 onChange={(e) => handleDateChange('expirationDate', e.target.value)}
               />
@@ -222,7 +222,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
             <input
               type="checkbox"
               id="isActive"
-              className="w-5 h-5 accent-blue-600 rounded"
+              className="w-5 h-5 accent-emerald-600 rounded"
               checked={formData.isActive}
               onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
             />
@@ -235,13 +235,13 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition-colors"
+              className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95"
+              className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all active:scale-95"
             >
               {initialData ? 'Update Voucher' : 'Create Voucher'}
             </button>

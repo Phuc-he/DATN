@@ -82,19 +82,19 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in duration-200">
 
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <MessageSquare size={20} className="text-blue-600" />
+            <MessageSquare size={20} className="text-emerald-600" />
             <h2 className="text-xl font-bold text-slate-800">
               {isReply ? `Replying to ${initialData?.user?.fullName}` : initialData ? 'Edit Message Log' : 'Create Message'}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -115,9 +115,9 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
                       value={index}
                       checked={formData.sender === index}
                       onChange={(e) => setFormData({ ...formData, sender: Number(e.target.value) as unknown as MessageSender })}
-                      className="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500"
                     />
-                    <span className={`text-sm font-medium ${formData.sender === index ? 'text-blue-600' : 'text-slate-500'}`}>
+                    <span className={`text-sm font-medium ${formData.sender === index ? 'text-emerald-600' : 'text-emerald-800'}`}>
                       {role}
                     </span>
                   </label>
@@ -133,7 +133,7 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
                 </label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none text-slate-600 italic cursor-not-allowed"
+                  className="w-full px-4 py-2 bg-emerald-50 border border-slate-200 rounded-lg outline-none text-slate-600 italic cursor-not-allowed"
                   value={formData.user?.fullName || 'Anonymous User'}
                   readOnly
                   placeholder="Linked user..."
@@ -145,7 +145,7 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
                   <BookOpen size={16} className="text-slate-400" /> Related Book
                 </label>
                 <select
-                  className={`w-full px-4 py-2 border border-slate-200 rounded-lg outline-none text-sm transition-all focus:ring-2 focus:ring-blue-500 bg-white}`}
+                  className={`w-full px-4 py-2 border border-slate-200 rounded-lg outline-none text-sm transition-all focus:ring-2 focus:ring-emerald-500 bg-white}`}
                   value={formData.relatedBook?.id || ""}
                   onChange={(e) => handleBookChange(e.target.value)}
                 >
@@ -157,7 +157,7 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
                   ))}
                 </select>
                 {isReply && (
-                  <p className="text-[10px] text-blue-500 mt-1">Book context is locked during reply.</p>
+                  <p className="text-[10px] text-emerald-900 mt-1">Book context is locked during reply.</p>
                 )}
               </div>
             </div>
@@ -168,7 +168,7 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
               <textarea
                 required
                 rows={5}
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none transition-all placeholder:text-slate-300"
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none resize-none transition-all placeholder:text-slate-300"
                 value={formData.content || ''}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 placeholder="Type the message content here..."
@@ -184,13 +184,13 @@ const MessageModal: React.FC<MessageModalProps> = ({ isOpen, onClose, onSave, in
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition-colors"
+              className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95 flex items-center gap-2"
+              className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all active:scale-95 flex items-center gap-2"
             >
               {isReply ? 'Send Reply' : initialData ? 'Update Record' : 'Create Message'}
             </button>

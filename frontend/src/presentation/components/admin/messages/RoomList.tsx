@@ -11,9 +11,9 @@ export interface Room {
 const RoomList = ({ rooms, onSelectRoom }: { rooms: Room[], onSelectRoom: (user: User) => void }) => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+      <div className="p-4 border-b border-slate-100 bg-emerald-50/50">
         <h3 className="font-bold text-slate-800 flex items-center gap-2">
-          <MessageCircle size={18} className="text-blue-600" />
+          <MessageCircle size={18} className="text-emerald-600" />
           Active Conversations
         </h3>
       </div>
@@ -24,19 +24,19 @@ const RoomList = ({ rooms, onSelectRoom }: { rooms: Room[], onSelectRoom: (user:
             <div 
               key={room.user.id}
               onClick={() => onSelectRoom(room.user)}
-              className="flex items-center justify-between p-4 hover:bg-blue-50/50 cursor-pointer transition-all group"
+              className="flex items-center justify-between p-4 hover:bg-emerald-50/50 cursor-pointer transition-all group"
             >
               <div className="flex items-center gap-4">
                 {/* Avatar Placeholder */}
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border-2 border-white shadow-sm">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 border-2 border-white shadow-sm">
                   <UserIcon size={24} />
                 </div>
                 
                 <div>
-                  <h4 className="font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                  <h4 className="font-bold text-slate-950 group-hover:text-emerald-700 transition-colors">
                     {room.user.fullName || `User #${room.user.id}`}
                   </h4>
-                  <p className="text-sm text-slate-500 line-clamp-1 max-w-[300px]">
+                  <p className="text-sm text-emerald-800 line-clamp-1 max-w-[300px]">
                     {room.lastMessage}
                   </p>
 
@@ -50,7 +50,7 @@ const RoomList = ({ rooms, onSelectRoom }: { rooms: Room[], onSelectRoom: (user:
                     {new Date(room.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
-                <ChevronRight size={18} className="text-slate-300 group-hover:text-blue-400 transition-transform group-hover:translate-x-1" />
+                <ChevronRight size={18} className="text-slate-300 group-hover:text-emerald-400 transition-transform group-hover:translate-x-1" />
               </div>
             </div>
           ))

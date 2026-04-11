@@ -58,16 +58,16 @@ const TrainView: React.FC<TrainViewProps> = ({ onStartTrain, isTraining }) => {
   const getLogStyle = (log: string) => {
     if (log.includes('THÀNH CÔNG') || log.includes('cập nhật với tri thức mới')) return 'text-emerald-400 font-bold';
     if (log.includes('Lỗi') || log.includes('thất bại')) return 'text-rose-400 font-bold';
-    if (log.includes('[Ollama CLI]')) return 'text-blue-300';
+    if (log.includes('[Ollama CLI]')) return 'text-emerald-300';
     return 'text-slate-300';
   };
 
   return (
-    <div className="bg-slate-900 rounded-xl shadow-2xl overflow-hidden border border-slate-700 flex flex-col h-[500px]">
+    <div className="bg-slate-950 rounded-xl shadow-2xl overflow-hidden border border-slate-700 flex flex-col h-[500px]">
       {/* Header */}
       <div className="bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Terminal size={18} className="text-blue-400" />
+          <Terminal size={18} className="text-emerald-400" />
           <span className="text-slate-200 font-mono text-sm font-semibold">AI Training Console</span>
         </div>
         <button
@@ -75,7 +75,7 @@ const TrainView: React.FC<TrainViewProps> = ({ onStartTrain, isTraining }) => {
           disabled={isTraining}
           className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${isTraining
               ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-500 active:scale-95'
+              : 'bg-emerald-600 text-white hover:bg-emerald-500 active:scale-95'
             }`}
         >
           {isTraining ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
@@ -86,10 +86,10 @@ const TrainView: React.FC<TrainViewProps> = ({ onStartTrain, isTraining }) => {
       {/* Terminal Content */}
       <div
         ref={scrollRef}
-        className="flex-1 p-4 font-mono text-xs overflow-y-auto space-y-1 selection:bg-blue-500/30"
+        className="flex-1 p-4 font-mono text-xs overflow-y-auto space-y-1 selection:bg-emerald-500"
       >
         {logs.length === 0 && !isTraining && (
-          <div className="text-slate-500 italic">Console ready. Start training to see logs...</div>
+          <div className="text-emerald-800 italic">Console ready. Start training to see logs...</div>
         )}
         {logs.map((log, index) => (
           <div key={index} className={`break-words ${getLogStyle(log)}`}>
@@ -98,8 +98,8 @@ const TrainView: React.FC<TrainViewProps> = ({ onStartTrain, isTraining }) => {
           </div>
         ))}
         {isTraining && (
-          <div className="flex items-center gap-2 text-blue-400 animate-pulse mt-2">
-            <span className="h-1.5 w-1.5 bg-blue-400 rounded-full animate-ping"></span>
+          <div className="flex items-center gap-2 text-emerald-400 animate-pulse mt-2">
+            <span className="h-1.5 w-1.5 bg-emerald-400 rounded-full animate-ping"></span>
             Processing knowledge vectors...
           </div>
         )}

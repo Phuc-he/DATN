@@ -12,50 +12,63 @@ interface CategoryCircleProps {
 
 const CategoryCircles: React.FC<CategoryCircleProps> = ({ categories }) => {
   return (
-    <section className="py-12 bg-white">
+    <section className="py-16 bg-[#f8fafc]">
       <div className="container mx-auto px-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-end mb-12">
           <div>
-            <h2 className="text-2xl font-black text-slate-900">Explore by Genre</h2>
-            <p className="text-sm text-slate-500">Find exactly what you&apos;re looking for</p>
+            <h2 className="text-3xl font-black text-slate-950 tracking-tighter">
+              Curated <span className="text-emerald-600 font-serif italic font-medium">Genres</span>
+            </h2>
+            <p className="text-emerald-800 font-medium mt-1">Discover stories tailored to your taste</p>
           </div>
-          <Link href="/categories" className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 group">
+          <Link 
+            href="/categories" 
+            className="text-sm font-black text-emerald-700 hover:text-emerald-800 flex items-center gap-2 group uppercase tracking-widest"
+          >
             All Genres
-            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            <div className="p-2 bg-emerald-50 rounded-full transition-colors group-hover:bg-emerald-100">
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </div>
           </Link>
         </div>
 
-        {/* Scrollable Container (for mobile) */}
-        <div className="flex gap-8 overflow-x-auto pb-4 no-scrollbar sm:grid sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 sm:overflow-visible">
+        {/* Scrollable Container */}
+        <div className="flex gap-10 overflow-x-auto pb-6 no-scrollbar sm:grid sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 sm:overflow-visible">
           {categories.map((category, index) => (
             <Link 
               key={category.id || index}
               href={`/shop/search?category=${category.id}`} 
-              className="group flex flex-col items-center gap-4 min-w-[100px]"
+              className="group flex flex-col items-center gap-5 min-w-[110px]"
             >
               {/* Circle Image Wrapper */}
-              <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full p-1 border-2 border-transparent group-hover:border-blue-500 transition-all duration-300 shadow-sm group-hover:shadow-blue-100">
-                <div className="relative h-full w-full rounded-full overflow-hidden bg-slate-100 border-2 border-white shadow-inner">
+              <div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full p-1.5 border border-slate-100 bg-white shadow-sm group-hover:border-emerald-500 group-hover:shadow-xl group-hover:shadow-emerald-100/50 transition-all duration-500">
+                <div className="relative h-full w-full rounded-full overflow-hidden bg-emerald-50 shadow-inner">
                   {category.image ? (
                     <Image
                       src={category.image}
                       alt={category.name}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="object-cover transition-transform duration-700 group-hover:scale-115 group-hover:rotate-3"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-blue-50 text-blue-500">
-                      <Book size={32} />
+                    <div className="flex h-full w-full items-center justify-center bg-emerald-50 text-emerald-600">
+                      <Book size={32} strokeWidth={1.5} />
                     </div>
                   )}
                 </div>
+                
+                {/* Floating Decorative Element (Optional - for extra flair) */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white scale-0 group-hover:scale-100 transition-transform duration-300" />
               </div>
 
               {/* Category Name */}
-              <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600 text-center transition-colors">
-                {category.name}
-              </span>
+              <div className="space-y-1 text-center">
+                <p className="text-sm font-black text-slate-800 group-hover:text-emerald-700 transition-colors tracking-tight">
+                  {category.name}
+                </p>
+                <div className="h-0.5 w-0 bg-emerald-500 mx-auto group-hover:w-full transition-all duration-500" />
+              </div>
             </Link>
           ))}
         </div>

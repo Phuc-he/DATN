@@ -34,13 +34,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   })
 
   return (
-    <div className="bg-slate-50 min-h-screen">
+    <div className="bg-emerald-50 min-h-screen">
       <div className="container mx-auto px-4 md:px-8 py-10">
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">The Bookshop</h1>
-          <p className="text-slate-500 mt-2">Discover your next favorite story among our curated collection.</p>
+          <h1 className="text-4xl font-black text-slate-950 tracking-tight">The Bookshop</h1>
+          <p className="text-emerald-900 mt-2">Discover your next favorite story among our curated collection.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -62,7 +62,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             ) : (
               <div className="bg-white rounded-3xl p-20 text-center border border-dashed border-slate-200">
                 <p className="text-slate-400 font-medium">No books found matching your criteria.</p>
-                <Link href="/shop" className="text-blue-600 font-bold mt-2 inline-block hover:underline">
+                <Link href="/shop" className="text-emerald-600 font-bold mt-2 inline-block hover:underline">
                   Reset all filters
                 </Link>
               </div>

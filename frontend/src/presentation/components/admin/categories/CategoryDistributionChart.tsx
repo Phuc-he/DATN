@@ -50,16 +50,16 @@ export const CategoryDistributionChart = () => {
   const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981'];
 
   if (!isMounted || loading) {
-    return <div className="h-[500px] w-full bg-slate-50 animate-pulse rounded-3xl" />;
+    return <div className="h-[500px] w-full bg-emerald-50 animate-pulse rounded-3xl" />;
   }
 
   return (
     <div className="h-[500px] w-full bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
       <div className="flex flex-col mb-8">
-        <h3 className="font-black text-slate-900 uppercase tracking-tight text-sm">
+        <h3 className="font-black text-slate-950 uppercase tracking-tight text-sm">
           Category Distribution
         </h3>
-        <p className="text-xs text-slate-500 font-bold mt-1">Total books organized by category</p>
+        <p className="text-xs text-emerald-800 font-bold mt-1">Total books organized by category</p>
       </div>
 
       <div className="flex-1 h-[400px] w-full">

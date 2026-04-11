@@ -26,18 +26,18 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
       case OrderStatus.DELIVERED: return 'bg-green-100 text-green-700 border-green-200';
-      case OrderStatus.PROCESSING: return 'bg-blue-100 text-blue-700 border-blue-200';
+      case OrderStatus.PROCESSING: return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case OrderStatus.CANCELLED: return 'bg-red-100 text-red-700 border-red-200';
-      default: return 'bg-amber-100 text-amber-700 border-amber-200';
+      default: return 'bg-emerald-100 text-emerald-700 border-emerald-200';
     }
   };
   const details = getOrderStatusDetails(order.status);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
 
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-emerald-50/50">
           <div>
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
               Order Details <span className="text-slate-400 text-sm font-normal">#{order.id}</span>
@@ -47,7 +47,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -57,33 +57,33 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           {/* Information Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Customer Info */}
-            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/30">
-              <div className="flex items-center gap-2 text-blue-600 mb-3 font-bold text-xs uppercase tracking-wider">
+            <div className="p-4 rounded-xl border border-slate-100 bg-emerald-50">
+              <div className="flex items-center gap-2 text-emerald-600 mb-3 font-bold text-xs uppercase tracking-wider">
                 <User size={14} /> Recipient
               </div>
-              <p className="text-sm font-bold text-slate-900">{order.fullName}</p>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mt-2">
+              <p className="text-sm font-bold text-slate-950">{order.fullName}</p>
+              <div className="flex items-center gap-2 text-xs text-emerald-800 mt-2">
                 <Phone size={12} /> {order.phone}
               </div>
-              <div className="flex items-start gap-2 text-xs text-slate-500 mt-1">
+              <div className="flex items-start gap-2 text-xs text-emerald-800 mt-1">
                 <MapPin size={12} className="mt-0.5" />
                 <span className="leading-relaxed">{order.address}</span>
               </div>
             </div>
 
             {/* Account Info */}
-            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/30">
+            <div className="p-4 rounded-xl border border-slate-100 bg-emerald-50">
               <div className="flex items-center gap-2 text-purple-600 mb-3 font-bold text-xs uppercase tracking-wider">
                 <Hash size={14} /> Account
               </div>
-              <p className="text-xs text-slate-500">Username:</p>
+              <p className="text-xs text-emerald-800">Username:</p>
               <p className="text-sm font-medium">{order.user.username}</p>
-              <p className="text-xs text-slate-500 mt-2">Email:</p>
+              <p className="text-xs text-emerald-800 mt-2">Email:</p>
               <p className="text-sm font-medium truncate">{order.user.email}</p>
             </div>
 
             {/* Order Meta */}
-            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/30">
+            <div className="p-4 rounded-xl border border-slate-100 bg-emerald-50">
               <div className="flex items-center gap-2 text-orange-600 mb-3 font-bold text-xs uppercase tracking-wider">
                 <Truck size={14} /> Logistics
               </div>
@@ -104,7 +104,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                     <select
                       value={order.status}
                       onChange={(e) => onUpdateStatus(order.id!, Number(e.target.value))}
-                      className="appearance-none bg-white border border-slate-200 text-slate-700 text-[11px] font-bold rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 cursor-pointer hover:bg-slate-50 transition-colors"
+                      className="appearance-none bg-white border border-slate-200 text-slate-700 text-[11px] font-bold rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2 cursor-pointer hover:bg-emerald-50 transition-colors"
                     >
                       {Object.entries(OrderStatus)
                         .filter(([key]) => isNaN(Number(key))) // Filter out the numeric keys from the enum
@@ -131,17 +131,17 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             </h3>
             <div className="border border-slate-100 rounded-xl overflow-hidden">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 border-b border-slate-100">
+                <thead className="bg-emerald-50 border-b border-slate-100">
                   <tr>
-                    <th className="px-4 py-3 font-bold text-slate-500 uppercase text-[10px]">Product</th>
-                    <th className="px-4 py-3 font-bold text-slate-500 text-center uppercase text-[10px]">Qty</th>
-                    <th className="px-4 py-3 font-bold text-slate-500 text-right uppercase text-[10px]">Unit Price</th>
-                    <th className="px-4 py-3 font-bold text-slate-500 text-right uppercase text-[10px]">Total</th>
+                    <th className="px-4 py-3 font-bold text-emerald-800 uppercase text-[10px]">Product</th>
+                    <th className="px-4 py-3 font-bold text-emerald-800 text-center uppercase text-[10px]">Qty</th>
+                    <th className="px-4 py-3 font-bold text-emerald-800 text-right uppercase text-[10px]">Unit Price</th>
+                    <th className="px-4 py-3 font-bold text-emerald-800 text-right uppercase text-[10px]">Total</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {order.items.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={item.id} className="hover:bg-emerald-50/50 transition-colors">
                       <td className="px-4 py-3 flex items-center gap-3">
                         <div className="relative h-12 w-10 flex-shrink-0">
                           {/* Accessing book thumbnail - update path if different */}
@@ -173,7 +173,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                         )}
                         {(item.unitPrice - item.discount).toLocaleString()} VND
                       </td>
-                      <td className="px-4 py-3 text-right font-black text-slate-900">
+                      <td className="px-4 py-3 text-right font-black text-slate-950">
                         {calculateItemSubtotal(item).toLocaleString()} VND
                       </td>
                     </tr>
@@ -185,28 +185,28 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
           {/* Financial Totals */}
           <div className="flex justify-end pt-4">
-            <div className="w-full md:w-72 p-4 bg-slate-50 rounded-2xl space-y-3">
-              <div className="flex justify-between text-xs text-slate-500 font-medium">
+            <div className="w-full md:w-72 p-4 bg-emerald-50 rounded-2xl space-y-3">
+              <div className="flex justify-between text-xs text-emerald-800 font-medium">
                 <span>Items Subtotal:</span>
                 <span>{order.totalAmount.toLocaleString()} VND</span>
               </div>
-              <div className="flex justify-between text-xs text-slate-500 font-medium">
+              <div className="flex justify-between text-xs text-emerald-800 font-medium">
                 <span>Shipping Fee:</span>
                 <span className="text-slate-400 italic font-normal text-[10px]">Calculated at checkout</span>
               </div>
               <div className="pt-3 border-t border-slate-200 flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-900">Total Amount:</span>
-                <span className="text-xl font-black text-blue-600">{order.totalAmount.toLocaleString()} VND</span>
+                <span className="text-sm font-bold text-slate-950">Total Amount:</span>
+                <span className="text-xl font-black text-emerald-600">{order.totalAmount.toLocaleString()} VND</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+        <div className="px-6 py-4 bg-emerald-50 border-t border-slate-100 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-8 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-black shadow-lg transition-all active:scale-95"
+            className="px-8 py-2.5 bg-slate-950 text-white text-sm font-bold rounded-xl hover:bg-black shadow-lg transition-all active:scale-95"
           >
             Close Details
           </button>

@@ -15,14 +15,14 @@ export default function NewArrivalsPage() {
       try {
         setLoading(true);
         const data: Book[] = await AppProviders.GetAllBooksUseCase.execute();
-        
+
         // Sort by createdAt date (Newest first)
         const sorted = data.sort((a, b) => {
           const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
           const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
           return dateB - dateA;
         });
-        
+
         setProducts(sorted);
       } catch (error) {
         console.error("Failed to fetch new arrivals:", error);
@@ -37,8 +37,8 @@ export default function NewArrivalsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white gap-4">
-        <Loader2 className="animate-spin text-blue-600" size={40} />
-        <p className="text-slate-500 font-medium">Đang cập nhật sách mới...</p>
+        <Loader2 className="animate-spin text-emerald-600" size={40} />
+        <p className="text-emerald-900 font-medium">Đang cập nhật sách mới...</p>
       </div>
     );
   }
@@ -49,20 +49,20 @@ export default function NewArrivalsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="text-blue-500" fill="currentColor" size={24} />
-            <span className="text-blue-600 font-bold uppercase tracking-widest text-sm">
+            <Sparkles className="text-emerald-900" fill="currentColor" size={24} />
+            <span className="text-emerald-600 font-bold uppercase tracking-widest text-sm">
               Vừa cập bến
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900">
+          <h1 className="text-3xl md:text-4xl font-black text-slate-950">
             Sách Mới Phát Hành
           </h1>
-          <p className="text-slate-500 mt-2">
+          <p className="text-emerald-900 mt-2">
             Đừng bỏ lỡ những tựa sách mới nhất vừa được cập nhật trên kệ sách của chúng tôi.
           </p>
         </div>
-        
-        <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100">
+
+        <div className="flex items-center gap-3 px-4 py-2 bg-emerald-50 rounded-2xl border border-slate-100">
           <Calendar className="text-slate-400" size={18} />
           <span className="text-slate-600 font-black text-sm uppercase">
             {new Date().toLocaleDateString('vi-VN')}
@@ -78,7 +78,7 @@ export default function NewArrivalsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+        <div className="text-center py-20 bg-emerald-50 rounded-3xl border-2 border-dashed border-slate-200">
           <p className="text-slate-400">Hiện chưa có sản phẩm mới nào.</p>
         </div>
       )}

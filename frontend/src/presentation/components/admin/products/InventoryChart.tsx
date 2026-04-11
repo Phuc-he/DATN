@@ -22,17 +22,17 @@ export const InventoryChart = ({ products }: { products: Book[] }) => {
       .slice(0, 10); // Lấy top 10 sản phẩm báo động nhất
   }, [products, threshold]);
 
-  if (!isMounted) return <div className="h-96 w-full bg-slate-50 animate-pulse rounded-3xl" />;
+  if (!isMounted) return <div className="h-96 w-full bg-emerald-50 animate-pulse rounded-3xl" />;
 
   return (
     <div className="h-[500px] w-full bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
       {/* Header & Tool */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h3 className="font-black text-slate-900 uppercase tracking-tight text-sm">
+          <h3 className="font-black text-slate-950 uppercase tracking-tight text-sm">
             Low Stock Alert
           </h3>
-          <p className="text-xs text-slate-500 font-bold mt-1">Products below threshold</p>
+          <p className="text-xs text-emerald-800 font-bold mt-1">Products below threshold</p>
         </div>
 
         {/* Filter Tool */}

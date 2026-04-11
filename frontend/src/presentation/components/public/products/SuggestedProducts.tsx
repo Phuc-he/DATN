@@ -12,18 +12,18 @@ export const SuggestedProducts: React.FC<SuggestedProductsProps> = ({ suggestion
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="mt-20 border-t border-slate-100 pt-16 bg-slate-50">
+    <div className="mt-20 border-t border-slate-100 pt-16 bg-emerald-50">
       <div className="flex flex-col items-center justify-center mb-10 text-center">
         <div>
-          <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+          <h3 className="text-2xl font-black text-slate-950 uppercase tracking-tight">
             Customers also bought
           </h3>
-          <p className="text-slate-500 mt-2 font-medium">
+          <p className="text-emerald-800 mt-2 font-medium">
             Based on purchase history from other readers
           </p>
         </div>
 
-        <div className="hidden md:block h-1 w-24 bg-blue-600 rounded-full mb-2" />
+        <div className="hidden md:block h-1 w-24 bg-emerald-600 rounded-full mb-2" />
       </div>
 
       {/* Grid hiển thị 4 sản phẩm mỗi hàng */}

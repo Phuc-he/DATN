@@ -5,14 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 // 1. params.id is always a string from the URL
 interface AuthorPageProps {
-  params: Promise<{ id: string }>; 
+  params: Promise<{ id: string }>;
 }
 
 export default async function AuthorDetailPage({ params }: AuthorPageProps) {
   // 2. Await the params object
   const resolvedParams = await params;
   const idString = resolvedParams.id;
-  
+
   // 3. Convert to number for your Backend/UseCase
   const authorId = parseInt(idString, 10);
 
@@ -25,7 +25,7 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
   // 1. Fetch Author data and their Books
   const [author, paginatedBooks] = await Promise.all([
     AppProviders.GetAuthorUseCase.execute(authorId),
-    AppProviders.GetBooksByAuthorUseCase.execute(authorId, 0, 10), 
+    AppProviders.GetBooksByAuthorUseCase.execute(authorId, 0, 10),
   ]);
 
   const authorBooks = paginatedBooks.content;
@@ -34,7 +34,7 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
         <h1 className="text-2xl font-bold text-slate-800">Author not found</h1>
-        <Link href="/authors" className="mt-4 text-blue-600 hover:underline flex items-center gap-2">
+        <Link href="/authors" className="mt-4 text-emerald-600 hover:underline flex items-center gap-2">
           <ArrowLeft size={18} /> Back to all authors
         </Link>
       </div>
@@ -47,7 +47,7 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
       <nav className="container mx-auto px-8 py-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-900 hover:text-emerald-600 transition-colors"
         >
           <ArrowLeft size={16} /> Back to Home
         </Link>
@@ -55,13 +55,13 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
 
       {/* 3. Author Hero Section */}
       <section className="container mx-auto px-8 mb-16">
-        <div className="relative bg-slate-900 rounded-[2rem] overflow-hidden p-8 md:p-16 text-white flex flex-col md:flex-row gap-12 items-center">
+        <div className="relative bg-slate-950 rounded-[2rem] overflow-hidden p-8 md:p-16 text-white flex flex-col md:flex-row gap-12 items-center">
           {/* Abstract Background Decoration */}
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-500/10 to-transparent pointer-events-none" />
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-500/10 to-transparent pointer-events-none" />
 
           {/* Profile Image */}
           <div className="relative z-10 w-48 h-48 md:w-64 md:h-64 flex-shrink-0">
-            <div className="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-20 animate-pulse" />
+            <div className="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-20 animate-pulse" />
             <div className="relative h-full w-full rounded-full border-4 border-white/10 p-2 overflow-hidden bg-slate-800">
               {author.profileImage ? (
                 <Image
@@ -81,10 +81,10 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
           {/* Bio Content */}
           <div className="relative z-10 flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
-              <span className="bg-blue-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+              <span className="bg-emerald-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
                 Verified Author
               </span>
-              <Award size={18} className="text-amber-400" />
+              <Award size={18} className="text-emerald-400" />
             </div>
 
             <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
@@ -97,10 +97,10 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
 
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
-                <BookOpen size={20} className="text-blue-400" />
+                <BookOpen size={20} className="text-emerald-400" />
                 <span className="font-bold">{authorBooks.length} Published Books</span>
               </div>
-              <button className="flex items-center gap-2 bg-white text-slate-900 px-6 py-2 rounded-xl font-bold hover:bg-blue-50 transition-colors">
+              <button className="flex items-center gap-2 bg-white text-slate-950 px-6 py-2 rounded-xl font-bold hover:bg-emerald-50 transition-colors">
                 <Share2 size={18} />
                 Share Profile
               </button>
@@ -121,10 +121,10 @@ export default async function AuthorDetailPage({ params }: AuthorPageProps) {
             viewAllHref={`/shop/search?author=${author.id}`}
           />
         ) : (
-          <div className="py-20 text-center bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
+          <div className="py-20 text-center bg-emerald-50 rounded-[2rem] border-2 border-dashed border-slate-200">
             <BookOpen size={48} className="mx-auto text-slate-300 mb-4" />
             <h3 className="text-xl font-bold text-slate-800">No books listed yet</h3>
-            <p className="text-slate-500">We are currently cataloging this author&apos;s library.</p>
+            <p className="text-emerald-900">We are currently cataloging this author&apos;s library.</p>
           </div>
         )}
       </div>

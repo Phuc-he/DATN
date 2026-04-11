@@ -51,9 +51,9 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <div className="flex flex-col w-64 h-screen bg-slate-900 text-slate-100 border-r border-slate-800 relative">
+    <div className="flex flex-col w-64 h-screen bg-slate-950 text-slate-100 border-r border-slate-800 relative">
       <div className="flex items-center justify-between px-4 h-20 border-b border-slate-800">
-        <h1 className="text-xl font-bold tracking-wider text-blue-400 uppercase">
+        <h1 className="text-xl font-bold tracking-wider text-emerald-400 uppercase">
           Admin
         </h1>
         
@@ -64,7 +64,7 @@ const AdminSidebar = () => {
               setShowNotifications(!showNotifications);
               setUnreadCount(0);
             }}
-            className="p-2 text-slate-400 hover:text-blue-400 transition-colors relative"
+            className="p-2 text-slate-400 hover:text-emerald-400 transition-colors relative"
           >
             <Bell size={22} />
             {unreadCount > 0 && (
@@ -81,17 +81,17 @@ const AdminSidebar = () => {
                 Recent Activity Logs
               </div>
               {logs.length === 0 ? (
-                <div className="p-4 text-center text-slate-500 text-sm">No recent activity</div>
+                <div className="p-4 text-center text-emerald-800 text-sm">No recent activity</div>
               ) : (
                 logs.map((log, index) => (
                   <div key={index} className="p-3 border-b border-slate-700 hover:bg-slate-750 transition-colors">
                     <div className="flex justify-between items-start">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        log.action.includes('DELETE') ? 'bg-red-900/40 text-red-400' : 'bg-blue-900/40 text-blue-400'
+                        log.action.includes('DELETE') ? 'bg-red-900/40 text-red-400' : 'bg-emerald-900/40 text-emerald-400'
                       }`}>
                         {log.action}
                       </span>
-                      <span className="text-[10px] text-slate-500 flex items-center">
+                      <span className="text-[10px] text-emerald-800 flex items-center">
                         <Clock size={10} className="mr-1" /> Just now
                       </span>
                     </div>
@@ -110,9 +110,9 @@ const AdminSidebar = () => {
           <a
             key={item.name}
             href={item.path}
-            className="flex items-center px-4 py-3 transition-colors rounded-lg hover:bg-slate-800 hover:text-blue-400 group"
+            className="flex items-center px-4 py-3 transition-colors rounded-lg hover:bg-slate-800 hover:text-emerald-400 group"
           >
-            <span className="text-slate-400 group-hover:text-blue-400">
+            <span className="text-slate-400 group-hover:text-emerald-400">
               {item.icon}
             </span>
             <span className="ml-3 font-medium">{item.name}</span>

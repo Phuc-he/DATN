@@ -37,7 +37,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
         );
       default:
         return (
-          <span className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold uppercase border border-slate-100">
+          <span className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-bold uppercase border border-slate-100">
             <Tag size={10} /> Normal
           </span>
         );
@@ -47,19 +47,19 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+        <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Book</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventory</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Book</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Type</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Category</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Inventory</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Price</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
           {products.map((book) => (
-            <tr key={book.id} className="hover:bg-slate-50 transition-colors group">
+            <tr key={book.id} className="hover:bg-emerald-50 transition-colors group">
               {/* Image & Title */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -77,16 +77,16 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
                       </div>
                     )}
                     {book.isNotable && (
-                      <div className="absolute -top-2 -left-2 bg-amber-400 text-white p-1 rounded-full shadow-sm border border-white z-10">
+                      <div className="absolute -top-2 -left-2 bg-emerald-400 text-white p-1 rounded-full shadow-sm border border-white z-10">
                         <Star size={10} fill="currentColor" />
                       </div>
                     )}
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-bold text-slate-900 truncate max-w-[180px]">
+                    <div className="text-sm font-bold text-slate-950 truncate max-w-[180px]">
                       {book.title}
                     </div>
-                    <div className="text-xs text-slate-500 italic">
+                    <div className="text-xs text-emerald-800 italic">
                       by {book.author?.name || 'Unknown Author'}
                     </div>
                   </div>
@@ -100,7 +100,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
 
               {/* Category */}
               <td className="px-6 py-4 whitespace-nowrap">
-                <span className="px-2 py-1 rounded bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-tight">
+                <span className="px-2 py-1 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-tight">
                   {book.category?.name || 'Uncategorized'}
                 </span>
               </td>
@@ -118,7 +118,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
 
               {/* Price & Discount */}
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-bold text-slate-900">
+                <div className="text-sm font-bold text-slate-950">
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(book.price)}
                 </div>
                 {book.discount > 0 ? (
@@ -135,7 +135,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
                 <div className="flex justify-end gap-1">
                   <button
                     onClick={() => onEdit(book)}
-                    className="text-slate-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-lg transition-all"
+                    className="text-slate-400 hover:text-emerald-600 p-2 hover:bg-emerald-50 rounded-lg transition-all"
                     title="Edit Book"
                   >
                     <Edit size={18} />

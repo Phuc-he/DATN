@@ -38,7 +38,7 @@ const UserMenu = () => {
         {currUser?.avatar ? (
           <Image className="h-10 w-10 rounded-full object-cover" src={currUser?.avatar || ''} alt={currUser?.username || ''} width={40} height={40} />
         ) : (
-          <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+          <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-emerald-800">
             <User size={20} />
           </div>
         )}

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Book } from '@/src/domain/entity/book.entity';
-import ProductCard from './ProductCard'; // Assuming the previous component is in the same folder
+import ProductCard from './ProductCard';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
@@ -21,24 +21,28 @@ const ProductSection: React.FC<ProductSectionProps> = ({
 }) => {
   const handleAddToCart = () => {
     console.log("Added to cart!");
-    // In the future, call your useCart() hook here
   };
+
   return (
-    <section className="py-12 px-8 bg-white">
+    <section className="py-20 px-8 bg-white">
       <div className="container mx-auto">
 
         {/* Section Header */}
-        <div className="flex justify-between items-end mb-10">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-[0.2em]">
-              <Sparkles size={14} />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-emerald-700 font-black text-[10px] uppercase tracking-[0.3em]">
+              <div className="h-px w-8 bg-emerald-200" />
+              <Sparkles size={14} className="text-emerald-900" />
               Curated Collection
             </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+
+            <h2 className="text-4xl font-black text-slate-950 tracking-tighter">
               {title}
+              <span className="text-emerald-600">.</span>
             </h2>
+
             {subtitle && (
-              <p className="text-slate-500 text-sm max-w-md">
+              <p className="text-emerald-800 text-base max-w-lg font-medium leading-relaxed">
                 {subtitle}
               </p>
             )}
@@ -46,32 +50,36 @@ const ProductSection: React.FC<ProductSectionProps> = ({
 
           <Link
             href={viewAllHref}
-            className="hidden sm:flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-blue-600 transition-colors group"
+            className="hidden sm:flex items-center gap-3 text-sm font-black text-slate-950 hover:text-emerald-700 transition-all group py-2 px-4 rounded-full hover:bg-emerald-50"
           >
-            View All
+            Explore All
             <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
           {products.slice(0, 5).map((product, index) => (
-            <ProductCard
+            <div
               key={product.id || `product-${index}`}
-              product={product}
-              // Pass the internal handler, not one from props
-              onAddToCart={handleAddToCart}
-            />
+              className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <ProductCard
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            </div>
           ))}
         </div>
 
         {/* Mobile View All Button */}
-        <div className="mt-10 sm:hidden">
+        <div className="mt-12 sm:hidden">
           <Link
             href={viewAllHref}
-            className="flex items-center justify-center gap-2 w-full py-4 border border-slate-200 rounded-xl font-bold text-slate-700"
+            className="flex items-center justify-center gap-2 w-full py-5 bg-slate-950 text-white rounded-2xl font-bold shadow-xl shadow-slate-200 active:scale-95 transition-transform"
           >
-            View All Products
+            View Full Collection
             <ArrowRight size={18} />
           </Link>
         </div>

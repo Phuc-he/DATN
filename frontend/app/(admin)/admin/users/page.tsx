@@ -44,7 +44,7 @@ const UserManagementPage = () => {
     try {
       await AppProviders.UpdateUserHistoryStatusUseCase.execute();
       await logAction("MAINTENANCE", "User", "Triggered bulk history status synchronization");
-      
+
       // Refresh the current page to see updated statuses
       await fetchUsers(currentPage);
       alert("Đã cập nhật trạng thái lịch sử mua hàng cho toàn bộ người dùng!");
@@ -102,23 +102,23 @@ const UserManagementPage = () => {
   };
 
   return (
-    <div className="p-8 bg-slate-50 min-h-screen">
-      <UserModal 
-        key={selectedUser?.id || 'new-user'} 
-        isOpen={isModalOpen} 
-        initialData={selectedUser} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={handleSave} 
+    <div className="p-8 bg-emerald-50 min-h-screen">
+      <UserModal
+        key={selectedUser?.id || 'new-user'}
+        isOpen={isModalOpen}
+        initialData={selectedUser}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSave}
       />
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Users className="text-blue-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
+            <Users className="text-emerald-600" size={24} />
+            <h1 className="text-2xl font-bold text-slate-950">User Management</h1>
           </div>
-          <p className="text-sm text-slate-500">Manage and oversee your application users and permissions.</p>
+          <p className="text-sm text-emerald-900">Manage and oversee your application users and permissions.</p>
         </div>
 
         <div className="flex gap-3">
@@ -126,7 +126,7 @@ const UserManagementPage = () => {
           <button
             onClick={handleSyncHistoryStatus}
             disabled={syncing}
-            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 hover:bg-emerald-50 px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95 disabled:opacity-50"
             title="Recalculate all user history statuses"
           >
             <RefreshCw size={18} className={syncing ? "animate-spin" : ""} />
@@ -135,7 +135,7 @@ const UserManagementPage = () => {
 
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
           >
             <Plus size={20} />
             Add New User
@@ -145,12 +145,12 @@ const UserManagementPage = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
         </div>
       ) : (
         <>
           <div className="mb-4 flex justify-between items-center">
-            <span className="text-sm text-slate-500 font-medium">
+            <span className="text-sm text-emerald-900 font-medium">
               Registered Users: {users.length}
             </span>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
@@ -169,19 +169,19 @@ const UserManagementPage = () => {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => prev - 1)}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
               Previous
             </button>
 
-            <div className="flex items-center px-4 bg-blue-600 rounded-lg text-white font-bold shadow-inner">
+            <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
               {currentPage}
             </div>
 
             <button
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage(prev => prev + 1)}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-slate-50 transition-colors shadow-sm font-medium"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
               Next
             </button>

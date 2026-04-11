@@ -130,16 +130,16 @@ export const ChatWidget = () => {
         <div className="mb-4 w-80 md:w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
 
           {/* Header */}
-          <div className="bg-blue-600 p-4 text-white flex justify-between items-center shadow-md">
+          <div className="bg-emerald-600 p-4 text-white flex justify-between items-center shadow-md">
             <div className="flex items-center gap-2">
               <div className="bg-white/20 p-1.5 rounded-lg relative">
                 <Bot size={20} />
                 {/* Visual Connection Indicator */}
-                <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-blue-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-emerald-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
               </div>
               <div>
                 <h3 className="font-bold text-sm">Hỗ trợ trực tuyến</h3>
-                <p className="text-[10px] text-blue-100 flex items-center gap-1">
+                <p className="text-[10px] text-emerald-700 flex items-center gap-1">
                   {isConnected ? (
                     <><span className="h-1.5 w-1.5 bg-green-400 rounded-full animate-pulse"></span> AI Assistant Online</>
                   ) : (
@@ -154,10 +154,10 @@ export const ChatWidget = () => {
           </div>
 
           {/* Messages Area */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-emerald-50">
             {isFetchingHistory ? (
               <div className="flex flex-col items-center justify-center h-full gap-2">
-                <Loader2 size={24} className="animate-spin text-blue-500" />
+                <Loader2 size={24} className="animate-spin text-emerald-900" />
                 <p className="text-[10px] text-slate-400">Đang tải lịch sử...</p>
               </div>
             ) : (
@@ -165,14 +165,14 @@ export const ChatWidget = () => {
                 {messages.length === 0 && (
                   <div className="text-center py-10">
                     <Bot size={40} className="mx-auto text-slate-300 mb-2" />
-                    <p className="text-slate-500 text-sm">Chào bạn! Tôi có thể giúp gì cho bạn?</p>
+                    <p className="text-emerald-800 text-sm">Chào bạn! Tôi có thể giúp gì cho bạn?</p>
                   </div>
                 )}
 
                 {messages.map((msg, idx) => (
                   <div key={idx} className={`flex ${msg.sender === MessageSender.USER ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${msg.sender === MessageSender.USER
-                      ? 'bg-blue-600 text-white rounded-tr-none'
+                      ? 'bg-emerald-600 text-white rounded-tr-none'
                       : 'bg-white text-slate-800 border border-slate-100 rounded-tl-none'
                       }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -182,8 +182,8 @@ export const ChatWidget = () => {
                           href={`/products/${msg.relatedBook.id}`}
                           className="mt-2 pt-2 border-t border-black/10 flex items-center gap-2 hover:opacity-80 transition-opacity group"
                         >
-                          <BookOpen size={12} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                          <span className="text-[10px] font-bold underline cursor-pointer text-blue-600">
+                          <BookOpen size={12} className="text-emerald-900 group-hover:scale-110 transition-transform" />
+                          <span className="text-[10px] font-bold underline cursor-pointer text-emerald-600">
                             Xem sách: {msg.relatedBook.title}
                           </span>
                         </Link>
@@ -215,14 +215,14 @@ export const ChatWidget = () => {
               <input
                 type="text"
                 placeholder="Nhập tin nhắn..."
-                className="w-full pl-4 pr-12 py-2.5 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all"
+                className="w-full pl-4 pr-12 py-2.5 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm transition-all"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
               <button
                 type="submit"
                 disabled={!inputValue.trim() || !isConnected}
-                className="absolute right-1.5 top-1.5 p-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all active:scale-90"
+                className="absolute right-1.5 top-1.5 p-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-all active:scale-90"
               >
                 <Send size={16} />
               </button>
@@ -234,7 +234,7 @@ export const ChatWidget = () => {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`p-4 rounded-full shadow-2xl transition-all duration-300 active:scale-90 flex items-center justify-center ${isOpen ? 'bg-slate-800 text-white rotate-90' : 'bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-1'
+        className={`p-4 rounded-full shadow-2xl transition-all duration-300 active:scale-90 flex items-center justify-center ${isOpen ? 'bg-slate-800 text-white rotate-90' : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:-translate-y-1'
           }`}
       >
         {isOpen ? <X size={28} /> : <MessageCircle size={28} />}

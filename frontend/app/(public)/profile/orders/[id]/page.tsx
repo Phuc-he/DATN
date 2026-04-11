@@ -47,7 +47,7 @@ export default function OrderDetailsPage() {
       socket.onopen = () => socket.send(`joinOrderRoom:${order.id}`);
       socket.onmessage = (event) => {
         if (event.data === "PAYMENT_SUCCESS") {
-          window.location.reload(); 
+          window.location.reload();
         }
       };
       return () => socket.close();
@@ -85,9 +85,9 @@ export default function OrderDetailsPage() {
   const qrUrl = `https://img.vietqr.io/image/vcb-123456789-compact2.png?amount=${order.totalAmount}&addInfo=DH${order.id}`;
 
   return (
-    <div className="bg-slate-50 min-h-screen py-12 px-4">
+    <div className="bg-emerald-50 min-h-screen py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold mb-8 group">
+        <button onClick={() => router.back()} className="flex items-center gap-2 text-emerald-900 hover:text-slate-950 font-bold mb-8 group">
           <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           Quay lại đơn hàng của tôi
         </button>
@@ -101,13 +101,13 @@ export default function OrderDetailsPage() {
             <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
               <div className="flex flex-wrap justify-between items-start gap-4 mb-8">
                 <div>
-                  <h1 className="text-2xl font-black text-slate-900 mb-1">Chi tiết đơn hàng</h1>
-                  <p className="text-slate-400 font-medium text-sm">Mã đơn: <span className="text-slate-900 font-bold">#{order.id}</span></p>
+                  <h1 className="text-2xl font-black text-slate-950 mb-1">Chi tiết đơn hàng</h1>
+                  <p className="text-slate-400 font-medium text-sm">Mã đơn: <span className="text-slate-950 font-bold">#{order.id}</span></p>
                 </div>
                 <div className={`px-4 py-2 rounded-2xl border font-black text-xs uppercase tracking-widest flex items-center gap-2 
                   ${order.status === OrderStatus.PAID || order.status === OrderStatus.DELIVERED ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
                     order.status === OrderStatus.CANCELLED ? 'bg-red-50 border-red-100 text-red-600' :
-                      'bg-amber-50 border-amber-100 text-amber-600'}`}>
+                      'bg-emerald-50 border-emerald-100 text-emerald-600'}`}>
                   {order.status === OrderStatus.PAID || order.status === OrderStatus.DELIVERED ? <CheckCircle2 size={16} /> :
                     order.status === OrderStatus.CANCELLED ? <XCircle size={16} /> : <Clock size={16} />}
                   {statusInfo.label}
@@ -116,7 +116,7 @@ export default function OrderDetailsPage() {
 
               {/* --- ITEMS SECTION --- */}
               <div className="space-y-6">
-                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                <h3 className="text-lg font-black text-slate-950 flex items-center gap-2">
                   <Package size={20} className="text-indigo-600" />
                   Sản phẩm đã đặt ({order.items.length})
                 </h3>
@@ -133,7 +133,7 @@ export default function OrderDetailsPage() {
                             className="object-cover"
                           />
                         ) : (
-                          <div className="h-full w-full bg-slate-50 flex items-center justify-center text-slate-300">
+                          <div className="h-full w-full bg-emerald-50 flex items-center justify-center text-slate-300">
                             <BookOpen size={24} />
                           </div>
                         )}
@@ -141,17 +141,17 @@ export default function OrderDetailsPage() {
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="font-bold text-slate-900 truncate">
+                        <p className="font-bold text-slate-950 truncate">
                           {item.book?.title || "Sản phẩm không xác định"}
                         </p>
-                        <p className="text-sm text-slate-500 font-medium">
+                        <p className="text-sm text-emerald-900 font-medium">
                           Số lượng: {item.quantity}
                         </p>
                       </div>
 
                       {/* Pricing */}
                       <div className="text-right">
-                        <p className="font-black text-slate-900">
+                        <p className="font-black text-slate-950">
                           {(item.unitPrice * item.quantity).toLocaleString('vi-VN')}đ
                         </p>
                         <p className="text-xs text-slate-400">
@@ -166,8 +166,8 @@ export default function OrderDetailsPage() {
           </div>
 
           <div className="space-y-6">
-             {/* ... Right column (Total & Actions) keeps here */}
-             <div className="bg-indigo-600 rounded-3xl p-8 text-white shadow-lg">
+            {/* ... Right column (Total & Actions) keeps here */}
+            <div className="bg-indigo-600 rounded-3xl p-8 text-white shadow-lg">
               <h3 className="text-lg font-bold mb-6">Tổng kết đơn hàng</h3>
               <div className="flex justify-between font-bold">
                 <span>Tổng thanh toán</span>
@@ -176,7 +176,7 @@ export default function OrderDetailsPage() {
             </div>
 
             <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
-              <h3 className="text-lg font-black text-slate-900 mb-4 text-sm uppercase tracking-widest">Thao tác</h3>
+              <h3 className="text-lg font-black text-slate-950 mb-4 text-sm uppercase tracking-widest">Thao tác</h3>
               {canCancel ? (
                 <button
                   onClick={handleCancelOrder}

@@ -56,19 +56,19 @@ const ProductModal: React.FC<ProductModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <BookOpen className="text-blue-600" size={20} />
+            <BookOpen className="text-emerald-600" size={20} />
             <h2 className="text-xl font-bold text-slate-800">
               {initialData ? 'Edit Book' : 'Add New Book'}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -78,7 +78,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             {/* Left Column: Image & Status */}
             <div className="md:col-span-1 space-y-4">
               <label className="text-sm font-semibold text-slate-700 block">Book Cover</label>
-              <div className="relative aspect-[3/4] w-full rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border-2 border-dashed border-slate-200 overflow-hidden">
+              <div className="relative aspect-[3/4] w-full rounded-xl bg-emerald-50 flex items-center justify-center text-slate-300 border-2 border-dashed border-slate-200 overflow-hidden">
                 {formData.imageUrl ? (
                   <Image src={formData.imageUrl} alt="Preview" fill className="object-cover" />
                 ) : (
@@ -95,20 +95,20 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 onClick={() => setFormData({ ...formData, isNotable: !formData.isNotable })}
                 className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
                   formData.isNotable 
-                    ? 'bg-amber-50 border-amber-200 shadow-sm' 
-                    : 'bg-slate-50 border-transparent opacity-70 hover:opacity-100'
+                    ? 'bg-emerald-50 border-emerald-200 shadow-sm' 
+                    : 'bg-emerald-50 border-transparent opacity-70 hover:opacity-100'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${formData.isNotable ? 'bg-amber-400 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                  <div className={`p-2 rounded-lg ${formData.isNotable ? 'bg-emerald-400 text-white' : 'bg-slate-200 text-slate-400'}`}>
                     <Star size={18} fill={formData.isNotable ? "currentColor" : "none"} />
                   </div>
                   <div>
                     <p className="text-xs font-black uppercase tracking-wider text-slate-700">Notable Work</p>
-                    <p className="text-[10px] text-slate-500 font-bold">Featured badge</p>
+                    <p className="text-[10px] text-emerald-800 font-bold">Featured badge</p>
                   </div>
                 </div>
-                <div className={`w-10 h-5 rounded-full relative transition-colors ${formData.isNotable ? 'bg-amber-400' : 'bg-slate-300'}`}>
+                <div className={`w-10 h-5 rounded-full relative transition-colors ${formData.isNotable ? 'bg-emerald-400' : 'bg-slate-300'}`}>
                    <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${formData.isNotable ? 'left-6' : 'left-1'}`} />
                 </div>
               </div>
@@ -118,7 +118,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2 space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Book Title</label>
-                <input required type="text" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                <input required type="text" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.title || ''} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
               </div>
 
@@ -151,7 +151,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Category</label>
-                <select required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                <select required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                   value={formData.category?.id || ''} 
                   onChange={(e) => {
                     const cat = categories.find(c => c.id === Number(e.target.value));
@@ -164,7 +164,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Author</label>
-                <select required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                <select required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                   value={formData.author?.id || ''} 
                   onChange={(e) => {
                     const auth = authors.find(a => a.id === Number(e.target.value));
@@ -177,27 +177,27 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Price (VND)</label>
-                <input required type="number" step="0.01" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                <input required type="number" step="0.01" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.price || 0} onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })} />
               </div>
 
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Stock</label>
-                <input required type="number" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                <input required type="number" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                   value={formData.stock || 0} onChange={(e) => setFormData({ ...formData, stock: Number(e.target.value) })} />
               </div>
 
               <div className="md:col-span-2 space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Description</label>
-                <textarea rows={3} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                <textarea rows={3} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
                   value={formData.description || ''} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
               </div>
             </div>
           </div>
 
           <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
-            <button type="button" onClick={onClose} className="px-6 py-2 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition-colors">Cancel</button>
-            <button type="submit" className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95">
+            <button type="button" onClick={onClose} className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors">Cancel</button>
+            <button type="submit" className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all active:scale-95">
               {initialData ? 'Update Book' : 'Create Book'}
             </button>
           </div>

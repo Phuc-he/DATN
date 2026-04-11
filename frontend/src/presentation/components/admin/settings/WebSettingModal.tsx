@@ -61,19 +61,19 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <Settings className="text-blue-600" size={20} />
+            <Settings className="text-emerald-600" size={20} />
             <h2 className="text-xl font-bold text-slate-800">
               {initialData ? 'Update Web Settings' : 'Create Web Settings'}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -82,7 +82,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
           {/* Logo Upload Section */}
           <div className="space-y-1">
             <label className="text-sm font-semibold text-slate-700">Brand Logo</label>
-            <div className="flex items-center gap-4 p-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+            <div className="flex items-center gap-4 p-4 border-2 border-dashed border-slate-200 rounded-xl bg-emerald-50/50">
               {formData.logoUrl ? (
                 <div className="relative group">
                   <Image 
@@ -116,7 +116,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
                 />
                 <label 
                   htmlFor="logo-upload" 
-                  className="inline-block px-4 py-2 bg-white border border-slate-200 text-slate-600 text-sm font-semibold rounded-lg cursor-pointer hover:bg-slate-50 transition-colors shadow-sm"
+                  className="inline-block px-4 py-2 bg-white border border-slate-200 text-slate-600 text-sm font-semibold rounded-lg cursor-pointer hover:bg-emerald-50 transition-colors shadow-sm"
                 >
                   {formData.logoUrl ? 'Change Image' : 'Choose Image'}
                 </label>
@@ -133,7 +133,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
             <input
               required
               type="text"
-              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
               value={formData.webName}
               onChange={(e) => setFormData({ ...formData, webName: e.target.value })}
             />
@@ -147,7 +147,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
               <input
                 type="text"
                 placeholder="e.g. BookOpen"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none font-mono"
                 value={formData.headerIcon}
                 onChange={(e) => setFormData({ ...formData, headerIcon: e.target.value })}
               />
@@ -159,7 +159,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
               </label>
               <input
                 type="email"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
                 value={formData.contactEmail}
                 onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
               />
@@ -170,7 +170,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
             <label className="text-sm font-semibold text-slate-700">Footer Text</label>
             <textarea
               rows={2}
-              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
               value={formData.footerText}
               onChange={(e) => setFormData({ ...formData, footerText: e.target.value })}
             />
@@ -180,7 +180,7 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
             <input
               type="checkbox"
               id="isActive"
-              className="w-5 h-5 accent-blue-600 rounded"
+              className="w-5 h-5 accent-emerald-600 rounded"
               checked={formData.isActive}
               onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
             />
@@ -193,13 +193,13 @@ const WebSettingModal: React.FC<WebSettingModalProps> = ({ isOpen, onClose, onSa
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg"
+              className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition-all flex items-center gap-2"
+              className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all flex items-center gap-2"
             >
               <CheckCircle2 size={18} />
               {initialData ? 'Update Settings' : 'Create Settings'}

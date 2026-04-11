@@ -15,17 +15,17 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+        <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Author</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Biography</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">ID</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Author</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Biography</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">ID</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
           {authors.map((author) => (
-            <tr key={author.id} className="hover:bg-slate-50 transition-colors">
+            <tr key={author.id} className="hover:bg-emerald-50 transition-colors">
               {/* Profile Image & Name */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -45,8 +45,8 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
                     )}
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-bold text-slate-900">{author.name}</div>
-                    <div className="text-xs text-blue-600 flex items-center gap-1 mt-0.5">
+                    <div className="text-sm font-bold text-slate-950">{author.name}</div>
+                    <div className="text-xs text-emerald-600 flex items-center gap-1 mt-0.5">
                       <PenTool size={10} /> Published Writer
                     </div>
                   </div>
@@ -64,7 +64,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
               </td>
 
               {/* Author ID */}
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-800 font-mono">
                 #{author.id}
               </td>
 
@@ -73,7 +73,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
                 <div className="flex justify-end gap-2">
                   <button 
                     onClick={() => onEdit(author)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all active:scale-90"
+                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all active:scale-90"
                     title="Edit Author"
                   >
                     <Edit size={18} />
@@ -93,7 +93,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
           
           {authors.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-6 py-10 text-center text-slate-500 italic">
+              <td colSpan={4} className="px-6 py-10 text-center text-emerald-800 italic">
                 No authors found in the database.
               </td>
             </tr>

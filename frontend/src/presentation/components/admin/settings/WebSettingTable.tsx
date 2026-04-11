@@ -34,19 +34,19 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
-        <thead className="bg-slate-50">
+        <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Website</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Appearance</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Contact & Footer</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Last Updated</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Website</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Appearance</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Contact & Footer</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Last Updated</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
           {settings.map((setting) => (
-            <tr key={setting.id} className="hover:bg-slate-50 transition-colors">
+            <tr key={setting.id} className="hover:bg-emerald-50 transition-colors">
 
               {/* Web Name & Logo Preview */}
               <td className="px-6 py-4 whitespace-nowrap">
@@ -59,7 +59,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-slate-900">{setting.webName}</span>
+                    <span className="text-sm font-bold text-slate-950">{setting.webName}</span>
                     <span className="text-[10px] text-slate-400 font-mono">ID: {setting.id}</span>
                   </div>
                 </div>
@@ -68,7 +68,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
               {/* Icon & Appearance */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <div className="p-1.5 bg-blue-50 text-blue-600 rounded-md">
+                  <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-md">
                     {renderIcon(setting.headerIcon)}
                   </div>
                   <span className="font-medium">{setting.headerIcon || 'Default'}</span>
@@ -90,7 +90,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
 
               {/* Last Updated */}
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <div className="flex items-center gap-1.5 text-xs text-emerald-800">
                   <Clock size={14} className="text-slate-300" />
                   <span>
                     {setting.updatedAt
@@ -107,7 +107,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
                     <CheckCircle size={10} /> LIVE
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-500 border border-slate-200">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-emerald-800 border border-slate-200">
                     <XCircle size={10} /> DRAFT
                   </span>
                 )}
@@ -117,7 +117,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
                   onClick={() => onEdit(setting)}
-                  className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-all active:scale-90 mr-1"
+                  className="text-emerald-600 hover:text-emerald-900 p-2 hover:bg-emerald-50 rounded-lg transition-all active:scale-90 mr-1"
                   title="Edit Settings"
                 >
                   <Edit size={18} />

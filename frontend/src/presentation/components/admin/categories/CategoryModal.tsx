@@ -50,18 +50,18 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSave, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-slate-950">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <Layers className="text-blue-600" size={20} />
+            <Layers className="text-emerald-600" size={20} />
             <h2 className="text-xl font-bold text-slate-800">
               {initialData ? 'Edit Category' : 'Add Category'}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-emerald-800" />
           </button>
         </div>
 
@@ -79,13 +79,13 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSave, 
                     className="rounded-xl object-cover border border-slate-200"
                   />
                 ) : (
-                  <div className="h-full w-full rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border-2 border-dashed border-slate-200">
+                  <div className="h-full w-full rounded-xl bg-emerald-50 flex items-center justify-center text-slate-300 border-2 border-dashed border-slate-200">
                     <ImageIcon size={24} />
                   </div>
                 )}
               </div>
               <label className="flex-1">
-                <div className="flex items-center justify-center w-full px-4 py-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors gap-2 text-sm font-medium text-slate-600">
+                <div className="flex items-center justify-center w-full px-4 py-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-emerald-50 transition-colors gap-2 text-sm font-medium text-slate-600">
                   <Upload size={16} />
                   <span>Choose Image (Base64)</span>
                 </div>
@@ -99,7 +99,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSave, 
             <input
               required
               type="text"
-              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="e.g. Electronics, Smartphones..."
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -110,7 +110,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSave, 
             <label className="text-sm font-semibold text-slate-700">Description</label>
             <textarea
               rows={4}
-              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
               placeholder="Briefly describe this category..."
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -122,13 +122,13 @@ const CategoryModal: React.FC<CategoryModalProps> = ({ isOpen, onClose, onSave, 
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition-colors"
+              className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 shadow-md transition-all active:scale-95"
+              className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all active:scale-95"
             >
               {initialData ? 'Save Changes' : 'Create Category'}
             </button>

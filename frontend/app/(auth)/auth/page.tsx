@@ -75,7 +75,7 @@ export default function Page() {
           <input
             type="email"
             placeholder="Email Address"
-            className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -83,7 +83,7 @@ export default function Page() {
           <input
             type="password"
             placeholder="Password"
-            className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -92,7 +92,7 @@ export default function Page() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:bg-blue-300"
+            className="w-full rounded-lg bg-emerald-600 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:bg-emerald-300"
           >
             {loading ? 'Processing...' : isLogin ? 'Login' : 'Sign Up'}
           </button>
@@ -116,7 +116,7 @@ export default function Page() {
           {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="font-bold text-blue-600 hover:underline"
+            className="font-bold text-emerald-600 hover:underline"
           >
             {isLogin ? 'Register now' : 'Log in here'}
           </button>

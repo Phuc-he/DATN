@@ -52,7 +52,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {/* Cột trái: Ảnh sản phẩm */}
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-24">
-              <div className={`relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-2xl border ${product.isNotable ? 'border-amber-200' : 'border-slate-100'} bg-slate-50`}>
+              <div className={`relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-2xl border ${product.isNotable ? 'border-emerald-200' : 'border-slate-100'} bg-emerald-50`}>
                 {product.imageUrl ? (
                   <Image
                     src={product.imageUrl}
@@ -70,7 +70,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                 {/* Badge Container */}
                 <div className="absolute top-6 left-6 flex flex-col gap-3">
                   {product.isNotable && (
-                    <div className="bg-amber-400 text-white font-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-pulse">
+                    <div className="bg-emerald-400 text-white font-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-pulse">
                       <Star size={18} fill="currentColor" />
                       TÁC PHẨM TIÊU BIỂU
                     </div>
@@ -88,24 +88,24 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {/* Cột phải: Thông tin chi tiết */}
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-4">
-              <nav className="flex items-center text-xs font-bold text-blue-600 uppercase tracking-widest gap-2">
+              <nav className="flex items-center text-xs font-bold text-emerald-600 uppercase tracking-widest gap-2">
                 <span>Cửa hàng</span> / <span>{product.category?.name || 'Sách'}</span>
                 {product.isNotable && (
                   <>
                     <span className="text-slate-300">/</span>
-                    <span className="text-amber-500 flex items-center gap-1">
+                    <span className="text-emerald-900 flex items-center gap-1">
                       <Sparkles size={12} /> Lựa chọn hàng đầu
                     </span>
                   </>
                 )}
               </nav>
-              
+
               <div className="space-y-2">
-                <h1 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+                <h1 className="text-4xl md:text-5xl font-black text-slate-950 leading-tight">
                   {product.title}
                 </h1>
                 {product.isNotable && (
-                  <div className="flex items-center gap-2 text-amber-600 font-bold text-sm bg-amber-50 w-fit px-3 py-1 rounded-full border border-amber-100">
+                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm bg-emerald-50 w-fit px-3 py-1 rounded-full border border-emerald-100">
                     <Award size={16} />
                     Sách được đề xuất bởi biên tập viên
                   </div>
@@ -113,23 +113,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               </div>
 
               <div className="flex flex-wrap items-center gap-6">
-                <p className="text-xl text-slate-500 italic">bởi <span className="text-slate-900 font-semibold not-italic">{product.author?.name || 'Ẩn danh'}</span></p>
-                <div className="flex items-center gap-1 text-amber-500">
-                    <Star size={18} fill="currentColor" />
-                    <span className="font-bold text-slate-900">5.0</span>
-                    <span className="text-slate-400 text-sm">(0 đánh giá)</span>
+                <p className="text-xl text-emerald-800 italic">bởi <span className="text-slate-950 font-semibold not-italic">{product.author?.name || 'Ẩn danh'}</span></p>
+                <div className="flex items-center gap-1 text-emerald-900">
+                  <Star size={18} fill="currentColor" />
+                  <span className="font-bold text-slate-950">5.0</span>
+                  <span className="text-slate-400 text-sm">(0 đánh giá)</span>
                 </div>
               </div>
             </div>
 
-            <div className={`p-6 rounded-2xl border flex flex-wrap items-end gap-6 ${product.isNotable ? 'bg-amber-50/50 border-amber-100' : 'bg-slate-50 border-slate-100'}`}>
+            <div className={`p-6 rounded-2xl border flex flex-wrap items-end gap-6 ${product.isNotable ? 'bg-emerald-50/50 border-emerald-100' : 'bg-emerald-50 border-slate-100'}`}>
               <div>
                 {hasDiscount && (
                   <span className="text-lg text-slate-400 line-through font-medium block">
                     {product.price.toLocaleString('vi-VN')}₫
                   </span>
                 )}
-                <span className={`text-4xl font-black ${product.isNotable ? 'text-amber-600' : 'text-slate-900'}`}>
+                <span className={`text-4xl font-black ${product.isNotable ? 'text-emerald-600' : 'text-slate-950'}`}>
                   {discountedPrice.toLocaleString('vi-VN')}₫
                 </span>
               </div>
@@ -147,9 +147,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-950 flex items-center gap-2">
                 Mô tả
-                {product.isNotable && <Sparkles size={18} className="text-amber-400" />}
+                {product.isNotable && <Sparkles size={18} className="text-emerald-400" />}
               </h3>
               <p className="text-slate-600 leading-relaxed">
                 {product.description || "Chưa có mô tả cho cuốn sách này."}
@@ -161,14 +161,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               <div className="flex items-center border-2 border-slate-200 rounded-xl overflow-hidden bg-white">
                 <button
                   onClick={() => handleQuantity('dec')}
-                  className="p-4 hover:bg-slate-50 transition-colors"
+                  className="p-4 hover:bg-emerald-50 transition-colors"
                 >
                   <Minus size={20} />
                 </button>
                 <span className="w-12 text-center font-bold text-lg">{quantity}</span>
                 <button
                   onClick={() => handleQuantity('inc')}
-                  className="p-4 hover:bg-slate-50 transition-colors"
+                  className="p-4 hover:bg-emerald-50 transition-colors"
                 >
                   <Plus size={20} />
                 </button>
@@ -177,13 +177,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               <button
                 onClick={handleAddToCart}
                 disabled={product.stock === 0 || isAdded}
-                className={`flex-1 w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold transition-all shadow-lg active:scale-95 disabled:cursor-not-allowed ${
-                  isAdded 
-                    ? "bg-green-600 text-white" 
-                    : product.isNotable 
-                      ? "bg-amber-500 text-white hover:bg-amber-600" 
-                      : "bg-slate-900 text-white hover:bg-blue-600"
-                }`}
+                className={`flex-1 w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold transition-all shadow-lg active:scale-95 disabled:cursor-not-allowed ${isAdded
+                    ? "bg-green-600 text-white"
+                    : product.isNotable
+                      ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                      : "bg-slate-950 text-white hover:bg-emerald-600"
+                  }`}
               >
                 {isAdded ? (
                   <>
@@ -198,29 +197,29 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                 )}
               </button>
 
-              <button className={`p-4 border-2 rounded-xl transition-all ${product.isNotable ? 'border-amber-200 hover:bg-amber-50 text-amber-500' : 'border-slate-200 hover:bg-red-50 hover:text-red-500'}`}>
+              <button className={`p-4 border-2 rounded-xl transition-all ${product.isNotable ? 'border-emerald-200 hover:bg-emerald-50 text-emerald-900' : 'border-slate-200 hover:bg-red-50 hover:text-red-500'}`}>
                 <Heart size={22} fill={product.isNotable ? "currentColor" : "none"} className={product.isNotable ? "opacity-50" : ""} />
               </button>
             </div>
 
             {/* Thông số kỹ thuật */}
-            <div className={`grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4 pt-8 border-t ${product.isNotable ? 'border-amber-100' : 'border-slate-100'}`}>
+            <div className={`grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4 pt-8 border-t ${product.isNotable ? 'border-emerald-100' : 'border-slate-100'}`}>
               <div className="flex items-start gap-3">
-                <Layers className={product.isNotable ? "text-amber-400" : "text-slate-400"} size={20} />
+                <Layers className={product.isNotable ? "text-emerald-400" : "text-slate-400"} size={20} />
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-400">Thể loại</p>
                   <p className="text-sm font-semibold text-slate-700">{product.category?.name || 'N/A'}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <ShieldCheck className={product.isNotable ? "text-amber-400" : "text-slate-400"} size={20} />
+                <ShieldCheck className={product.isNotable ? "text-emerald-400" : "text-slate-400"} size={20} />
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-400">Cam kết</p>
                   <p className="text-sm font-semibold text-slate-700">100% Sách thật</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Truck className={product.isNotable ? "text-amber-400" : "text-slate-400"} size={20} />
+                <Truck className={product.isNotable ? "text-emerald-400" : "text-slate-400"} size={20} />
                 <div>
                   <p className="text-[10px] uppercase font-bold text-slate-400">Giao hàng</p>
                   <p className="text-sm font-semibold text-slate-700">Toàn quốc</p>
