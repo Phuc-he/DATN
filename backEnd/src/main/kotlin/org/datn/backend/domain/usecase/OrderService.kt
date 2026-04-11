@@ -110,4 +110,6 @@ class OrderService(
             val cancelledOrder = order.copy(status = OrderStatus.CANCELLED)
             orderRepository.save(cancelledOrder)
         }
+
+    fun findByUserId(userId: Long): List<Order> = orderRepository.findByUserId(userId)
 }

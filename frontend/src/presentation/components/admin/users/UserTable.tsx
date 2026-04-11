@@ -1,8 +1,9 @@
 import React from 'react';
-import { Edit, Trash2, ShieldCheck, User, BookOpen } from 'lucide-react';
+import { Edit, Trash2, ShieldCheck, User, BookOpen, History, AlertTriangle, CheckCircle } from 'lucide-react';
 import { User as UserEntity } from '@/src/domain/entity/user.entity';
 import Image from 'next/image';
 import { Role, RoleLabels, isAdmin, isAuthor } from '@/src/domain/entity/role.enum';
+import { UserHistoryStatus } from '@/src/domain/entity/user-history-status.enum';
 
 interface UserTableProps {
   users: UserEntity[];
@@ -11,6 +12,31 @@ interface UserTableProps {
 }
 
 const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
+  
+  // Helper to render History Status Badges
+  const renderHistoryBadge = (status?: UserHistoryStatus) => {
+    switch (status) {
+      case UserHistoryStatus.GOOD_HISTORY:
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+            <CheckCircle size={12} className="mr-1" /> Lịch sử tốt
+          </span>
+        );
+      case UserHistoryStatus.BOOM_HISTORY:
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+            <AlertTriangle size={12} className="mr-1" /> Từng boom hàng
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+            <History size={12} className="mr-1" /> Khách mới
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
@@ -18,6 +44,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
           <tr>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">User</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Role</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">History</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Contact</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Location</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">Joined</th>
@@ -30,17 +57,17 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
               {/* Profile & Name */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
-                  <div className="h-10 w-10 flex-shrink-0">
+                  <div className="h-10 w-10 flex-shrink-0 relative">
                     {user.avatar ? (
                       <Image 
-                        className="h-10 w-10 rounded-full object-cover" 
+                        className="h-10 w-10 rounded-full object-cover ring-1 ring-slate-200" 
                         src={user.avatar} 
                         alt={user.username} 
                         width={40} 
                         height={40} 
                       />
                     ) : (
-                      <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                      <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 ring-1 ring-slate-200">
                         <User size={20} />
                       </div>
                     )}
@@ -69,6 +96,11 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                 )}
               </td>
 
+              {/* History Status Badge */}
+              <td className="px-6 py-4 whitespace-nowrap">
+                {renderHistoryBadge(user.historyStatus)}
+              </td>
+
               {/* Contact */}
               <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                 {user.phone || <span className="text-slate-400 italic text-xs">No phone</span>}
@@ -90,14 +122,14 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button 
                   onClick={() => onEdit(user)}
-                  className="text-blue-600 hover:text-blue-900 mr-4 transition-all hover:scale-110"
+                  className="text-blue-600 hover:text-blue-900 mr-4 transition-all hover:scale-110 p-1 rounded-lg hover:bg-blue-50"
                   title="Edit User"
                 >
                   <Edit size={18} />
                 </button>
                 <button 
                   onClick={() => user.id && onDelete(user.id)}
-                  className="text-red-600 hover:text-red-900 transition-all hover:scale-110"
+                  className="text-red-600 hover:text-red-900 transition-all hover:scale-110 p-1 rounded-lg hover:bg-red-50"
                   disabled={!user.id}
                   title="Delete User"
                 >

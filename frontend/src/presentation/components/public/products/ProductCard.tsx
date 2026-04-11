@@ -2,7 +2,11 @@
 
 import React from 'react';
 import { Book } from '@/src/domain/entity/book.entity';
-import { ShoppingCart, Star, Heart, Bookmark, Award, BookOpen, Globe } from 'lucide-react'; 
+import { BookType } from '@/src/domain/entity/book-type.enum';
+import { 
+  ShoppingCart, Star, Heart, Bookmark, Award, 
+  BookOpen, Globe, Flame, Gem, Calendar 
+} from 'lucide-react'; 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/src/presentation/context/CartContext';
@@ -19,6 +23,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const discountedPrice = hasDiscount 
     ? product.price * (1 - product.discount / 100) 
     : product.price;
+
+  // Helper để hiển thị Badge dựa trên BookType
+  const renderTypeBadge = () => {
+    switch (product.type) {
+      case BookType.HOT:
+        return (
+          <span className="bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md flex items-center gap-1">
+            <Flame size={10} fill="currentColor" /> HOT
+          </span>
+        );
+      case BookType.LIMITED:
+        return (
+          <span className="bg-purple-600 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md flex items-center gap-1">
+            <Gem size={10} /> GIỚI HẠN
+          </span>
+        );
+      case BookType.PRE_ORDER:
+        return (
+          <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md flex items-center gap-1">
+            <Calendar size={10} /> ĐẶT TRƯỚC
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className={`group relative bg-white rounded-2xl border ${product.isNotable ? 'border-amber-200 shadow-amber-50' : 'border-slate-100'} shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden`}>
@@ -41,19 +71,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         </div>
       </div>
 
-      {/* Badges */}
+      {/* Badges Stack */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+        {/* Ưu tiên hiển thị Loại sách (Hot/Limited/Pre-order) */}
+        {renderTypeBadge()}
+
         {product.isNotable && (
           <span className="bg-amber-400 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-md flex items-center gap-1">
             <Star size={10} fill="currentColor" /> NỔI BẬT
           </span>
         )}
+        
         {hasDiscount && (
           <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-sm">
             -{product.discount}%
           </span>
         )}
-        {product.stock === 0 && (
+        
+        {product.stock === 0 && product.type !== BookType.PRE_ORDER && (
           <span className="bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-md">
             HẾT HÀNG
           </span>
@@ -79,8 +114,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             <Bookmark size={40} className="text-slate-300" />
           </div>
         )}
-        {product.isNotable && (
-          <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent pointer-events-none" />
+        {/* Overlay cho sách Limited hoặc Notable */}
+        {(product.isNotable || product.type === BookType.LIMITED) && (
+          <div className={`absolute inset-0 pointer-events-none bg-gradient-to-t ${
+            product.type === BookType.LIMITED ? 'from-purple-500/10' : 'from-amber-500/10'
+          } to-transparent`} />
         )}
       </Link>
 
@@ -93,6 +131,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 {product.category?.name || 'Sách'}
               </p>
               {product.isNotable && <Award size={12} className="text-amber-500" />}
+              {product.type === BookType.HOT && <Flame size={12} className="text-red-500" />}
             </div>
             <h3 className="text-sm font-bold text-slate-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
               {product.title}
@@ -103,14 +142,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           </div>
         </div>
 
-        {/* Rating */}
+        {/* Rating & Sold Info */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 text-amber-500">
             <Star size={12} fill="currentColor" />
             <span className="text-xs font-bold">5.0</span> 
           </div>
           <span className="text-[10px] text-slate-400 font-bold uppercase">
-              {product.isNotable ? 'Đề xuất' : 'Đã bán 0'}
+              {product.type === BookType.PRE_ORDER ? 'Sắp có hàng' : 'Đã bán 0'}
           </span>
         </div>
 
@@ -122,22 +161,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 {product.price.toLocaleString('vi-VN')}₫
               </span>
             )}
-            <span className={`text-lg font-black ${product.isNotable ? 'text-amber-600' : 'text-slate-900'}`}>
+            <span className={`text-lg font-black ${
+              product.type === BookType.HOT ? 'text-red-600' : 
+              product.isNotable ? 'text-amber-600' : 'text-slate-900'
+            }`}>
               {discountedPrice.toLocaleString('vi-VN')}₫
             </span>
           </div>
 
           <button
-            disabled={product.stock === 0}
+            // Nếu là PRE_ORDER thì vẫn cho phép thêm vào giỏ hàng dù stock = 0
+            disabled={product.stock === 0 && product.type !== BookType.PRE_ORDER}
             onClick={(e) => {
               e.preventDefault();
               addToCart(product, 1);
               onAddToCart?.(product);
             }}
             className={`p-2.5 rounded-xl z-30 transition-all shadow-sm active:scale-90 ${
-              product.isNotable 
-                ? 'bg-amber-500 hover:bg-amber-600 text-white' 
-                : 'bg-slate-900 hover:bg-blue-600 text-white'
+              product.type === BookType.HOT ? 'bg-red-600 hover:bg-red-700 text-white' :
+              product.isNotable ? 'bg-amber-500 hover:bg-amber-600 text-white' : 
+              'bg-slate-900 hover:bg-blue-600 text-white'
             } disabled:bg-slate-200 disabled:cursor-not-allowed`}
           >
             <ShoppingCart size={18} />

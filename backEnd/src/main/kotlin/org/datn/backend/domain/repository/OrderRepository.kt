@@ -13,9 +13,9 @@ interface OrderRepository : BaseRepository<Order, Long> {
 
     @Query(
         """
-        SELECT o FROM Order o 
-        WHERE CAST(o.id AS string) LIKE %:query% 
-        OR LOWER(o.fullName) LIKE LOWER(CONCAT('%', :query, '%')) 
+        SELECT o FROM Order o
+        WHERE CAST(o.id AS string) LIKE %:query%
+        OR LOWER(o.fullName) LIKE LOWER(CONCAT('%', :query, '%'))
         OR o.phone LIKE %:query%
     """,
     )
@@ -23,4 +23,6 @@ interface OrderRepository : BaseRepository<Order, Long> {
         @Param("query") query: String,
         pageable: Pageable,
     ): Page<Order>
+
+    fun findByUserId(userId: Long): List<Order>
 }

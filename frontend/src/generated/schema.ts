@@ -106,6 +106,90 @@ export function orderStatusToJSON(object: OrderStatus): string {
   }
 }
 
+export enum UserHistoryStatusProto {
+  NEW_USER = 0,
+  GOOD_HISTORY = 1,
+  BOOM_HISTORY = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function userHistoryStatusProtoFromJSON(object: any): UserHistoryStatusProto {
+  switch (object) {
+    case 0:
+    case "NEW_USER":
+      return UserHistoryStatusProto.NEW_USER;
+    case 1:
+    case "GOOD_HISTORY":
+      return UserHistoryStatusProto.GOOD_HISTORY;
+    case 2:
+    case "BOOM_HISTORY":
+      return UserHistoryStatusProto.BOOM_HISTORY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return UserHistoryStatusProto.UNRECOGNIZED;
+  }
+}
+
+export function userHistoryStatusProtoToJSON(object: UserHistoryStatusProto): string {
+  switch (object) {
+    case UserHistoryStatusProto.NEW_USER:
+      return "NEW_USER";
+    case UserHistoryStatusProto.GOOD_HISTORY:
+      return "GOOD_HISTORY";
+    case UserHistoryStatusProto.BOOM_HISTORY:
+      return "BOOM_HISTORY";
+    case UserHistoryStatusProto.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum BookTypeProto {
+  NORMAL = 0,
+  HOT = 1,
+  LIMITED = 2,
+  PRE_ORDER = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function bookTypeProtoFromJSON(object: any): BookTypeProto {
+  switch (object) {
+    case 0:
+    case "NORMAL":
+      return BookTypeProto.NORMAL;
+    case 1:
+    case "HOT":
+      return BookTypeProto.HOT;
+    case 2:
+    case "LIMITED":
+      return BookTypeProto.LIMITED;
+    case 3:
+    case "PRE_ORDER":
+      return BookTypeProto.PRE_ORDER;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return BookTypeProto.UNRECOGNIZED;
+  }
+}
+
+export function bookTypeProtoToJSON(object: BookTypeProto): string {
+  switch (object) {
+    case BookTypeProto.NORMAL:
+      return "NORMAL";
+    case BookTypeProto.HOT:
+      return "HOT";
+    case BookTypeProto.LIMITED:
+      return "LIMITED";
+    case BookTypeProto.PRE_ORDER:
+      return "PRE_ORDER";
+    case BookTypeProto.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export enum DiscountTypeProto {
   PERCENTAGE = 0,
   FIXED = 1,
@@ -188,6 +272,7 @@ export interface UserProto {
     | undefined;
   /** ISO-8601 string */
   avatar?: string | undefined;
+  historyStatus?: UserHistoryStatusProto | undefined;
 }
 
 export interface AuthorProto {
@@ -223,6 +308,7 @@ export interface BookProto {
   author?: AuthorProto | undefined;
   createdAt?: string | undefined;
   isNotable?: boolean | undefined;
+  type?: BookTypeProto | undefined;
 }
 
 export interface OrderItemProto {
@@ -456,7 +542,18 @@ export interface ActivityLogProtoList {
 }
 
 function createBaseUserProto(): UserProto {
-  return { id: 0, username: "", email: "", role: 0, fullName: "", address: "", phone: "", createdAt: "", avatar: "" };
+  return {
+    id: 0,
+    username: "",
+    email: "",
+    role: 0,
+    fullName: "",
+    address: "",
+    phone: "",
+    createdAt: "",
+    avatar: "",
+    historyStatus: 0,
+  };
 }
 
 export const UserProto: MessageFns<UserProto> = {
@@ -487,6 +584,9 @@ export const UserProto: MessageFns<UserProto> = {
     }
     if (message.avatar !== undefined && message.avatar !== "") {
       writer.uint32(74).string(message.avatar);
+    }
+    if (message.historyStatus !== undefined && message.historyStatus !== 0) {
+      writer.uint32(80).int32(message.historyStatus);
     }
     return writer;
   },
@@ -570,6 +670,14 @@ export const UserProto: MessageFns<UserProto> = {
           message.avatar = reader.string();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.historyStatus = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -598,6 +706,7 @@ export const UserProto: MessageFns<UserProto> = {
         ? globalThis.String(object.created_at)
         : "",
       avatar: isSet(object.avatar) ? globalThis.String(object.avatar) : "",
+      historyStatus: isSet(object.historyStatus) ? userHistoryStatusProtoFromJSON(object.historyStatus) : 0,
     };
   },
 
@@ -630,6 +739,9 @@ export const UserProto: MessageFns<UserProto> = {
     if (message.avatar !== undefined && message.avatar !== "") {
       obj.avatar = message.avatar;
     }
+    if (message.historyStatus !== undefined && message.historyStatus !== 0) {
+      obj.historyStatus = userHistoryStatusProtoToJSON(message.historyStatus);
+    }
     return obj;
   },
 
@@ -647,6 +759,7 @@ export const UserProto: MessageFns<UserProto> = {
     message.phone = object.phone ?? "";
     message.createdAt = object.createdAt ?? "";
     message.avatar = object.avatar ?? "";
+    message.historyStatus = object.historyStatus ?? 0;
     return message;
   },
 };
@@ -904,6 +1017,7 @@ function createBaseBookProto(): BookProto {
     author: undefined,
     createdAt: "",
     isNotable: false,
+    type: 0,
   };
 }
 
@@ -941,6 +1055,9 @@ export const BookProto: MessageFns<BookProto> = {
     }
     if (message.isNotable !== undefined && message.isNotable !== false) {
       writer.uint32(88).bool(message.isNotable);
+    }
+    if (message.type !== undefined && message.type !== 0) {
+      writer.uint32(96).int32(message.type);
     }
     return writer;
   },
@@ -1040,6 +1157,14 @@ export const BookProto: MessageFns<BookProto> = {
           message.isNotable = reader.bool();
           continue;
         }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.type = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1074,6 +1199,7 @@ export const BookProto: MessageFns<BookProto> = {
         : isSet(object.is_notable)
         ? globalThis.Boolean(object.is_notable)
         : false,
+      type: isSet(object.type) ? bookTypeProtoFromJSON(object.type) : 0,
     };
   },
 
@@ -1112,6 +1238,9 @@ export const BookProto: MessageFns<BookProto> = {
     if (message.isNotable !== undefined && message.isNotable !== false) {
       obj.isNotable = message.isNotable;
     }
+    if (message.type !== undefined && message.type !== 0) {
+      obj.type = bookTypeProtoToJSON(message.type);
+    }
     return obj;
   },
 
@@ -1135,6 +1264,7 @@ export const BookProto: MessageFns<BookProto> = {
       : undefined;
     message.createdAt = object.createdAt ?? "";
     message.isNotable = object.isNotable ?? false;
+    message.type = object.type ?? 0;
     return message;
   },
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { Role, RoleLabels } from '@/src/domain/entity/role.enum';
+import { Role } from '@/src/domain/entity/role.enum';
 import { useAuth } from '@/src/presentation/hooks/useAuth';
 import { AuthService } from '@/src/presentation/services/auth.service';
 import Image from "next/image";
@@ -11,7 +11,6 @@ export default function Page() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<Role>(Role.CUSTOMER); // Default to Customer
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { currUser } = useAuth();
@@ -32,8 +31,8 @@ export default function Page() {
 
     try {
       const user = isLogin
-        ? await AuthService.loginWithEmail(email, password, role)
-        : await AuthService.signUpWithEmail(email, password, role); // Pass role to sign up
+        ? await AuthService.loginWithEmail(email, password, Role.CUSTOMER)
+        : await AuthService.signUpWithEmail(email, password, Role.CUSTOMER); // Pass role to sign up
 
       if (!user) throw new Error("No user returned");
 
@@ -52,7 +51,7 @@ export default function Page() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    const user = await AuthService.loginWithGoogle(role);
+    const user = await AuthService.loginWithGoogle(Role.CUSTOMER);
     setLoading(false);
     if (user) {
       router.push('/');
@@ -89,24 +88,6 @@ export default function Page() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
-          {/* Role Selection - Only shown during Sign Up */}
-          {!isLogin && (
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-600">Select Role</label>
-              <select
-                className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
-                value={role}
-                onChange={(e) => setRole(Number(e.target.value) as Role)}
-              >
-                {[Role.CUSTOMER, Role.AUTHOR].map((r) => (
-                  <option key={r} value={r}>
-                    {RoleLabels[r]}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
           <button
             type="submit"

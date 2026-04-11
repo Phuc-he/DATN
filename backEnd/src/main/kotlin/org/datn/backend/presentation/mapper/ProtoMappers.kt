@@ -3,6 +3,7 @@ package org.datn.backend.presentation.mapper
 import org.datn.backend.domain.entity.ActivityLog
 import org.datn.backend.domain.entity.Author
 import org.datn.backend.domain.entity.Book
+import org.datn.backend.domain.entity.BookType
 import org.datn.backend.domain.entity.Category
 import org.datn.backend.domain.entity.Message
 import org.datn.backend.domain.entity.MessageSender
@@ -10,6 +11,7 @@ import org.datn.backend.domain.entity.Order
 import org.datn.backend.domain.entity.OrderItem
 import org.datn.backend.domain.entity.QrPaymentResponse
 import org.datn.backend.domain.entity.User
+import org.datn.backend.domain.entity.UserHistoryStatus
 import org.datn.backend.domain.entity.Voucher
 import org.datn.backend.domain.entity.WebSetting
 import org.datn.backend.proto.ActivityLogPageResponse
@@ -18,6 +20,7 @@ import org.datn.backend.proto.AuthorPageResponse
 import org.datn.backend.proto.AuthorProto
 import org.datn.backend.proto.BookPageResponse
 import org.datn.backend.proto.BookProto
+import org.datn.backend.proto.BookTypeProto
 import org.datn.backend.proto.CategoryPageResponse
 import org.datn.backend.proto.CategoryProto
 import org.datn.backend.proto.DiscountTypeProto
@@ -30,6 +33,7 @@ import org.datn.backend.proto.OrderProto
 import org.datn.backend.proto.OrderStatus
 import org.datn.backend.proto.QrPaymentResponseProto
 import org.datn.backend.proto.Role
+import org.datn.backend.proto.UserHistoryStatusProto
 import org.datn.backend.proto.UserPageResponse
 import org.datn.backend.proto.UserProto
 import org.datn.backend.proto.VoucherPageResponse
@@ -62,6 +66,20 @@ fun Page<Author>.toPageResponse(): AuthorPageResponse =
         .setPageSize(size)
         .build()
 
+fun BookType?.toProto(): BookTypeProto = when (this) {
+    BookType.HOT -> BookTypeProto.HOT
+    BookType.LIMITED -> BookTypeProto.LIMITED
+    BookType.PRE_ORDER -> BookTypeProto.PRE_ORDER
+    else -> BookTypeProto.NORMAL
+}
+
+fun BookTypeProto?.toEntity(): BookType = when(this) {
+    BookTypeProto.HOT -> BookType.HOT
+    BookTypeProto.LIMITED -> BookType.LIMITED
+    BookTypeProto.PRE_ORDER -> BookType.PRE_ORDER
+    else -> BookType.NORMAL
+}
+
 fun Book.toProto(): BookProto {
     val builder =
         BookProto
@@ -75,6 +93,7 @@ fun Book.toProto(): BookProto {
             .setImageUrl(imageUrl ?: "")
             .setCreatedAt(createdAt?.format(dateFormatter) ?: "")
             .setIsNotable(isNotable)
+            .setType(type?.toProto())
 
     author?.let {
         builder.setAuthor(
@@ -206,6 +225,14 @@ fun User.toProto(): UserProto {
             org.datn.backend.domain.entity.Role.AUTHOR -> Role.AUTHOR_ROLE
         }
 
+    val status = historyStatus ?: UserHistoryStatus.NEW_USER
+
+    val protoUserHistoryStatus = when (status) {
+        UserHistoryStatus.GOOD_HISTORY -> UserHistoryStatusProto.GOOD_HISTORY
+        UserHistoryStatus.BOOM_HISTORY -> UserHistoryStatusProto.BOOM_HISTORY
+        UserHistoryStatus.NEW_USER -> UserHistoryStatusProto.NEW_USER
+    }
+
     return UserProto
         .newBuilder()
         .setId(id ?: 0L)
@@ -217,6 +244,7 @@ fun User.toProto(): UserProto {
         .setRole(protoRole) // Pass the mapped enum directly
         .setAvatar(avatar ?: "")
         .setCreatedAt(createdAt?.format(dateFormatter) ?: "")
+        .setHistoryStatus(protoUserHistoryStatus)
         .build()
 }
 
@@ -247,30 +275,31 @@ fun UserProto.toEntity(): User {
         }
 
     return User(
-        username = this.username,
-        email = this.email,
+        username = username,
+        email = email,
         password = "", // Service sẽ đảm nhận việc mã hóa password
-        fullName = this.fullName,
-        address = this.address,
-        phone = this.phone,
+        fullName = fullName,
+        address = address,
+        phone = phone,
         role = entityRole,
-        avatar = this.avatar,
+        avatar = avatar,
     )
 }
 
 fun BookProto.toEntity(): Book =
     Book(
-        id = if (this.id != 0L) this.id else null, // Handle ID if present
-        title = this.title,
-        description = this.description,
-        price = if (this.price.isNotEmpty()) BigDecimal(this.price) else BigDecimal.ZERO,
-        stock = this.stock,
-        discount = if (this.discount.isNotEmpty()) BigDecimal(this.discount) else BigDecimal.ZERO,
-        imageUrl = this.imageUrl,
+        id = if (id != 0L) id else null, // Handle ID if present
+        title = title,
+        description = description,
+        price = if (price.isNotEmpty()) BigDecimal(price) else BigDecimal.ZERO,
+        stock = stock,
+        discount = if (discount.isNotEmpty()) BigDecimal(discount) else BigDecimal.ZERO,
+        imageUrl = imageUrl,
         // Mapping Relations via Stubs
-        author = if (this.hasAuthor()) Author(id = this.author.id, name = "") else null,
-        category = if (this.hasCategory()) Category(id = this.category.id, name = "") else null,
-        isNotable = this.isNotable,
+        author = if (hasAuthor()) Author(id = author.id, name = "") else null,
+        category = if (hasCategory()) Category(id = category.id, name = "") else null,
+        isNotable = isNotable,
+        type = type.toEntity(),
         createdAt =
             if (createdAt.isNotBlank()) {
                 try {

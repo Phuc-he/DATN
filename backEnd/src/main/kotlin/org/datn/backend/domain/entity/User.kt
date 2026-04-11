@@ -29,6 +29,8 @@ data class User(
     val fullName: String? = null,
     val address: String? = null,
     val phone: String? = null,
+    @Enumerated(EnumType.STRING)
+    var historyStatus: UserHistoryStatus? = UserHistoryStatus.NEW_USER,
     @Lob
     @Column(name = "avatar", columnDefinition = "LONGTEXT")
     val avatar: String? = null,

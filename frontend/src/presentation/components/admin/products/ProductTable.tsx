@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Edit, Trash2, BookOpen, Package, Star } from 'lucide-react'; // Added Star icon
+import { Edit, Trash2, BookOpen, Package, Star, Flame, Gem, Calendar, Tag } from 'lucide-react';
 import { Book } from '@/src/domain/entity/book.entity';
+import { BookType } from '@/src/domain/entity/book-type.enum';
 import Image from 'next/image';
 
 interface ProductTableProps {
@@ -12,12 +13,44 @@ interface ProductTableProps {
 }
 
 const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete }) => {
+  
+  // Helper để hiển thị Badge cho Type
+  const renderTypeBadge = (type?: BookType) => {
+    switch (type) {
+      case BookType.HOT:
+        return (
+          <span className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full bg-red-50 text-red-600 text-[10px] font-bold uppercase border border-red-100">
+            <Flame size={10} /> Hot
+          </span>
+        );
+      case BookType.LIMITED:
+        return (
+          <span className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 text-[10px] font-bold uppercase border border-purple-100">
+            <Gem size={10} /> Limited
+          </span>
+        );
+      case BookType.PRE_ORDER:
+        return (
+          <span className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase border border-indigo-100">
+            <Calendar size={10} /> Pre-order
+          </span>
+        );
+      default:
+        return (
+          <span className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold uppercase border border-slate-100">
+            <Tag size={10} /> Normal
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="overflow-hidden bg-white border border-slate-200 rounded-xl shadow-sm">
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-slate-50">
           <tr>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Book</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventory</th>
             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
@@ -43,29 +76,26 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
                         <BookOpen size={20} />
                       </div>
                     )}
-                    {/* Floating Star Badge for Notable books */}
                     {book.isNotable && (
-                      <div className="absolute -top-2 -left-2 bg-amber-400 text-white p-1 rounded-full shadow-sm border border-white">
+                      <div className="absolute -top-2 -left-2 bg-amber-400 text-white p-1 rounded-full shadow-sm border border-white z-10">
                         <Star size={10} fill="currentColor" />
                       </div>
                     )}
                   </div>
                   <div className="ml-4">
-                    <div className="flex items-center gap-2">
-                      <div className="text-sm font-bold text-slate-900 truncate max-w-[180px]">
-                        {book.title}
-                      </div>
-                      {book.isNotable && (
-                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 text-[9px] font-black uppercase border border-amber-100">
-                          <Star size={8} fill="currentColor" /> Notable
-                        </span>
-                      )}
+                    <div className="text-sm font-bold text-slate-900 truncate max-w-[180px]">
+                      {book.title}
                     </div>
                     <div className="text-xs text-slate-500 italic">
                       by {book.author?.name || 'Unknown Author'}
                     </div>
                   </div>
                 </div>
+              </td>
+
+              {/* Book Type (NEW COLUMN) */}
+              <td className="px-6 py-4 whitespace-nowrap">
+                {renderTypeBadge(book.type)}
               </td>
 
               {/* Category */}
@@ -89,7 +119,6 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
               {/* Price & Discount */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-bold text-slate-900">
-                  {/* Assuming VND based on previous context, but using local string for safety */}
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(book.price)}
                 </div>
                 {book.discount > 0 ? (

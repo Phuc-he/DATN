@@ -74,4 +74,28 @@ class UserController(
         userService.delete(id)
         return ResponseEntity.noContent().build()
     }
+
+    // Inside UserController.kt
+
+    @PostMapping("/sync-history-status")
+    fun updateStatusForAllUser(): ResponseEntity<Map<String, String>> {
+        return try {
+            log.info("Starting bulk update for user history statuses")
+            userService.updateStatusForAllUser()
+            ResponseEntity.ok(mapOf("message" to "Successfully updated all user history statuses"))
+        } catch (e: Exception) {
+            log.error("Failed to update user statuses", e)
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("error" to "Failed to process bulk update"))
+        }
+    }
+
+    @PostMapping("/sync-history-status/{id}", produces = ["application/x-protobuf"])
+    fun updateStatusForUser(
+        @PathVariable id: Long
+    ): ResponseEntity<UserProto> {
+        log.info("Refreshing history status for user ID: $id")
+        val updatedUser = userService.updateStatusForUser(id)
+        return ResponseEntity.ok(updatedUser.toProto())
+    }
 }

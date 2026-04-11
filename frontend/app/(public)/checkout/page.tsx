@@ -1,14 +1,18 @@
 'use client';
 
+import { BookType } from '@/src/domain/entity/book-type.enum';
 import { PaymentMethod, PaymentMethodLabel } from '@/src/domain/entity/payment.method';
+import { UserHistoryStatus } from '@/src/domain/entity/user-history-status.enum';
 import { createOrderAction, CreateOrderDto } from '@/src/presentation/action/order.action';
 import { validateVoucherAction } from '@/src/presentation/action/voucher.action';
 import { VietQRModal } from '@/src/presentation/components/public/checkout/VietQRModal';
 import { useCart } from '@/src/presentation/context/CartContext';
 import { useAuth } from '@/src/presentation/hooks/useAuth';
+import { formatCurrency } from '@/src/shared/currency.utils';
 import {
   ArrowLeft,
   CreditCard,
+  Flame,
   MapPin,
   PackageCheck,
   Tag, TicketPercent, X
@@ -29,12 +33,31 @@ const Page = () => {
   const { appliedVoucher, applyVoucher, removeVoucher, cart, cartTotal, voucherDiscount, clearCart } = useCart();
   const router = useRouter();
   const { currUser } = useAuth();
+  const isRestrictedUser = !currUser || currUser.historyStatus === UserHistoryStatus.NEW_USER || currUser.historyStatus === UserHistoryStatus.BOOM_HISTORY;
   const [isSuccess, setIsSuccess] = useState(false);
+  const MAX_QTY_FOR_RESTRICTED = 5;       // Limit 5 books
+  const MAX_COD_VALUE_FOR_RESTRICTED = 50 * 26000; // Max $50 for COD
+
+  const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  // 1. Kiểm tra xem giỏ hàng có chứa sách HOT, LIMITED hoặc PRE_ORDER không
+  const hasSpecialBook = cart.some(item =>
+    item.book.type === BookType.HOT ||
+    item.book.type === BookType.LIMITED ||
+    item.book.type === BookType.PRE_ORDER
+  );
 
   // Tính phí vận chuyển dựa trên cartTotal (đã trừ voucher hoặc chưa tùy logic nghiệp vụ)
   const shippingPrice = cartTotal > 100 ? 0 : 10;
   const finalTotal = cartTotal + shippingPrice;
+  const isTooManyItems = isRestrictedUser && totalQuantity > MAX_QTY_FOR_RESTRICTED;
+  const isCodBlocked = hasSpecialBook || (isRestrictedUser && (finalTotal > MAX_COD_VALUE_FOR_RESTRICTED || isTooManyItems));
 
+  const getCodBlockedReason = () => {
+    if (hasSpecialBook) return "Giỏ hàng có sách Hot/Giới hạn/Pre-order. Vui lòng thanh toán trước.";
+    if (isRestrictedUser && finalTotal > MAX_COD_VALUE_FOR_RESTRICTED) return `Đơn hàng trên ${formatCurrency(MAX_COD_VALUE_FOR_RESTRICTED)} yêu cầu thanh toán trước đối với khách hàng mới.`;
+    if (isTooManyItems) return `Khách hàng mới chỉ được mua tối đa ${MAX_QTY_FOR_RESTRICTED} cuốn sách.`;
+    return null;
+  };
   // Xử lý Socket.io cho thanh toán QR
   useEffect(() => {
     if (isVnQr) {
@@ -72,6 +95,12 @@ const Page = () => {
     }
   }, [isVnQr, router]);
 
+  useEffect(() => {
+    if (isCodBlocked && paymentMethod === PaymentMethod.COD) {
+      setPaymentMethod(PaymentMethod.VNQR);
+    }
+  }, [isCodBlocked, paymentMethod]);
+
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) return;
     setError('');
@@ -93,8 +122,20 @@ const Page = () => {
     }
   };
 
-  const handleSubmitOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitOrder = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Validate rules before submitting
+    if (isRestrictedUser && totalQuantity > MAX_QTY_FOR_RESTRICTED) {
+      setError(`Khách hàng mới chỉ được mua tối đa ${MAX_QTY_FOR_RESTRICTED} cuốn sách.`);
+      return;
+    }
+
+    if (isCodBlocked && paymentMethod === PaymentMethod.COD) {
+      setError(getCodBlockedReason() || "Vui lòng chọn phương thức thanh toán trước.");
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
 
     setIsSubmitting(true);
@@ -156,6 +197,49 @@ const Page = () => {
           <ArrowLeft size={16} /> Quay lại giỏ hàng
         </Link>
 
+        {hasSpecialBook && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-start gap-3">
+            <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
+              <Flame size={20} />
+            </div>
+            <div>
+              <p className="text-amber-800 text-sm font-bold">Lưu ý đơn hàng đặc biệt</p>
+              <p className="text-amber-700 text-xs mt-1">
+                Giỏ hàng của bạn chứa sách <b>Hot / Giới hạn / Pre-order</b>. Theo chính sách, loại hàng này cần được thanh toán trước để giữ chỗ.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {isRestrictedUser && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-start gap-3">
+            <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
+              <PackageCheck size={20} />
+            </div>
+            <div>
+              <p className="text-blue-800 text-sm font-bold">Mua hàng không cần đăng nhập</p>
+              <p className="text-blue-700 text-xs mt-1">
+                Bạn đang mua hàng với tư cách <b>Khách</b>. Giới hạn tối đa {MAX_QTY_FOR_RESTRICTED} sản phẩm và COD dưới {formatCurrency(MAX_COD_VALUE_FOR_RESTRICTED)}.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Banner ưu đãi: Hiện cho khách có lịch sử tốt */}
+        {currUser?.historyStatus === UserHistoryStatus.GOOD_HISTORY && (
+          <div className="mb-6 bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-start gap-3">
+            <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
+              <TicketPercent size={20} />
+            </div>
+            <div>
+              <p className="text-emerald-800 text-sm font-bold">Khách hàng thân thiết</p>
+              <p className="text-emerald-700 text-xs mt-1">
+                Chào mừng bạn trở lại! Bạn có thể đặt hàng COD với hạn mức cao và không giới hạn số lượng sản phẩm.
+              </p>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Cột trái: Thông tin nhận hàng */}
           <div className="lg:col-span-7 space-y-8">
@@ -165,10 +249,10 @@ const Page = () => {
                 Thông tin giao hàng
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="fullName" required placeholder="Họ và tên" defaultValue={currUser?.fullName} className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
-                <input name="phone" required placeholder="Số điện thoại" defaultValue={currUser?.phone} className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input name="fullName" required placeholder="Họ và tên" defaultValue={currUser?.fullName || ''} className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input name="phone" required placeholder="Số điện thoại" defaultValue={currUser?.phone || ''} className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
                 <div className="md:col-span-2">
-                  <input name="address" required placeholder="Địa chỉ chi tiết" defaultValue={currUser?.address} className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input name="address" required placeholder="Địa chỉ chi tiết" defaultValue={currUser?.address || ''} className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
                 </div>
                 <input name="city" required placeholder="Tỉnh/Thành phố" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
                 <input name="zipCode" placeholder="Mã bưu điện (tùy chọn)" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
@@ -182,18 +266,37 @@ const Page = () => {
                 Phương thức thanh toán
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {Object.values(PaymentMethod).map((methodId) => (
-                  <label key={methodId} className={`p-4 border-2 rounded-2xl cursor-pointer transition-all flex items-center justify-between ${paymentMethod === methodId ? 'border-indigo-600 bg-indigo-50' : 'border-slate-100 bg-slate-50/30'}`}>
-                    <div className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === methodId ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'}`}>
-                        {paymentMethod === methodId && <div className="w-2 h-2 bg-white rounded-full" />}
+                {Object.values(PaymentMethod).map((methodId) => {
+                  const isDisabled = isRestrictedUser && methodId === PaymentMethod.COD && finalTotal > MAX_COD_VALUE_FOR_RESTRICTED;
+
+                  return (
+                    <label key={methodId} className={`p-4 border-2 rounded-2xl cursor-pointer transition-all flex items-center justify-between 
+                      ${paymentMethod === methodId ? 'border-indigo-600 bg-indigo-50' : 'border-slate-100 bg-slate-50/30'}
+                      ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                      <div className="flex items-center gap-3">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === methodId ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'}`}>
+                          {paymentMethod === methodId && <div className="w-2 h-2 bg-white rounded-full" />}
+                        </div>
+                        <span className={`font-bold ${paymentMethod === methodId ? 'text-indigo-700' : 'text-slate-600'}`}>{PaymentMethodLabel[methodId]}</span>
                       </div>
-                      <span className={`font-bold ${paymentMethod === methodId ? 'text-indigo-700' : 'text-slate-600'}`}>{PaymentMethodLabel[methodId]}</span>
-                    </div>
-                    <input type="radio" name="payment" className="hidden" value={methodId} onChange={() => setPaymentMethod(methodId as PaymentMethod)} checked={paymentMethod === methodId} />
-                  </label>
-                ))}
+                      <input
+                        type="radio"
+                        name="payment"
+                        className="hidden"
+                        value={methodId}
+                        disabled={isDisabled}
+                        onChange={() => setPaymentMethod(methodId as PaymentMethod)}
+                        checked={paymentMethod === methodId}
+                      />
+                    </label>
+                  )
+                })}
               </div>
+              {isCodBlocked && (
+                <p className="mt-3 text-xs text-red-500 font-medium flex items-center gap-1 italic">
+                  * {getCodBlockedReason()}
+                </p>
+              )}
             </section>
           </div>
 
@@ -202,7 +305,6 @@ const Page = () => {
             <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 sticky top-8">
               <h2 className="text-xl font-black text-slate-900 mb-6">Tóm tắt đơn hàng</h2>
 
-              {/* Danh sách sản phẩm rút gọn */}
               <div className="max-h-60 overflow-y-auto mb-6 pr-2 space-y-4">
                 {cart.map((item) => (
                   <div key={item.book.id} className="flex gap-4 items-center">
@@ -210,17 +312,22 @@ const Page = () => {
                       <Image src={item.book.imageUrl || '/placeholder-book.png'} alt={item.book.title} fill className="object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-slate-900 text-sm truncate">{item.book.title}</p>
+                      <div className="flex items-center gap-1">
+                        <p className="font-bold text-slate-900 text-sm truncate">{item.book.title}</p>
+                        {item.book.type !== BookType.NORMAL && (
+                          <Flame size={12} className="text-amber-500" />
+                        )}
+                      </div>
                       <p className="text-xs text-slate-500">Số lượng: {item.quantity}</p>
                     </div>
                     <p className="font-bold text-slate-900 text-sm">
-                      ${((item.unitPrice * (1 - (item.discount || 0) / 100)) * item.quantity).toLocaleString()}
+                      {formatCurrency((item.unitPrice * (1 - (item.discount || 0) / 100)) * item.quantity)}
                     </p>
                   </div>
                 ))}
               </div>
 
-              {/* Voucher Section */}
+              {/* Voucher Section giữ nguyên */}
               <div className="mt-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                 {!appliedVoucher ? (
                   <div className="flex gap-2">
@@ -238,25 +345,24 @@ const Page = () => {
                 {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
               </div>
 
-              {/* Tiền tính toán */}
               <div className="space-y-4 border-t border-slate-100 pt-6 mt-6">
                 <div className="flex justify-between text-slate-500">
                   <span>Tạm tính</span>
-                  <span className="text-slate-900 font-bold">${cartTotal.toLocaleString()}</span>
+                  <span className="text-slate-900 font-bold">{formatCurrency(cartTotal)}</span>
                 </div>
                 {appliedVoucher && (
                   <div className="flex justify-between text-emerald-600 font-medium">
                     <span><Tag className="inline mr-1" size={14} /> Giảm giá voucher</span>
-                    <span>-${voucherDiscount.toLocaleString()}</span>
+                    <span>-{formatCurrency(voucherDiscount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-slate-500">
                   <span>Phí vận chuyển</span>
-                  <span>{shippingPrice === 0 ? 'MIỄN PHÍ' : `$${shippingPrice}`}</span>
+                  <span>{shippingPrice === 0 ? 'MIỄN PHÍ' : formatCurrency(shippingPrice)}</span>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-slate-100">
                   <span className="text-lg font-black text-slate-900">Tổng cộng</span>
-                  <span className="text-3xl font-black text-indigo-600">${finalTotal.toLocaleString()}</span>
+                  <span className="text-2xl font-black text-indigo-600">{formatCurrency(finalTotal)}</span>
                 </div>
               </div>
 

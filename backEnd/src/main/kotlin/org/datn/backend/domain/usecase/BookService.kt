@@ -1,6 +1,7 @@
 package org.datn.backend.domain.usecase
 
 import org.datn.backend.domain.entity.Book
+import org.datn.backend.domain.entity.BookType
 import org.datn.backend.domain.entity.LogAction
 import org.datn.backend.domain.repository.AuthorRepository
 import org.datn.backend.domain.repository.BookRepository
@@ -74,6 +75,7 @@ class BookService(
                     discount = (updates["discount"] as? Number)?.toDouble()?.let { BigDecimal.valueOf(it) } ?: existingBook.discount,
                     imageUrl = updates["imageUrl"] as? String ?: existingBook.imageUrl,
                     isNotable = updates["isNotable"] as? Boolean ?: existingBook.isNotable,
+                    type = (updates["type"] as? Int)?.let { BookType.entries[it] } ?: existingBook.type
                 )
 
             bookRepository.save(updatedBook)

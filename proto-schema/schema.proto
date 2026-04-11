@@ -22,6 +22,12 @@ enum OrderStatus {
   CANCELLED = 5;
 }
 
+enum UserHistoryStatusProto {
+  NEW_USER = 0;
+  GOOD_HISTORY = 1;
+  BOOM_HISTORY = 2;
+}
+
 // --- Messages ---
 
 message UserProto {
@@ -34,6 +40,7 @@ message UserProto {
   string phone = 7;
   string created_at = 8; // ISO-8601 string
   string avatar = 9; // ISO-8601 string
+  UserHistoryStatusProto historyStatus = 10;
 }
 
 message AuthorProto {
@@ -51,6 +58,13 @@ message CategoryProto {
   string created_at = 5;
 }
 
+enum BookTypeProto {
+  NORMAL = 0;
+  HOT = 1;
+  LIMITED = 2;
+  PRE_ORDER = 3;
+}
+
 message BookProto {
   int64 id = 1;
   string title = 2;
@@ -63,6 +77,7 @@ message BookProto {
   AuthorProto author = 9;
   string created_at = 10;
   bool is_notable = 11;
+  BookTypeProto type = 12;
 }
 
 message OrderItemProto {
@@ -208,17 +223,17 @@ enum MessageSenderProto {
 message MessageResponseProto {
   // Sử dụng optional cho các trường có thể null (nullable trong Kotlin)
   optional int64 id = 1;
-  
+
   // Lưu trữ ID của User thay vì gửi cả Object User (để tối ưu băng thông)
   optional UserProto user = 2;
-  
+
   MessageSenderProto sender = 3;
-  
+
   string content = 4;
-  
+
   // Lưu ID của sách liên quan (nếu có)
   optional BookProto related_book = 5;
-  
+
   // Timestamp tương ứng với LocalDateTime
   string created_at = 6;
 }

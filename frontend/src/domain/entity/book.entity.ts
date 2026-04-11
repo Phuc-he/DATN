@@ -1,4 +1,5 @@
 import { Author } from "./author.entity";
+import { BookType } from "./book-type.enum";
 import { Category } from "./category.entity";
 
 export interface Book {
@@ -14,7 +15,8 @@ export interface Book {
   category?: Category;      // @ManyToOne
   author?: Author;          // @ManyToOne
   createdAt?: string; 
-  isNotable?: boolean
+  isNotable?: boolean;
+  type?: BookType;
 }
 
 /**

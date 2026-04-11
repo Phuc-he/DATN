@@ -4,19 +4,19 @@ import { User } from '@/src/domain/entity/user.entity';
 import UserModal from '@/src/presentation/components/admin/users/UserModal';
 import UserTable from '@/src/presentation/components/admin/users/UserTable';
 import { AppProviders } from '@/src/provider/provider';
-import { useActivityLogger } from '@/src/presentation/hooks/useActivityLogger'; // Import Logger
-import { Plus, Users } from 'lucide-react';
+import { useActivityLogger } from '@/src/presentation/hooks/useActivityLogger';
+import { Plus, Users, RefreshCw } from 'lucide-react'; // Added RefreshCw
 import { useEffect, useState } from 'react';
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false); // New state for bulk update
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Initialize the activity logger
   const { logAction } = useActivityLogger();
 
   const fetchUsers = async (page: number) => {
@@ -35,6 +35,26 @@ const UserManagementPage = () => {
   useEffect(() => {
     fetchUsers(currentPage);
   }, [currentPage]);
+
+  /**
+   * Triggers the bulk status update for all users
+   */
+  const handleSyncHistoryStatus = async () => {
+    setSyncing(true);
+    try {
+      await AppProviders.UpdateUserHistoryStatusUseCase.execute();
+      await logAction("MAINTENANCE", "User", "Triggered bulk history status synchronization");
+      
+      // Refresh the current page to see updated statuses
+      await fetchUsers(currentPage);
+      alert("Đã cập nhật trạng thái lịch sử mua hàng cho toàn bộ người dùng!");
+    } catch (error) {
+      console.error("Failed to sync statuses:", error);
+      alert("Đồng bộ thất bại. Vui lòng kiểm tra console.");
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const handleSave = async (data: User) => {
     let action = "UPDATE";
@@ -101,13 +121,26 @@ const UserManagementPage = () => {
           <p className="text-sm text-slate-500">Manage and oversee your application users and permissions.</p>
         </div>
 
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
-        >
-          <Plus size={20} />
-          Add New User
-        </button>
+        <div className="flex gap-3">
+          {/* New Sync Button */}
+          <button
+            onClick={handleSyncHistoryStatus}
+            disabled={syncing}
+            className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95 disabled:opacity-50"
+            title="Recalculate all user history statuses"
+          >
+            <RefreshCw size={18} className={syncing ? "animate-spin" : ""} />
+            {syncing ? "Syncing..." : "Sync History Status"}
+          </button>
+
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
+          >
+            <Plus size={20} />
+            Add New User
+          </button>
+        </div>
       </div>
 
       {loading ? (

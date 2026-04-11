@@ -1,4 +1,5 @@
 import { Role } from './role.enum';
+import { UserHistoryStatus } from './user-history-status.enum';
 
 /**
  * Represents the User domain model.
@@ -23,6 +24,7 @@ export interface User {
   // Timestamps are typically sent as ISO strings via Protobuf/JSON
   createdAt?: string; 
   updatedAt?: string;
+  historyStatus?: UserHistoryStatus; // 0 = New, 1 = Good, 2 = Boomer
 }
 
 /**

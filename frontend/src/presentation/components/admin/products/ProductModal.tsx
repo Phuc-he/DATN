@@ -3,7 +3,8 @@
 import { Book, EmptyBook } from '@/src/domain/entity/book.entity';
 import { Category } from '@/src/domain/entity/category.entity';
 import { Author } from '@/src/domain/entity/author.entity';
-import { BookOpen, ImageIcon, Upload, X, Star } from 'lucide-react'; // Added Star icon
+import { BookType } from '@/src/domain/entity/book-type.enum'; // Added
+import { BookOpen, ImageIcon, Upload, X, Star, Tag, Flame, Gem, Calendar } from 'lucide-react'; 
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
@@ -32,7 +33,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(initialData);
     } else {
-      setFormData(EmptyBook);
+      setFormData({ ...EmptyBook, type: BookType.NORMAL }); // Default to Normal
     }
   }, [initialData, isOpen]);
 
@@ -74,7 +75,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            {/* Image Upload */}
+            {/* Left Column: Image & Status */}
             <div className="md:col-span-1 space-y-4">
               <label className="text-sm font-semibold text-slate-700 block">Book Cover</label>
               <div className="relative aspect-[3/4] w-full rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 border-2 border-dashed border-slate-200 overflow-hidden">
@@ -89,7 +90,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 </label>
               </div>
 
-              {/* Notable Work Toggle (Added Here) */}
+              {/* Notable Work Toggle */}
               <div 
                 onClick={() => setFormData({ ...formData, isNotable: !formData.isNotable })}
                 className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition-all ${
@@ -104,7 +105,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
                   <div>
                     <p className="text-xs font-black uppercase tracking-wider text-slate-700">Notable Work</p>
-                    <p className="text-[10px] text-slate-500 font-bold">Featured in author section</p>
+                    <p className="text-[10px] text-slate-500 font-bold">Featured badge</p>
                   </div>
                 </div>
                 <div className={`w-10 h-5 rounded-full relative transition-colors ${formData.isNotable ? 'bg-amber-400' : 'bg-slate-300'}`}>
@@ -113,12 +114,39 @@ const ProductModal: React.FC<ProductModalProps> = ({
               </div>
             </div>
 
-            {/* Fields */}
+            {/* Right Column: Fields */}
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2 space-y-1">
                 <label className="text-sm font-semibold text-slate-700">Book Title</label>
                 <input required type="text" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   value={formData.title || ''} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+              </div>
+
+              {/* Book Type Selection (NEW) */}
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-sm font-semibold text-slate-700 block">Market Status (Type)</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { type: BookType.NORMAL, label: 'Normal', icon: Tag, color: 'blue' },
+                    { type: BookType.HOT, label: 'Hot', icon: Flame, color: 'red' },
+                    { type: BookType.LIMITED, label: 'Limited', icon: Gem, color: 'purple' },
+                    { type: BookType.PRE_ORDER, label: 'Pre-order', icon: Calendar, color: 'indigo' },
+                  ].map((item) => (
+                    <button
+                      key={item.type}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, type: item.type })}
+                      className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all ${
+                        formData.type === item.type
+                          ? `border-${item.color}-500 bg-${item.color}-50 text-${item.color}-700`
+                          : 'border-slate-100 bg-white text-slate-400 hover:border-slate-200'
+                      }`}
+                    >
+                      <item.icon size={16} />
+                      <span className="text-[10px] font-bold uppercase">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-1">

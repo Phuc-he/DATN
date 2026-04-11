@@ -7,6 +7,7 @@ import { PaymentMethod } from "@/src/domain/entity/payment.method";
 import { Voucher } from "@/src/domain/entity/voucher.entity";
 import { AppProviders } from "@/src/provider/provider";
 import { logActivity } from "@/src/shared/logOrderActivity";
+import { revalidatePath } from "next/cache";
 
 export interface CreateOrderDto {
   user: { id: number; fullName?: string; email?: string };
@@ -125,5 +126,75 @@ export async function getOrderByIdAction(id: number): Promise<{ success: boolean
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { success: false, message: error.message };
+  }
+}
+
+// Add this to your existing 'use server' file
+
+/**
+ * Updates the status of an existing order.
+ * Used for Cancellation, Marking as Paid, etc.
+ */
+export async function updateOrderStatusAction(
+  orderId: number, 
+  newStatus: OrderStatus
+): Promise<{ success: boolean; message?: string }> {
+  
+  // In a real app, you'd get the current user session here to check permissions
+  // For now, we use a generic actor for logging
+  const actor = "System/User"; 
+
+  try {
+    // 1. Fetch current order to check existence and current status
+    const currentOrder = await AppProviders.GetOrderUseCase.execute(orderId);
+    if (!currentOrder) {
+      return { success: false, message: "Không tìm thấy đơn hàng." };
+    }
+
+    // 2. Business Logic Validation
+    // Example: Cannot cancel an order that is already SHIPPED or DELIVERED
+    if (newStatus === OrderStatus.CANCELLED) {
+      if (currentOrder.status === OrderStatus.SHIPPED || currentOrder.status === OrderStatus.DELIVERED) {
+        return { success: false, message: "Không thể hủy đơn hàng đã được giao hoặc đang vận chuyển." };
+      }
+    }
+
+    // 3. Update the order status
+    // We pass the partial update to the UseCase
+    await AppProviders.UpdateOrderUseCase.execute(orderId, {
+      ...currentOrder,
+      status: newStatus
+    });
+
+    // 4. Log the activity
+    await logActivity(
+      actor, 
+      "Order", 
+      "UPDATE_STATUS", 
+      `Order #${orderId} status changed from ${currentOrder.status} to ${newStatus}`
+    );
+
+    // 5. Revalidate the order details page and profile page to show new data
+    revalidatePath(`/checkout/order-success`);
+    revalidatePath(`/profile/orders`);
+    revalidatePath(`/profile/orders/${orderId}`);
+
+    return { success: true };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Update order status error:", error);
+    
+    await logActivity(
+      actor, 
+      "Order", 
+      "UPDATE_FAILURE", 
+      `Failed to update Order #${orderId}. Error: ${error.message}`
+    );
+
+    return { 
+      success: false, 
+      message: error.message || "Lỗi khi cập nhật trạng thái đơn hàng." 
+    };
   }
 }

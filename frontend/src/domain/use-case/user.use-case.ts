@@ -99,3 +99,19 @@ export class SearchUsersUseCase {
     return this.userRepository.search(query, page, limit);
   }
 }
+
+export class UpdateUserHistoryStatusUseCase {
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async execute(): Promise<Map<string, string> | null> {
+    return this.userRepository.updateStatusForAllUser();
+  } 
+}
+
+export class UpdateHistoryStatusForUserUseCase {
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async execute(userId: number): Promise<User | null> {
+    return this.userRepository.updateStatusForUser(userId);
+  } 
+}

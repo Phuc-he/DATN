@@ -23,6 +23,8 @@ import {
   GetUsersByPageUseCase,
   GetUserUseCase,
   SearchUsersUseCase,
+  UpdateHistoryStatusForUserUseCase,
+  UpdateUserHistoryStatusUseCase,
   UpdateUserUseCase
 } from "../domain/use-case/user.use-case";
 import { CreateVoucherUseCase, DeleteVoucherUseCase, GetAllVouchersUseCase, GetVouchersByPageUseCase, GetVoucherUseCase, SearchVouchersUseCase, UpdateVoucherUseCase, ValidateVoucherUseCase } from "../domain/use-case/voucher.use-case";
@@ -63,6 +65,8 @@ export const AppProviders = {
   GetUsersByPageUseCase: new GetUsersByPageUseCase(userRepository),
   SearchUsersUseCase: new SearchUsersUseCase(userRepository),
   GetUserByEmailUseCase: new GetUserByEmailUseCase(userRepository),
+  UpdateUserHistoryStatusUseCase: new UpdateUserHistoryStatusUseCase(userRepository),
+  UpdateHistoryStatusForUserUseCase: new UpdateHistoryStatusForUserUseCase(userRepository),
 
   // --- Category Domain ---
   CategoryRepository: categoryRepository,
