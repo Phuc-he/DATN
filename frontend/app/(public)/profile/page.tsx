@@ -100,7 +100,7 @@ const ProfilePage = () => {
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          {/* Cột trái: Avatar & Role */}
+          {/* Cột trái: Avatar & Vai trò */}
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center">
               <div className="relative group mb-4 h-32 w-32 rounded-full overflow-hidden border-4 border-white shadow-md">

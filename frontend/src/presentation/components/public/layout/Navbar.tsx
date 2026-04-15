@@ -76,7 +76,7 @@ export const Navbar = () => {
                 className="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition-all shadow-lg shadow-emerald-100 active:scale-95"
                 onClick={() => router.push('/auth')}
               >
-                Sign In
+                Đăng nhập
               </button>
             )}
           </div>
@@ -100,13 +100,13 @@ export const Navbar = () => {
           <SearchBar />
           <div className="flex flex-col space-y-4 font-bold text-slate-600">
             <a href="#" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
-                Categories <Icons.ChevronRight size={16} />
+                Danh mục <Icons.ChevronRight size={16} />
             </a>
-            <a href="#" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
-                New Arrivals <Icons.ChevronRight size={16} />
+            <a href="/shop/new-arrivals" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
+                Sách mới về <Icons.ChevronRight size={16} />
             </a>
-            <a href="#" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
-                Best Sellers <Icons.ChevronRight size={16} />
+            <a href="/shop/best-sellers" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
+                Bán chạy nhất <Icons.ChevronRight size={16} />
             </a>
           </div>
           
@@ -115,7 +115,7 @@ export const Navbar = () => {
               className="w-full bg-emerald-700 text-white py-4 rounded-xl font-bold"
               onClick={() => router.push('/auth')}
             >
-              Sign In
+              Đăng nhập
             </button>
           )}
         </div>

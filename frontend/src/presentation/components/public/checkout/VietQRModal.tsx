@@ -21,7 +21,7 @@ export const VietQRModal: React.FC<VietQRProps> = ({ qrUrl, amount, orderId }) =
       <div className="bg-emerald-50 rounded-2xl p-4 mb-6 text-left space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Số tiền:</span>
-          <span className="font-bold text-slate-950">${amount.toLocaleString()}</span>
+          <span className="font-bold text-slate-950">{amount.toLocaleString('vi-VN')}₫</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-slate-400">Nội dung:</span>

@@ -42,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       case BookType.PRE_ORDER:
         return (
           <span className="bg-slate-800 text-white text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
-            <Calendar size={10} /> PRE-ORDER
+            <Calendar size={10} /> ĐẶT TRƯỚC
           </span>
         );
       default:
@@ -55,18 +55,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
       {/* 1. QUICK INFO OVERLAY */}
       <div className="absolute inset-x-0 top-0 z-20 p-5 bg-white/95 backdrop-blur-md translate-y-[-100%] group-hover:translate-y-0 transition-transform duration-500 border-b border-emerald-50 shadow-lg">
-        <p className="text-[10px] font-black text-emerald-600 mb-2 uppercase tracking-[0.2em]">Quick View</p>
+        <p className="text-[10px] font-black text-emerald-600 mb-2 uppercase tracking-[0.2em]">Xem nhanh</p>
         <p className="text-xs text-slate-600 line-clamp-3 mb-4 font-medium italic leading-relaxed">
-          &quot;{product.description || 'No description available for this title.'}&quot;
+          &quot;{product.description || 'Chưa có mô tả cho tác phẩm này.'}&quot;
         </p>
         <div className="flex gap-4 border-t border-slate-100 pt-3">
           <div className="flex items-center gap-1.5 text-slate-400">
             <BookOpen size={12} className="text-emerald-900" />
-            <span className="text-[10px] font-black uppercase">320 Pages</span>
+            <span className="text-[10px] font-black uppercase">320 Trang</span>
           </div>
           <div className="flex items-center gap-1.5 text-slate-400">
             <Globe size={12} className="text-emerald-900" />
-            <span className="text-[10px] font-black uppercase">English</span>
+            <span className="text-[10px] font-black uppercase">Tiếng Việt</span>
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
         {product.isNotable && (
           <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-1 rounded-lg border border-emerald-200 flex items-center gap-1">
-            <Star size={10} fill="currentColor" /> FEATURED
+            <Star size={10} fill="currentColor" /> NỔI BẬT
           </span>
         )}
 
@@ -116,7 +116,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <p className="text-[10px] text-emerald-600 font-black uppercase tracking-[0.2em]">
-              {product.category?.name || 'Literature'}
+              {product.category?.name || 'Văn học'}
             </p>
             {product.isNotable && <Award size={12} className="text-emerald-900" />}
           </div>
@@ -125,7 +125,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             {product.title}
           </h3>
           <p className="text-xs text-emerald-800 font-medium italic">
-            by {product.author?.name || 'Anonymous'}
+            bởi {product.author?.name || 'Ẩn danh'}
           </p>
         </div>
 
@@ -136,7 +136,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             <span className="text-[10px] font-black">5.0</span>
           </div>
           <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
-            {product.type === BookType.PRE_ORDER ? 'Coming Soon' : product.stock === 0 ? 'Sold Out' : 'Available'}
+            {product.type === BookType.PRE_ORDER ? 'Sắp có' : product.stock === 0 ? 'Hết hàng' : 'Còn hàng'}
           </span>
         </div>
 

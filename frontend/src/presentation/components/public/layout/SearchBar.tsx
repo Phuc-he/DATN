@@ -35,7 +35,7 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Search by title, author..."
+          placeholder="Tìm kiếm theo tiêu đề, tác giả..."
           className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-10 pr-4 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm outline-none"
         />
         <Search 

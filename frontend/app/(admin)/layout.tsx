@@ -11,21 +11,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   useEffect(() => {
-    // Wait until loading is finished before making a decision
+    // Chờ cho đến khi quá trình tải hoàn tất trước khi đưa ra quyết định
     if (!loading) {
       console.log("AdminLayout", currUser);
       if (!currUser || !isAdmin(currUser.role)) {
-        console.warn('Unauthorized access attempt. Redirecting to home...');
+        console.warn('Cố gắng truy cập trái phép. Đang chuyển hướng về trang chủ...');
         router.push('/');
       }
     }
   }, [currUser, loading, router]);
 
-  // Prevent "flicker" of admin content while checking permissions
+  // Ngăn chặn việc hiển thị nội dung admin khi đang kiểm tra quyền truy cập
   if (loading || !currUser || !isAdmin(currUser.role)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-emerald-900 animate-pulse">Verifying credentials...</p>
+        <p className="text-emerald-900 animate-pulse">Đang xác thực quyền truy cập...</p>
       </div>
     );
   }

@@ -19,7 +19,7 @@ export const ChatWidget = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { currUser } = useAuth();
 
-  // 1. Fetch Chat History (Restored from your original)
+  // 1. Lấy lịch sử trò chuyện
   useEffect(() => {
     const fetchChatHistory = async () => {
       if (currUser?.id && isOpen) {
@@ -28,7 +28,7 @@ export const ChatWidget = () => {
           const history = await AppProviders.GetMessagesByUserUseCase.execute(currUser.id);
           setMessages(history);
         } catch (error) {
-          console.error("Failed to load chat history:", error);
+          console.error("Không thể tải lịch sử trò chuyện:", error);
         } finally {
           setIsFetchingHistory(false);
         }
@@ -37,7 +37,7 @@ export const ChatWidget = () => {
     fetchChatHistory();
   }, [currUser?.id, isOpen]);
 
-  // 2. Real-time WebSocket Logic
+  // 2. Logic WebSocket thời gian thực
   useEffect(() => {
     if (!currUser?.id) return;
 
@@ -55,10 +55,8 @@ export const ChatWidget = () => {
             const receivedTime = parseServerDate(receivedMessage.createdAt);
 
             const existingIndex = prev.findIndex((m) => {
-              // 1. Check by ID (If backend sends the tempId back)
               if (m.id === receivedMessage.id) return true;
 
-              // 2. Fallback: Fuzzy match (If backend replaced tempId with MySQL ID)
               if (!m.createdAt || receivedTime === null) return false;
               const mTime = parseServerDate(m.createdAt);
               const timeDiff = Math.abs((mTime ?? 0) - receivedTime);
@@ -78,47 +76,42 @@ export const ChatWidget = () => {
           }
         }
       } catch (error) {
-        console.error("Error parsing message:", error);
+        console.error("Lỗi khi phân tích tin nhắn:", error);
       }
     };
 
     return () => socket.close();
   }, [currUser?.id]);
 
-  // 3. Auto-scroll
+  // 3. Tự động cuộn
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isOpen]);
 
-  const handleSendMessage = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
-    // Use a high-precision timestamp as a temporary ID
     const tempId = Date.now();
 
     const userMsg: Message = {
-      id: tempId, // Assign timestamp as temporary ID
+      id: tempId,
       content: inputValue,
       sender: MessageSender.USER,
       createdAt: new Date().toISOString(),
       user: currUser!,
     };
 
-    // Optimistic update
     setMessages((prev) => [...prev, userMsg]);
     setInputValue('');
     setIsLoading(true);
 
     try {
-      // IMPORTANT: Your Backend/API must accept this 'id' 
-      // and broadcast it back via WebSocket.
       await AppProviders.RequestMessageUseCase.execute(userMsg);
     } catch (error) {
-      console.error("Chat error:", error);
-      // Remove the optimistic message if sending fails
+      console.error("Lỗi trò chuyện:", error);
       setMessages((prev) => prev.filter(m => m.id !== tempId));
       setIsLoading(false);
     }
@@ -129,19 +122,18 @@ export const ChatWidget = () => {
       {isOpen && (
         <div className="mb-4 w-80 md:w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
 
-          {/* Header */}
+          {/* Tiêu đề */}
           <div className="bg-emerald-600 p-4 text-white flex justify-between items-center shadow-md">
             <div className="flex items-center gap-2">
               <div className="bg-white/20 p-1.5 rounded-lg relative">
                 <Bot size={20} />
-                {/* Visual Connection Indicator */}
                 <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-emerald-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
               </div>
               <div>
                 <h3 className="font-bold text-sm">Hỗ trợ trực tuyến</h3>
                 <p className="text-[10px] text-emerald-700 flex items-center gap-1">
                   {isConnected ? (
-                    <><span className="h-1.5 w-1.5 bg-green-400 rounded-full animate-pulse"></span> AI Assistant Online</>
+                    <><span className="h-1.5 w-1.5 bg-green-400 rounded-full animate-pulse"></span> Trợ lý AI đang trực tuyến</>
                   ) : (
                     <><span className="h-1.5 w-1.5 bg-red-400 rounded-full"></span> Đang kết nối lại...</>
                   )}
@@ -153,7 +145,7 @@ export const ChatWidget = () => {
             </button>
           </div>
 
-          {/* Messages Area */}
+          {/* Khu vực tin nhắn */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-emerald-50">
             {isFetchingHistory ? (
               <div className="flex flex-col items-center justify-center h-full gap-2">
@@ -209,7 +201,7 @@ export const ChatWidget = () => {
             )}
           </div>
 
-          {/* Input Area */}
+          {/* Khu vực nhập liệu */}
           <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-100 bg-white">
             <div className="relative">
               <input
@@ -231,7 +223,7 @@ export const ChatWidget = () => {
         </div>
       )}
 
-      {/* Floating Toggle Button */}
+      {/* Nút bật/tắt nổi */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`p-4 rounded-full shadow-2xl transition-all duration-300 active:scale-90 flex items-center justify-center ${isOpen ? 'bg-slate-800 text-white rotate-90' : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:-translate-y-1'

@@ -9,14 +9,14 @@ import AuthorSection from "@/src/presentation/components/public/authors/AuthorSe
 import { AppProviders } from "@/src/provider/provider";
 
 export default async function Home() {
-  // 1. Fetch Categories, Books, and Authors
+  // 1. Lấy Danh mục, Sách và Tác giả
   const [categories, allProducts, authors]: [Category[], Book[], Author[]] = await Promise.all([
     AppProviders.GetAllCategoriesUseCase.execute(),
     AppProviders.GetAllBooksUseCase.execute(),
-    AppProviders.GetAllAuthorsUseCase.execute() // Assuming this UseCase exists
+    AppProviders.GetAllAuthorsUseCase.execute()
   ]);
 
-  // 2. Process New Arrivals: Sort by createdAt (Newest first)
+  // 2. Xử lý Sách Mới: Sắp xếp theo createdAt (Mới nhất trước)
   const newArrivals = [...allProducts]
     .sort((a, b) => {
       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -25,7 +25,7 @@ export default async function Home() {
     })
     .slice(0, 5);
 
-  // 3. Process Bestsellers: Calculate from Order History
+  // 3. Xử lý Bán chạy: Tính toán từ Lịch sử Đơn hàng
   const allOrders: Order[] = await AppProviders.GetAllOrdersUseCase.execute();
   
   const salesMap: Record<number, number> = {};
@@ -50,13 +50,13 @@ export default async function Home() {
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Hero Section */}
+      {/* Phần Hero */}
       <HomeBanner />
 
-      {/* Categories Navigation */}
+      {/* Điều hướng Danh mục */}
       <CategoryCircles categories={categories} />
 
-      {/* New Books Section */}
+      {/* Phần Sách Mới */}
       <ProductSection
         title="Sách Mới Về"
         subtitle="Khám phá những tựa sách mới nhất vừa cập bến cửa hàng."
@@ -64,10 +64,10 @@ export default async function Home() {
         viewAllHref="/shop/new-arrivals"
       />
 
-      {/* Featured Authors Section - Added Here */}
+      {/* Phần Tác giả Nổi bật */}
       <AuthorSection authors={authors} />
 
-      {/* Bestsellers Section */}
+      {/* Phần Bán chạy */}
       <ProductSection
         title="Bán Chạy Trong Tuần"
         subtitle="Những cuốn sách được yêu thích nhất. Xem mọi người đang đọc gì nhé."

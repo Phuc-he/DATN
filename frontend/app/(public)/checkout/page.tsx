@@ -35,8 +35,8 @@ const Page = () => {
   const { currUser } = useAuth();
   const isRestrictedUser = !currUser || currUser.historyStatus === UserHistoryStatus.NEW_USER || currUser.historyStatus === UserHistoryStatus.BOOM_HISTORY;
   const [isSuccess, setIsSuccess] = useState(false);
-  const MAX_QTY_FOR_RESTRICTED = 5;       // Limit 5 books
-  const MAX_COD_VALUE_FOR_RESTRICTED = 50 * 26000; // Max $50 for COD
+  const MAX_QTY_FOR_RESTRICTED = 5;       // Giới hạn 5 cuốn sách
+  const MAX_COD_VALUE_FOR_RESTRICTED = 50 * 26000; // Tối đa 50$ cho COD
 
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
   // 1. Kiểm tra xem giỏ hàng có chứa sách HOT, LIMITED hoặc PRE_ORDER không
@@ -65,28 +65,28 @@ const Page = () => {
       const socket = new WebSocket('ws://localhost:8080/payment-status');
 
       socket.onopen = () => {
-        console.log("✅ WebSocket connected");
+        console.log("✅ WebSocket đã kết nối");
         // Gửi đúng định dạng mà Backend PaymentWebSocketHandler mong đợi
         socket.send(`joinOrderRoom:${isVnQr.orderId}`);
       };
 
       socket.onmessage = (event) => {
         const message = event.data;
-        console.log("📩 Received from server:", message);
+        console.log("📩 Đã nhận từ máy chủ:", message);
 
         // Khớp với chuỗi "PAYMENT_SUCCESS" mà Backend gửi trong notifyPaymentSuccess
         if (message === "PAYMENT_SUCCESS") {
-          console.log("🎉 Payment Success! Redirecting...");
+          console.log("🎉 Thanh toán thành công! Đang chuyển hướng...");
           router.push(`/checkout/order-success?id=${isVnQr.orderId}`);
         }
       };
 
       socket.onerror = (error) => {
-        console.error("❌ WebSocket Error:", error);
+        console.error("❌ Lỗi WebSocket:", error);
       };
 
       socket.onclose = () => {
-        console.log("🔌 WebSocket disconnected");
+        console.log("🔌 WebSocket đã ngắt kết nối");
       };
 
       return () => {
@@ -122,7 +122,7 @@ const Page = () => {
     }
   };
 
-  const handleSubmitOrder = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmitOrder = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate rules before submitting
@@ -327,7 +327,7 @@ const Page = () => {
                 ))}
               </div>
 
-              {/* Voucher Section giữ nguyên */}
+              {/* Phần Voucher giữ nguyên */}
               <div className="mt-6 p-4 bg-emerald-50 rounded-2xl border border-dashed border-slate-200">
                 {!appliedVoucher ? (
                   <div className="flex gap-2">

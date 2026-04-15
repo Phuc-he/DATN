@@ -3,7 +3,7 @@
 import { Book } from '@/src/domain/entity/book.entity';
 import { useCart } from '@/src/presentation/context/CartContext';
 import {
-  Award, // Added
+  Award,
   BookOpen,
   CheckCircle2,
   Heart,
@@ -14,7 +14,7 @@ import {
   ShoppingCart,
   Star,
   Truck,
-  Sparkles // Added
+  Sparkles
 } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react';

@@ -19,11 +19,11 @@ interface PriceRange {
 }
 
 const VND_PRICE_RANGES: PriceRange[] = [
-  { label: 'All Prices', min: undefined, max: undefined },
-  { label: 'Under 500.000₫', min: 0, max: 500000 },
+  { label: 'Tất cả mức giá', min: undefined, max: undefined },
+  { label: 'Dưới 500.000₫', min: 0, max: 500000 },
   { label: '500.000₫ - 1.000.000₫', min: 500000, max: 1000000 },
   { label: '1.000.000₫ - 2.000.000₫', min: 1000000, max: 2000000 },
-  { label: 'Over 2.000.000₫', min: 2000000, max: Infinity },
+  { label: 'Trên 2.000.000₫', min: 2000000, max: Infinity },
 ];
 
 export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, query }: SidebarProps) => {
@@ -44,7 +44,7 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
       <div className="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100">
         <div className="flex items-center gap-2 mb-6 font-black text-slate-950 uppercase text-[10px] tracking-[0.3em]">
           <Filter size={14} className="text-emerald-600" />
-          Browse Genres
+          Khám phá Thể loại
         </div>
         <div className="flex flex-col gap-1.5">
           <Link
@@ -54,7 +54,7 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
               : 'text-emerald-800 hover:text-emerald-600 hover:bg-emerald-50/50'
               }`}
           >
-            All Genres
+            Tất cả thể loại
           </Link>
           {categories.map((cat) => (
             <Link
@@ -75,7 +75,7 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
       <div className="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100">
         <div className="flex items-center gap-2 mb-6 font-black text-slate-950 uppercase text-[10px] tracking-[0.3em]">
           <Banknote size={14} className="text-emerald-600" />
-          Price Range
+          Khoảng giá
         </div>
         <div className="space-y-1.5">
           {VND_PRICE_RANGES.map((range) => {

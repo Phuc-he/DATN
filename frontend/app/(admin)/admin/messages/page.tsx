@@ -112,12 +112,12 @@ const MessagePage = () => {
     } catch (error) {
       console.error("Failed to save message:", error);
       logAction(`${action}_FAILURE`, "Message", `Failed to save message`);
-      alert("Operation failed. Please try again.");
+      alert("Thao tác thất bại. Vui lòng thử lại.");
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm(`Are you sure you want to delete message #${id}?`)) {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa tin nhắn #${id}?`)) {
       try {
         await AppProviders.DeleteMessageUseCase.execute(id);
         await logAction("DELETE", "Message", `Deleted message ID: ${id}`);
@@ -125,7 +125,7 @@ const MessagePage = () => {
       } catch (error) {
         console.error("Failed to delete message:", error);
         logAction("DELETE_FAILURE", "Message", `Failed to delete message ID: ${id}`);
-        alert("Error deleting message.");
+        alert("Lỗi khi xóa tin nhắn.");
       }
     }
   };
@@ -184,7 +184,7 @@ const MessagePage = () => {
         <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${isConnected ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'
           }`}>
           {isConnected ? <Wifi size={14} /> : <WifiOff size={14} />}
-          {isConnected ? 'Live Sync' : 'Offline'}
+          {isConnected ? 'Đang kết nối' : 'Ngoại tuyến'}
         </div>
       </div>
       {/* ... Header Section ... */}
@@ -194,7 +194,7 @@ const MessagePage = () => {
           className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-slate-950 transition-all shadow-md"
         >
           <Terminal size={20} />
-          {showTrainView ? "Hide Console" : "AI Training Console"}
+          {showTrainView ? "Ẩn Bảng điều khiển" : "Bảng điều khiển huấn luyện AI"}
         </button>
         {/* ... Existing Add Message Button ... */}
       </div>
@@ -229,9 +229,9 @@ const MessagePage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <MessageSquare className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">Message Management</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Quản lý tin nhắn</h1>
           </div>
-          <p className="text-sm text-emerald-900">Monitor and manage communications between users and the system.</p>
+          <p className="text-sm text-emerald-900">Theo dõi và quản lý các cuộc hội thoại giữa người dùng và hệ thống.</p>
         </div>
 
         {/* View Switcher Tabs */}
@@ -241,14 +241,14 @@ const MessagePage = () => {
             className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'messages' ? 'bg-white text-emerald-600 shadow-sm' : 'text-emerald-900 hover:text-slate-700'}`}
           >
             <List size={18} />
-            All Messages
+            Tất cả tin nhắn
           </button>
           <button
             onClick={() => setView('rooms')}
             className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${view === 'rooms' ? 'bg-white text-emerald-600 shadow-sm' : 'text-emerald-900 hover:text-slate-700'}`}
           >
             <LayoutGrid size={18} />
-            Chat Rooms
+            Phòng chat
           </button>
         </div>
 
@@ -267,7 +267,7 @@ const MessagePage = () => {
               <div className="mb-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Mail size={16} className="text-slate-400" />
-                  <span className="text-sm text-emerald-900 font-medium">Inbox: {messages.length} msgs</span>
+                  <span className="text-sm text-emerald-900 font-medium">Hộp thư: {messages.length} tin nhắn</span>
                 </div>
               </div>
               <MessageTable
@@ -283,7 +283,7 @@ const MessagePage = () => {
                     onClick={() => setCurrentPage(prev => prev - 1)}
                     className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
                   >
-                    Previous
+                    Trước
                   </button>
 
                   <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
@@ -295,14 +295,14 @@ const MessagePage = () => {
                     onClick={() => setCurrentPage(prev => prev + 1)}
                     className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
                   >
-                    Next
+                    Tiếp
                   </button>
                 </div>
               )}
             </>
           ) : (
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-              <h3 className="text-lg font-bold mb-4">Active Chat Rooms</h3>
+              <h3 className="text-lg font-bold mb-4">Phòng chat đang hoạt động</h3>
               {/* Thay bằng Component RoomList thực tế của bạn */}
               <RoomList rooms={getRoomsFromMessages(messages)} onSelectRoom={handleSelectRoom} />
             </div>

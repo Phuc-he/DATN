@@ -10,21 +10,21 @@ interface ShopPageProps {
     category?: number;
     sort?: string;
     format?: string;
-    minPrice?: string; // New
-    maxPrice?: string; // New
+    minPrice?: string; // Mới
+    maxPrice?: string; // Mới
   }>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const { category, minPrice, maxPrice } = await searchParams;
 
-  // Convert comma-separated string from URL into an array: ['Paperback', 'Hardcover']
+  // Chuyển đổi chuỗi phân cách bằng dấu phẩy từ URL thành một mảng: ['Paperback', 'Hardcover']
   const min = minPrice ? parseFloat(minPrice) : 0;
   const max = maxPrice ? parseFloat(maxPrice) : Infinity;
 
   const [categories, productsResult] = await Promise.all([
     AppProviders.GetAllCategoriesUseCase.execute(),
-    AppProviders.GetBooksByPageUseCase.execute(0, 50), // Fetch more for filtering
+    AppProviders.GetBooksByPageUseCase.execute(0, 50), // Lấy thêm để lọc
   ]);
 
   const products = filterProducts(productsResult.content, {
@@ -39,8 +39,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-slate-950 tracking-tight">The Bookshop</h1>
-          <p className="text-emerald-900 mt-2">Discover your next favorite story among our curated collection.</p>
+          <h1 className="text-4xl font-black text-slate-950 tracking-tight">Cửa hàng Sách</h1>
+          <p className="text-emerald-900 mt-2">Khám phá câu chuyện yêu thích tiếp theo của bạn trong bộ sưu tập được chọn lọc của chúng tôi.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -61,9 +61,9 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               </div>
             ) : (
               <div className="bg-white rounded-3xl p-20 text-center border border-dashed border-slate-200">
-                <p className="text-slate-400 font-medium">No books found matching your criteria.</p>
+                <p className="text-slate-400 font-medium">Không tìm thấy cuốn sách nào khớp với tiêu chí của bạn.</p>
                 <Link href="/shop" className="text-emerald-600 font-bold mt-2 inline-block hover:underline">
-                  Reset all filters
+                  Đặt lại tất cả bộ lọc
                 </Link>
               </div>
             )}

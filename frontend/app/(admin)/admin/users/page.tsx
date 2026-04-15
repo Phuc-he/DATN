@@ -50,7 +50,7 @@ const UserManagementPage = () => {
       alert("Đã cập nhật trạng thái lịch sử mua hàng cho toàn bộ người dùng!");
     } catch (error) {
       console.error("Failed to sync statuses:", error);
-      alert("Đồng bộ thất bại. Vui lòng kiểm tra console.");
+      alert("Đồng bộ thất bại. Vui lòng kiểm tra nhật ký lỗi.");
     } finally {
       setSyncing(false);
     }
@@ -72,13 +72,13 @@ const UserManagementPage = () => {
     } catch (error) {
       console.error("Failed to save user:", error);
       logAction(`${action}_FAILURE`, "User", `Failed to save user: ${data.email}`);
-      alert("Operation failed. Please try again.");
+      alert("Thao tác thất bại. Vui lòng thử lại.");
     }
   };
 
   const handleDelete = async (id: number) => {
     const userToDelete = users.find(u => u.id === id);
-    if (window.confirm(`Are you sure you want to delete account: ${userToDelete?.email || 'this user'}?`)) {
+    if (window.confirm(`Bạn có chắc muốn xóa tài khoản: ${userToDelete?.email || 'người dùng này'}?`)) {
       try {
         await AppProviders.DeleteUserUseCase.execute(id);
         await logAction("DELETE", "User", `Deleted user account: ${userToDelete?.email || id}`);
@@ -86,7 +86,7 @@ const UserManagementPage = () => {
       } catch (error) {
         console.error("Failed to delete user:", error);
         logAction("DELETE_FAILURE", "User", `Failed to delete user ID: ${id}`);
-        alert("Error deleting user.");
+        alert("Lỗi khi xóa người dùng.");
       }
     }
   };
@@ -116,9 +116,9 @@ const UserManagementPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Users className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">User Management</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Quản lý người dùng</h1>
           </div>
-          <p className="text-sm text-emerald-900">Manage and oversee your application users and permissions.</p>
+          <p className="text-sm text-emerald-900">Quản lý và giám sát người dùng cũng như phân quyền ứng dụng.</p>
         </div>
 
         <div className="flex gap-3">
@@ -127,10 +127,10 @@ const UserManagementPage = () => {
             onClick={handleSyncHistoryStatus}
             disabled={syncing}
             className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 hover:bg-emerald-50 px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95 disabled:opacity-50"
-            title="Recalculate all user history statuses"
+            title="Tính toán lại trạng thái lịch sử của tất cả người dùng"
           >
             <RefreshCw size={18} className={syncing ? "animate-spin" : ""} />
-            {syncing ? "Syncing..." : "Sync History Status"}
+            {syncing ? "Đang đồng bộ..." : "Đồng bộ lịch sử"}
           </button>
 
           <button
@@ -138,7 +138,7 @@ const UserManagementPage = () => {
             className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
           >
             <Plus size={20} />
-            Add New User
+            Thêm người dùng mới
           </button>
         </div>
       </div>
@@ -151,10 +151,10 @@ const UserManagementPage = () => {
         <>
           <div className="mb-4 flex justify-between items-center">
             <span className="text-sm text-emerald-900 font-medium">
-              Registered Users: {users.length}
+              Người dùng đã đăng ký: {users.length}
             </span>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
-              Page {currentPage} of {totalPages || 1}
+              Trang {currentPage} / {totalPages || 1}
             </span>
           </div>
 
@@ -171,7 +171,7 @@ const UserManagementPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Previous
+              Trước
             </button>
 
             <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
@@ -183,7 +183,7 @@ const UserManagementPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Next
+              Tiếp
             </button>
           </div>
         </>

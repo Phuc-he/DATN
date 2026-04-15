@@ -46,7 +46,7 @@ const CartPage = () => {
                   key={book.id}
                   className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex gap-4 md:gap-6 items-center"
                 >
-                  {/* Book Image */}
+                  {/* Ảnh sách */}
                   <div className="relative h-24 w-16 md:h-32 md:w-24 flex-shrink-0 rounded-lg overflow-hidden shadow-md">
                     {book.imageUrl ? (
                       <Image
@@ -62,7 +62,7 @@ const CartPage = () => {
                     )}
                   </div>
 
-                  {/* Info */}
+                  {/* Thông tin */}
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-bold text-slate-950 truncate">{book.title}</h3>
                     <p className="text-sm text-emerald-900 mb-4">{book.author?.name || 'Tác giả ẩn danh'}</p>
@@ -93,7 +93,7 @@ const CartPage = () => {
                     </div>
                   </div>
 
-                  {/* Price info */}
+                  {/* Thông tin giá */}
                   <div className="text-right">
                     <p className="text-lg font-black text-slate-950">
                       {(discountedPrice * item.quantity).toLocaleString('vi-VN')}₫
@@ -109,7 +109,7 @@ const CartPage = () => {
             })}
           </div>
 
-          {/* Summary Column */}
+          {/* Cột Tóm tắt */}
           <div className="lg:col-span-4">
             <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 sticky top-24">
               <h2 className="text-xl font-black text-slate-950 mb-6">Tóm tắt đơn hàng</h2>

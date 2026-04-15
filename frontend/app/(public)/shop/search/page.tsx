@@ -13,21 +13,21 @@ interface ShopPageProps {
     format?: string;
     minPrice?: string;
     maxPrice?: string;
-    q?: string; // Search query
+    q?: string; // Truy vấn tìm kiếm
   }>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const { category, minPrice, maxPrice, q } = await searchParams;
 
-  // 1. Phân tách format từ URL: ['Paperback', 'Hardcover']
+  // 1. Phân tách định dạng từ URL: ['Paperback', 'Hardcover']
   const min = minPrice ? parseFloat(minPrice) : 0;
   const max = maxPrice ? parseFloat(maxPrice) : Infinity;
 
-  // 2. Fetch dữ liệu song song
+  // 2. Tải dữ liệu song song
   const [categories, productsResult] = await Promise.all([
     AppProviders.GetAllCategoriesUseCase.execute(),
-    AppProviders.GetBooksByPageUseCase.execute(0, 100), // Fetch tập dữ liệu đủ lớn để filter
+    AppProviders.GetBooksByPageUseCase.execute(0, 100), // Lấy tập dữ liệu đủ lớn để lọc
   ]);
 
   const products = filterProducts(productsResult.content, {
@@ -41,33 +41,33 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     <div className="bg-emerald-50 min-h-screen pb-20">
       <div className="container mx-auto px-4 md:px-8 py-10">
 
-        {/* Header & Status */}
+        {/* Tiêu đề & Trạng thái */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-4xl font-black text-slate-950 tracking-tight">
-              {q ? `Results for "${q}"` : "The Bookshop"}
+              {q ? `Kết quả cho "${q}"` : "Cửa hàng Sách"}
             </h1>
             <p className="text-emerald-900 mt-2">
-              Found {products.length} {products.length === 1 ? 'book' : 'books'} matching your selection.
+              Tìm thấy {products.length} cuốn sách phù hợp với lựa chọn của bạn.
             </p>
           </div>
 
-          {/* Active Filters Clear Button */}
+          {/* Nút xóa bộ lọc đang hoạt động */}
           {(category || minPrice || q) && (
             <Link
               href="/shop/search"
               className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 bg-red-50 px-4 py-2 rounded-full transition-colors w-fit"
             >
-              <X size={14} /> Clear all filters
+              <X size={14} /> Xóa tất cả bộ lọc
             </Link>
           )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Sidebar Filters */}
+          {/* Bộ lọc bên lề */}
           <ShopSidebar categories={categories} baseUrl={""} maxPrice={max.toString()} minPrice={min.toString()} query={q} />
 
-          {/* Product Grid */}
+          {/* Lưới sản phẩm */}
           <main className="lg:col-span-9">
             {products.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -83,10 +83,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                 <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
                   <Filter size={32} className="text-slate-300" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-950">No books found</h3>
-                <p className="text-slate-400 mt-2 max-w-xs mx-auto">Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
+                <h3 className="text-xl font-bold text-slate-950">Không tìm thấy sách</h3>
+                <p className="text-slate-400 mt-2 max-w-xs mx-auto">Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm của bạn để tìm thấy thứ bạn đang tìm kiếm.</p>
                 <Link href="/shop" className="mt-8 px-8 py-3 bg-slate-950 text-white rounded-full font-bold hover:bg-emerald-600 transition-all">
-                  Browse All Books
+                  Duyệt tất cả sách
                 </Link>
               </div>
             )}

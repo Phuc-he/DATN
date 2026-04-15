@@ -19,16 +19,16 @@ const HomeBanner = () => {
           <div className="space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-emerald-700 text-[10px] font-black uppercase tracking-[0.2em]">
               <Sparkles size={14} className="text-emerald-900" />
-              Your Curated Literary Journey
+              Hành trình văn chương dành riêng cho bạn
             </div>
 
             <h1 className="text-6xl lg:text-8xl font-black text-slate-950 leading-[0.95] tracking-tighter">
-              Turn the Page to <br />
-              <span className="text-emerald-600 font-serif italic font-medium">Infinite Worlds.</span>
+              Lật trang sách để đến với <br />
+              <span className="text-emerald-600 font-serif italic font-medium">Thế giới vô tận.</span>
             </h1>
 
             <p className="text-xl text-emerald-800 max-w-lg leading-relaxed font-medium">
-              Beyond the covers lie stories that reshape reality. Join our community of readers and find the book that speaks to your soul.
+              Đằng sau mỗi bìa sách là những câu chuyện tái định nghĩa thực tại. Hãy tham gia cộng đồng độc giả của chúng tôi và tìm cuốn sách chạm đến tâm hồn bạn.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 pt-4">
@@ -37,14 +37,14 @@ const HomeBanner = () => {
                 onClick={() => router.push('/shop')}
               >
                 <ShoppingCart size={20} />
-                Explore Collection
+                Khám phá bộ sưu tập
               </button>
 
               <button
                 className="flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-950 px-10 py-5 rounded-2xl font-bold hover:border-emerald-600 hover:text-emerald-600 transition-all active:scale-95 shadow-sm"
                 onClick={() => router.push("/shop/best-sellers")}
               >
-                Monthly Top Picks
+                Top sách hay tháng này
                 <ArrowRight size={20} />
               </button>
             </div>
@@ -62,7 +62,7 @@ const HomeBanner = () => {
                 <div className="flex text-emerald-400 gap-0.5">
                   {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={14} fill="currentColor" />)}
                 </div>
-                <p className="text-sm font-bold text-slate-800">2,500+ Reader Reviews</p>
+                <p className="text-sm font-bold text-slate-800">Hơn 2,500 đánh giá từ độc giả</p>
               </div>
             </div>
           </div>
@@ -90,7 +90,7 @@ const HomeBanner = () => {
                   <BookOpen size={24} />
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Editor&apos;s Choice</p>
+                  <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Lựa chọn của biên tập viên</p>
                   <p className="text-base font-black text-slate-950 leading-none mt-1">Silent Spring</p>
                 </div>
               </div>

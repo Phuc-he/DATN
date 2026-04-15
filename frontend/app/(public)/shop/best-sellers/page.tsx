@@ -23,7 +23,6 @@ export default function BestSellersPage() {
 
         allOrders.forEach(order => {
           // Chỉ tính các đơn hàng đã thanh toán hoặc đã giao để đảm bảo tính chính xác
-          // Bạn có thể lọc theo status nếu muốn (ví dụ: status >= 2)
           order.items.forEach(item => {
             const bookId = item.book.id;
             if (bookId) {
@@ -43,7 +42,7 @@ export default function BestSellersPage() {
 
         setProducts(sortedBooks);
       } catch (error) {
-        console.error("Failed to fetch best sellers:", error);
+        console.error("Lỗi khi lấy danh sách bán chạy:", error);
       } finally {
         setLoading(false);
       }
@@ -69,7 +68,7 @@ export default function BestSellersPage() {
           <div className="flex items-center gap-2 mb-2">
             <Flame className="text-orange-500" fill="currentColor" size={24} />
             <span className="text-orange-500 font-bold uppercase tracking-widest text-sm">
-              Hot Trend
+              Xu hướng Hot
             </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-950">

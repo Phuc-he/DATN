@@ -28,7 +28,7 @@ export default async function ProductDetailsPage({ params }: Props) {
         console.log("id", i);
         suggestedProducts.push(await AppProviders.GetBookUseCase.execute(i));
       } catch (err) {
-        console.error("Data Fetching Error:", err);
+        console.error("Lỗi khi tải dữ liệu:", err);
       }
     }
     if (suggestedProducts.length < 10) {
@@ -39,15 +39,15 @@ export default async function ProductDetailsPage({ params }: Props) {
       }
     }
   } catch (error) {
-    console.error("Data Fetching Error:", error);
+    console.error("Lỗi khi tải dữ liệu:", error);
     return notFound();
   }
 
   return (
     <main className="animate-in fade-in duration-500">
-      {/* ✅ Removed onAddToCart. 
-          The ProductDetails component (which IS a client component) 
-          should handle its own clicks or use a Context/Zustand store.
+      {/* ✅ Đã loại bỏ onAddToCart.
+          Component ProductDetails (là một client component)
+          nên tự xử lý các sự kiện click hoặc sử dụng Context/Zustand store.
       */}
       <ProductDetails product={product} />
 

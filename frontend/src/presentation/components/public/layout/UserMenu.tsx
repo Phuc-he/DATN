@@ -43,7 +43,7 @@ const UserMenu = () => {
           </div>
         )}
         <div className="hidden md:block text-left">
-          <p className="text-xs text-gray-400 font-bold uppercase tracking-tighter leading-none mb-1">Account</p>
+          <p className="text-xs text-gray-400 font-bold uppercase tracking-tighter leading-none mb-1">Tài khoản</p>
           <span className="text-sm font-bold text-gray-700 group-hover:text-indigo-600 flex items-center gap-1">
             {currUser?.username?.split(' ')[0]}
             <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -55,7 +55,7 @@ const UserMenu = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in zoom-in duration-150">
           <div className="px-4 py-3 border-b border-gray-50 mb-1">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Signed in as</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Đăng nhập bởi</p>
             <p className="text-sm font-bold text-gray-900 truncate">{currUser?.email}</p>
           </div>
 
@@ -65,7 +65,7 @@ const UserMenu = () => {
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
           >
             <User size={18} />
-            My Profile
+            Hồ sơ cá nhân
           </Link>
 
           <Link
@@ -74,7 +74,7 @@ const UserMenu = () => {
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
           >
             <Package size={18} />
-            View My Orders
+            Đơn hàng của tôi
           </Link>
 
           <div className="border-t border-gray-50 mt-1 pt-1">
@@ -86,7 +86,7 @@ const UserMenu = () => {
               className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 w-full text-left transition-colors"
             >
               <LogOut size={18} />
-              Sign Out
+              Đăng xuất
             </button>
           </div>
         </div>

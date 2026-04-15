@@ -21,16 +21,16 @@ const AuthorSection: React.FC<AuthorSectionProps> = ({ authors }) => {
             <div className="flex items-center gap-3">
               <div className="h-1 w-12 bg-emerald-600 rounded-full" />
               <span className="text-emerald-700 font-black text-[10px] uppercase tracking-[0.3em]">
-                Literary Community
+                Cộng đồng Văn học
               </span>
             </div>
 
             <h2 className="text-4xl font-black text-slate-950 tracking-tighter">
-              Meet the <span className="text-emerald-600 font-serif italic font-medium">Visionaries</span>
+              Gặp gỡ những <span className="text-emerald-600 font-serif italic font-medium">Nhà tư tưởng</span>
             </h2>
 
             <p className="text-emerald-800 font-medium max-w-md leading-relaxed">
-              Discover the brilliant minds behind your favorite stories and the technical insights shaping our world.
+              Khám phá những bộ óc tài ba đằng sau những câu chuyện yêu thích của bạn và những góc nhìn kỹ thuật đang định hình thế giới.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ const AuthorSection: React.FC<AuthorSectionProps> = ({ authors }) => {
             href="/authors"
             className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-3.5 rounded-2xl text-sm font-black text-slate-950 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm hover:shadow-xl hover:shadow-emerald-100/50"
           >
-            Explore All Authors
+            Khám phá tất cả tác giả
             <ArrowRight size={18} className="transition-transform group-hover:translate-x-1 text-emerald-600" />
           </Link>
         </div>
@@ -62,7 +62,7 @@ const AuthorSection: React.FC<AuthorSectionProps> = ({ authors }) => {
               <Users size={48} className="text-emerald-200" />
             </div>
             <p className="text-slate-400 font-bold tracking-tight">
-              No authors have stepped into the spotlight yet.
+              Chưa có tác giả nào xuất hiện trong ánh đèn sân khấu.
             </p>
           </div>
         )}

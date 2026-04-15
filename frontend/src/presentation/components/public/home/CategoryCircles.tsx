@@ -18,15 +18,15 @@ const CategoryCircles: React.FC<CategoryCircleProps> = ({ categories }) => {
         <div className="flex justify-between items-end mb-12">
           <div>
             <h2 className="text-3xl font-black text-slate-950 tracking-tighter">
-              Curated <span className="text-emerald-600 font-serif italic font-medium">Genres</span>
+              <span className="text-emerald-600 font-serif italic font-medium">Thể loại</span> tuyển chọn
             </h2>
-            <p className="text-emerald-800 font-medium mt-1">Discover stories tailored to your taste</p>
+            <p className="text-emerald-800 font-medium mt-1">Khám phá những câu chuyện phù hợp với sở thích của bạn</p>
           </div>
           <Link 
             href="/categories" 
             className="text-sm font-black text-emerald-700 hover:text-emerald-800 flex items-center gap-2 group uppercase tracking-widest"
           >
-            All Genres
+            Tất cả thể loại
             <div className="p-2 bg-emerald-50 rounded-full transition-colors group-hover:bg-emerald-100">
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
             </div>
