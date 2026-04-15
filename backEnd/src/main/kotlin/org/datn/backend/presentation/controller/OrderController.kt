@@ -3,7 +3,9 @@ package org.datn.backend.presentation.controller
 import org.datn.backend.domain.entity.Order
 import org.datn.backend.domain.entity.OrderItem
 import org.datn.backend.domain.entity.OrderStatus
+import org.datn.backend.domain.entity.User
 import org.datn.backend.domain.usecase.OrderService
+import org.datn.backend.domain.usecase.UserService
 import org.datn.backend.presentation.mapper.toPageResponse
 import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.OrderPageResponse
@@ -20,11 +22,13 @@ import java.math.BigDecimal
 @RequestMapping("/api/orders")
 class OrderController(
     private val orderService: OrderService,
+    private val userService: UserService,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GetMapping("/all", produces = ["application/x-protobuf"])
-    fun getAll(pageable: Pageable): ResponseEntity<OrderPageResponse> = ResponseEntity.ok(orderService.getAll(pageable).toPageResponse())
+    fun getAll(pageable: Pageable): ResponseEntity<OrderPageResponse> =
+        ResponseEntity.ok(orderService.getAll(pageable).toPageResponse())
 
     @GetMapping("/search", produces = ["application/x-protobuf"])
     fun search(
@@ -49,7 +53,7 @@ class OrderController(
         @RequestBody proto: OrderProto,
     ): ResponseEntity<OrderProto> {
         // 1. Create the parent Order entity first
-        val entity =
+        var entity =
             Order(
                 fullName = proto.fullName,
                 phone = proto.phone,
@@ -57,10 +61,14 @@ class OrderController(
                 cartId = proto.cartId,
                 totalAmount = BigDecimal(proto.totalAmount),
                 status = OrderStatus.valueOf(proto.status.name),
-                user =
-                    org.datn.backend.domain.entity
-                        .User(id = proto.user.id, username = "", email = "", password = ""),
+                user = User(id = proto.user.id, username = "", email = "", password = ""),
             )
+        runCatching {
+            entity = entity.copy(user = userService.getById(proto.user.id))
+        }.onFailure {
+            entity = entity.copy(user = userService.create(User(id = null, username = "${System.currentTimeMillis()}", email = "${System.currentTimeMillis()}", password = "")) ?: entity.user)
+            log.error("User not found with id: ${proto.user.id}")
+        }
 
         // 2. Map the items and link them to the parent entity
         val items =

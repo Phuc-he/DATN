@@ -22,7 +22,7 @@ const syncUserWithBackend = async (user: User, isOAuth = false, role: Role) => {
     await AppProviders.CreateUserUseCase.execute({
       email: user.email || '',
       password: isOAuth ? 'google-oauth' : 'managed-via-firebase',
-      username: user.displayName || 'temp',
+      username: user.displayName || 'temp ' + Date.now(),
       role: role
     });
   } catch (error) {
