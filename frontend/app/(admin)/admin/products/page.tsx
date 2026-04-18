@@ -76,32 +76,32 @@ const ProductPage = () => {
     try {
       if (selectedProduct?.id) {
         await AppProviders.UpdateBookUseCase.execute(selectedProduct.id, data);
-        await logAction(action, "Book", `Updated book: ${data.title} (ID: ${selectedProduct.id})`);
+        await logAction(action, "Book", `Cập nhật sách: ${data.title} (ID: ${selectedProduct.id})`);
       } else {
         action = "CREATE";
         await AppProviders.CreateBookUseCase.execute(data);
-        await logAction(action, "Book", `Added new book to catalog: ${data.title}`);
+        await logAction(action, "Book", `Thêm sách mới vào danh mục: ${data.title}`);
       }
       fetchProducts(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save product:", error);
-      logAction(`${action}_FAILURE`, "Book", `Failed to save book: ${data.title}`);
-      alert("Error saving product. Please check the required fields.");
+      logAction(`${action}_FAILURE`, "Book", `Không thể lưu sách: ${data.title}`);
+      alert("Lỗi khi lưu sản phẩm. Vui lòng kiểm tra các trường bắt buộc.");
     }
   };
 
   const handleDelete = async (id: number) => {
     const bookToDelete = products.find(p => p.id === id);
-    if (window.confirm(`Are you sure you want to delete "${bookToDelete?.title || 'this book'}"?`)) {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa "${bookToDelete?.title || 'cuốn sách này'}"?`)) {
       try {
         await AppProviders.DeleteBookUseCase.execute(id);
-        await logAction("DELETE", "Book", `Deleted book: ${bookToDelete?.title || id}`);
+        await logAction("DELETE", "Book", `Đã xóa sách: ${bookToDelete?.title || id}`);
         fetchProducts(currentPage);
       } catch (error) {
         console.error("Failed to delete product:", error);
-        logAction("DELETE_FAILURE", "Book", `Failed to delete book ID: ${id}`);
-        alert("Error deleting product");
+        logAction("DELETE_FAILURE", "Book", `Không thể xóa sách ID: ${id}`);
+        alert("Lỗi khi xóa sản phẩm");
       }
     }
   };
@@ -122,9 +122,9 @@ const ProductPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <BookCopy className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">Product Management</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Quản lý sản phẩm</h1>
           </div>
-          <p className="text-sm text-emerald-900">Inventory control and book catalog management.</p>
+          <p className="text-sm text-emerald-900">Kiểm soát kho hàng và quản lý danh mục sách.</p>
         </div>
 
         <button
@@ -132,7 +132,7 @@ const ProductPage = () => {
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
         >
           <Plus size={20} />
-          Add New Book
+          Thêm sách mới
         </button>
       </div>
 
@@ -144,10 +144,10 @@ const ProductPage = () => {
         <>
           <div className="mb-4 flex justify-between items-center">
             <span className="text-sm text-emerald-900 font-medium">
-              Total Books: {products.length}
+              Tổng số sách: {products.length}
             </span>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
-              Page {currentPage} of {totalPages || 1}
+              Trang {currentPage} trên {totalPages || 1}
             </span>
           </div>
 
@@ -163,7 +163,7 @@ const ProductPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Previous
+              Trước
             </button>
             <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
               {currentPage}
@@ -173,7 +173,7 @@ const ProductPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Next
+              Sau
             </button>
           </div>
         </>

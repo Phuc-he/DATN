@@ -32,11 +32,11 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50/80">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Event</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Performed By</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Details</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Time (Local)</th>
-            {onDelete && <th className="px-6 py-4 text-right text-xs font-bold text-emerald-800 uppercase tracking-tight">Actions</th>}
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Sự kiện</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Người thực hiện</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Chi tiết</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-tight">Thời gian</th>
+            {onDelete && <th className="px-6 py-4 text-right text-xs font-bold text-emerald-800 uppercase tracking-tight">Hành động</th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -82,14 +82,14 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
                     <div className="flex flex-col text-xs">
                       <div className="text-slate-800 font-bold flex items-center">
                         <Clock size={12} className="mr-1 text-emerald-900" />
-                        {dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        {dateObj.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                       </div>
                       <div className="text-slate-400 font-medium ml-[16px]">
-                        {dateObj.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
+                        {dateObj.toLocaleDateString('vi-VN', { day: '2-digit', month: 'long', year: 'numeric' })}
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs text-red-400 font-mono">Invalid Date</span>
+                    <span className="text-xs text-red-400 font-mono">Ngày không hợp lệ</span>
                   )}
                 </td>
 
@@ -98,7 +98,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
                     <button
                       onClick={() => onDelete(log.id)}
                       className="text-slate-300 hover:text-red-500 p-2 hover:bg-red-50 rounded-lg transition-all"
-                      title="Permanently remove log"
+                      title="Xóa vĩnh viễn nhật ký"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -113,8 +113,8 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({ logs, onDelete }) =
               <td colSpan={onDelete ? 5 : 4} className="px-6 py-20 text-center text-slate-400">
                 <div className="flex flex-col items-center">
                   <History className="mb-4 opacity-10" size={80} />
-                  <p className="text-lg font-semibold text-emerald-800">Audit trail is empty</p>
-                  <p className="text-sm">No system activities have been captured yet.</p>
+                  <p className="text-lg font-semibold text-emerald-800">Nhật ký hoạt động trống</p>
+                  <p className="text-sm">Chưa có hoạt động hệ thống nào được ghi lại.</p>
                 </div>
               </td>
             </tr>

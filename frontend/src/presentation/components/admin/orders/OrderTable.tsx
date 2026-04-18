@@ -18,12 +18,12 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Order Info</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Customer</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Items</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Total Amount</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-right text-xs font-bold text-emerald-800 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Thông tin đơn hàng</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Khách hàng</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Sản phẩm</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Tổng cộng</th>
+            <th className="px-6 py-4 text-left text-xs font-bold text-emerald-800 uppercase tracking-wider">Trạng thái</th>
+            <th className="px-6 py-4 text-right text-xs font-bold text-emerald-800 uppercase tracking-wider">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -40,7 +40,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
                   <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-1 uppercase font-bold">
                     <Calendar size={12} />
                     {/* Assuming id reflects order sequence, or use a date field if added to entity */}
-                    ORDER REF: {order.cartId || 'DIRECT'}
+                    MÃ THAM CHIẾU: {order.cartId || 'TRỰC TIẾP'}
                   </div>
                 </td>
 
@@ -84,16 +84,16 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
                     )}
                   </div>
                   <div className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                    <Package size={10} /> {order.items.reduce((acc, curr) => acc + curr.quantity, 0)} Units
+                    <Package size={10} /> {order.items.reduce((acc, curr) => acc + curr.quantity, 0)} Sản phẩm
                   </div>
                 </td>
 
                 {/* Price */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-black text-slate-950">
-                    {order.totalAmount.toLocaleString()} <span className="text-[10px] font-medium text-emerald-800">VND</span>
+                    {order.totalAmount.toLocaleString()} <span className="text-[10px] font-medium text-emerald-800">VNĐ</span>
                   </div>
-                  <div className="text-[10px] text-slate-400 italic">Incl. Taxes & Fees</div>
+                  <div className="text-[10px] text-slate-400 italic">Đã bao gồm thuế & phí</div>
                 </td>
 
                 {/* Delivery Status using Entity Helper */}
@@ -111,7 +111,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
                     className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all shadow-md active:scale-95"
                   >
                     <Eye size={14} />
-                    VIEW DETAILS
+                    XEM CHI TIẾT
                   </button>
                 </td>
               </tr>
@@ -120,7 +120,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onViewDetails }) => {
           {orders.length === 0 && (
             <tr>
               <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic text-sm">
-                No orders found in the system.
+                Không tìm thấy đơn hàng nào trong hệ thống.
               </td>
             </tr>
           )}

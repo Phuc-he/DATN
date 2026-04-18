@@ -57,9 +57,9 @@ export const CategoryDistributionChart = () => {
     <div className="h-[500px] w-full bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
       <div className="flex flex-col mb-8">
         <h3 className="font-black text-slate-950 uppercase tracking-tight text-sm">
-          Category Distribution
+          Phân bổ danh mục
         </h3>
-        <p className="text-xs text-emerald-800 font-bold mt-1">Total books organized by category</p>
+        <p className="text-xs text-emerald-800 font-bold mt-1">Tổng số sách được sắp xếp theo danh mục</p>
       </div>
 
       <div className="flex-1 h-[400px] w-full">
@@ -88,7 +88,7 @@ export const CategoryDistributionChart = () => {
                 fontWeight: 'bold'
               }}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              formatter={(value: any) => [value, 'Books']}
+              formatter={(value: any) => [value, 'Cuốn sách']}
             />
             <Bar
               dataKey="count"
@@ -105,7 +105,7 @@ export const CategoryDistributionChart = () => {
 
       {data.length === 0 && !loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none">
-          <p className="text-slate-400 font-bold text-sm italic">No data available</p>
+          <p className="text-slate-400 font-bold text-sm italic">Không có dữ liệu</p>
         </div>
       )}
     </div>

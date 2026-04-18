@@ -36,7 +36,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       case BookType.LIMITED:
         return (
           <span className="bg-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
-            <Gem size={10} /> LIMITED
+            <Gem size={10} /> GIỚI HẠN
           </span>
         );
       case BookType.PRE_ORDER:

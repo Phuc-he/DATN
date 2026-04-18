@@ -43,7 +43,7 @@ const UserManagementPage = () => {
     setSyncing(true);
     try {
       await AppProviders.UpdateUserHistoryStatusUseCase.execute();
-      await logAction("MAINTENANCE", "User", "Triggered bulk history status synchronization");
+      await logAction("MAINTENANCE", "User", "Đã kích hoạt đồng bộ hóa trạng thái lịch sử hàng loạt");
 
       // Refresh the current page to see updated statuses
       await fetchUsers(currentPage);
@@ -61,17 +61,17 @@ const UserManagementPage = () => {
     try {
       if (selectedUser?.id) {
         await AppProviders.UpdateUserUseCase.execute(selectedUser.id, data);
-        await logAction(action, "User", `Updated user: ${data.email} (ID: ${selectedUser.id})`);
+        await logAction(action, "User", `Cập nhật người dùng: ${data.email} (ID: ${selectedUser.id})`);
       } else {
         action = "CREATE";
         await AppProviders.CreateUserUseCase.execute(data);
-        await logAction(action, "User", `Created new user account: ${data.email}`);
+        await logAction(action, "User", `Tạo tài khoản người dùng mới: ${data.email}`);
       }
       fetchUsers(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save user:", error);
-      logAction(`${action}_FAILURE`, "User", `Failed to save user: ${data.email}`);
+      logAction(`${action}_FAILURE`, "User", `Không thể lưu người dùng: ${data.email}`);
       alert("Thao tác thất bại. Vui lòng thử lại.");
     }
   };
@@ -81,11 +81,11 @@ const UserManagementPage = () => {
     if (window.confirm(`Bạn có chắc muốn xóa tài khoản: ${userToDelete?.email || 'người dùng này'}?`)) {
       try {
         await AppProviders.DeleteUserUseCase.execute(id);
-        await logAction("DELETE", "User", `Deleted user account: ${userToDelete?.email || id}`);
+        await logAction("DELETE", "User", `Đã xóa tài khoản người dùng: ${userToDelete?.email || id}`);
         fetchUsers(currentPage);
       } catch (error) {
         console.error("Failed to delete user:", error);
-        logAction("DELETE_FAILURE", "User", `Failed to delete user ID: ${id}`);
+        logAction("DELETE_FAILURE", "User", `Không thể xóa người dùng ID: ${id}`);
         alert("Lỗi khi xóa người dùng.");
       }
     }
@@ -154,7 +154,7 @@ const UserManagementPage = () => {
               Người dùng đã đăng ký: {users.length}
             </span>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
-              Trang {currentPage} / {totalPages || 1}
+              Trang {currentPage} trên {totalPages || 1}
             </span>
           </div>
 

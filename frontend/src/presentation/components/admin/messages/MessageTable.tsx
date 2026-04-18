@@ -18,7 +18,7 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
   const formatDate = (date: string | Date | undefined) => {
     if (!date) return 'N/A';
     const d = typeof date === 'string' ? new Date(date) : date;
-    return d.toLocaleString();
+    return d.toLocaleString('vi-VN');
   };
 
   return (
@@ -26,11 +26,11 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Sender & User</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Content</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Related Context</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Sent At</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Người gửi & Người dùng</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Nội dung</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Ngữ cảnh liên quan</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Gửi lúc</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -48,10 +48,10 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
                   </div>
                   <div className="ml-3">
                     <div className="text-sm font-bold text-slate-950">
-                      {msg.user?.fullName || 'Anonymous'}
+                      {msg.user?.fullName || 'Ẩn danh'}
                     </div>
                     <div className="text-[10px] uppercase tracking-wider font-semibold opacity-70">
-                      {msg.sender}
+                      {msg.sender === MessageSender.USER ? 'Người dùng' : 'Quản trị viên'}
                     </div>
                   </div>
                 </div>
@@ -75,7 +75,7 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
                     <span className="truncate max-w-[120px]">{msg.relatedBook.title}</span>
                   </div>
                 ) : (
-                  <span className="text-xs text-slate-400">General Inquiry</span>
+                  <span className="text-xs text-slate-400">Yêu cầu chung</span>
                 )}
               </td>
 
@@ -93,7 +93,8 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
                   {msg.sender === MessageSender.USER && (
                     <button
                       onClick={() => onReply(msg)} // Thêm prop onReply vào Table
-                      className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg title='Reply User'"
+                      className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg"
+                      title="Trả lời người dùng"
                     >
                       <Reply size={18} />
                     </button>
@@ -101,7 +102,7 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
                   <button
                     onClick={() => onEdit(msg)}
                     className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all active:scale-90"
-                    title="Edit Message"
+                    title="Chỉnh sửa tin nhắn"
                   >
                     <Edit size={18} />
                   </button>
@@ -109,7 +110,7 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
                     onClick={() => msg.id && onDelete(msg.id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all active:scale-90"
                     disabled={!msg.id}
-                    title="Delete Message"
+                    title="Xóa tin nhắn"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -123,7 +124,7 @@ const MessageTable: React.FC<MessageTableProps> = ({ messages, onEdit, onReply, 
               <td colSpan={5} className="px-6 py-10 text-center text-emerald-800 italic">
                 <div className="flex flex-col items-center gap-2">
                   <Mail size={32} className="text-slate-200" />
-                  <p>No messages found in the database.</p>
+                  <p>Không tìm thấy tin nhắn nào.</p>
                 </div>
               </td>
             </tr>

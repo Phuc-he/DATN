@@ -36,12 +36,12 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Website</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Appearance</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Contact & Footer</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Last Updated</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Trang web</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Giao diện</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Liên hệ & Chân trang</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Cập nhật cuối</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Trạng thái</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -71,7 +71,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
                   <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-md">
                     {renderIcon(setting.headerIcon)}
                   </div>
-                  <span className="font-medium">{setting.headerIcon || 'Default'}</span>
+                  <span className="font-medium">{setting.headerIcon || 'Mặc định'}</span>
                 </div>
               </td>
 
@@ -80,10 +80,10 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
                 <div className="flex flex-col gap-1 max-w-[200px]">
                   <div className="flex items-center gap-1.5 text-xs text-slate-600">
                     <Mail size={12} className="text-slate-400" />
-                    <span className="truncate">{setting.contactEmail || 'No email'}</span>
+                    <span className="truncate">{setting.contactEmail || 'Không có email'}</span>
                   </div>
                   <div className="text-[10px] text-slate-400 truncate italic">
-                    {setting.footerText || 'No footer text set'}
+                    {setting.footerText || 'Chưa thiết lập văn bản chân trang'}
                   </div>
                 </div>
               </td>
@@ -95,7 +95,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
                   <span>
                     {setting.updatedAt
                       ? new Date(setting.updatedAt).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })
-                      : 'Never'}
+                      : 'Chưa bao giờ'}
                   </span>
                 </div>
               </td>
@@ -104,11 +104,11 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
               <td className="px-6 py-4 whitespace-nowrap">
                 {setting.isActive ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-green-100 text-green-700 border border-green-200">
-                    <CheckCircle size={10} /> LIVE
+                    <CheckCircle size={10} /> ĐANG HOẠT ĐỘNG
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-emerald-800 border border-slate-200">
-                    <XCircle size={10} /> DRAFT
+                    <XCircle size={10} /> BẢN NHÁP
                   </span>
                 )}
               </td>
@@ -118,14 +118,14 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
                 <button
                   onClick={() => onEdit(setting)}
                   className="text-emerald-600 hover:text-emerald-900 p-2 hover:bg-emerald-50 rounded-lg transition-all active:scale-90 mr-1"
-                  title="Edit Settings"
+                  title="Chỉnh sửa cài đặt"
                 >
                   <Edit size={18} />
                 </button>
                 <button
                   onClick={() => onDelete(setting.id)}
                   className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-all active:scale-90"
-                  title="Delete Settings"
+                  title="Xóa cài đặt"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -135,7 +135,7 @@ const WebSettingTable: React.FC<WebSettingTableProps> = ({ settings, onEdit, onD
           {settings.length === 0 && (
             <tr>
               <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic text-sm">
-                No configurations found.
+                Không tìm thấy cấu hình nào.
               </td>
             </tr>
           )}

@@ -38,23 +38,23 @@ const AdminSidebar = () => {
   }, []);
 
   const menuItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/admin' },
-    { name: 'Users', icon: <Users size={20} />, path: '/admin/users' },
-    { name: 'Authors', icon: <Book size={20} />, path: '/admin/authors' },
-    { name: 'Categories', icon: <Layers size={20} />, path: '/admin/categories' },
-    { name: 'Products', icon: <Package size={20} />, path: '/admin/products' },
-    { name: 'Orders', icon: <ShoppingBag size={20} />, path: '/admin/orders' },
-    { name: 'Vouchers', icon: <Ticket size={20} />, path: '/admin/vouchers' },
-    { name: 'Setting', icon: <Settings size={20} />, path: '/admin/settings' },
-    { name: 'Logs', icon: <Bell size={20} />, path: '/admin/activity-logs' },
-    { name: 'Messages', icon: <MessageSquare size={20} />, path: '/admin/messages' },
+    { name: 'Bảng điều khiển', icon: <LayoutDashboard size={20} />, path: '/admin' },
+    { name: 'Người dùng', icon: <Users size={20} />, path: '/admin/users' },
+    { name: 'Tác giả', icon: <Book size={20} />, path: '/admin/authors' },
+    { name: 'Danh mục', icon: <Layers size={20} />, path: '/admin/categories' },
+    { name: 'Sản phẩm', icon: <Package size={20} />, path: '/admin/products' },
+    { name: 'Đơn hàng', icon: <ShoppingBag size={20} />, path: '/admin/orders' },
+    { name: 'Mã giảm giá', icon: <Ticket size={20} />, path: '/admin/vouchers' },
+    { name: 'Cài đặt', icon: <Settings size={20} />, path: '/admin/settings' },
+    { name: 'Nhật ký', icon: <Bell size={20} />, path: '/admin/activity-logs' },
+    { name: 'Tin nhắn', icon: <MessageSquare size={20} />, path: '/admin/messages' },
   ];
 
   return (
     <div className="flex flex-col w-64 h-screen bg-slate-950 text-slate-100 border-r border-slate-800 relative">
       <div className="flex items-center justify-between px-4 h-20 border-b border-slate-800">
         <h1 className="text-xl font-bold tracking-wider text-emerald-400 uppercase">
-          Admin
+          Quản trị
         </h1>
         
         {/* 2. Notification Bell UI */}
@@ -78,10 +78,10 @@ const AdminSidebar = () => {
           {showNotifications && (
             <div className="absolute left-0 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 max-h-[400px] overflow-y-auto">
               <div className="p-3 border-b border-slate-700 font-bold text-sm text-slate-300">
-                Recent Activity Logs
+                Nhật ký hoạt động gần đây
               </div>
               {logs.length === 0 ? (
-                <div className="p-4 text-center text-emerald-800 text-sm">No recent activity</div>
+                <div className="p-4 text-center text-emerald-800 text-sm">Không có hoạt động gần đây</div>
               ) : (
                 logs.map((log, index) => (
                   <div key={index} className="p-3 border-b border-slate-700 hover:bg-slate-750 transition-colors">
@@ -92,7 +92,7 @@ const AdminSidebar = () => {
                         {log.action}
                       </span>
                       <span className="text-[10px] text-emerald-800 flex items-center">
-                        <Clock size={10} className="mr-1" /> Just now
+                        <Clock size={10} className="mr-1" /> Vừa xong
                       </span>
                     </div>
                     <p className="text-xs text-slate-300 mt-1 font-semibold">{log.entityName}</p>
@@ -126,7 +126,7 @@ const AdminSidebar = () => {
           onClick={() => AuthService.logout()}
         >
           <LogOut size={20} />
-          <span className="ml-3 font-medium">Logout</span>
+          <span className="ml-3 font-medium">Đăng xuất</span>
         </button>
       </div>
     </div>

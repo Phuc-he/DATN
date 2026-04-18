@@ -17,10 +17,10 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Author</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Biography</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">ID</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Tác giả</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Tiểu sử</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Mã số</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -47,7 +47,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
                   <div className="ml-4">
                     <div className="text-sm font-bold text-slate-950">{author.name}</div>
                     <div className="text-xs text-emerald-600 flex items-center gap-1 mt-0.5">
-                      <PenTool size={10} /> Published Writer
+                      <PenTool size={10} /> Tác giả đã xuất bản
                     </div>
                   </div>
                 </div>
@@ -58,7 +58,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
                 <div className="flex items-start gap-2 max-w-md">
                   <Quote size={14} className="text-slate-300 mt-1 flex-shrink-0" />
                   <p className="text-sm text-slate-600 line-clamp-2 italic">
-                    {author.bio || <span className="text-slate-400">No biography provided.</span>}
+                    {author.bio || <span className="text-slate-400">Chưa có tiểu sử.</span>}
                   </p>
                 </div>
               </td>
@@ -74,7 +74,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
                   <button 
                     onClick={() => onEdit(author)}
                     className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all active:scale-90"
-                    title="Edit Author"
+                    title="Chỉnh sửa tác giả"
                   >
                     <Edit size={18} />
                   </button>
@@ -82,7 +82,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
                     onClick={() => author.id && onDelete(author.id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all active:scale-90"
                     disabled={!author.id}
-                    title="Delete Author"
+                    title="Xóa tác giả"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -94,7 +94,7 @@ const AuthorTable: React.FC<AuthorTableProps> = ({ authors, onEdit, onDelete }) 
           {authors.length === 0 && (
             <tr>
               <td colSpan={4} className="px-6 py-10 text-center text-emerald-800 italic">
-                No authors found in the database.
+                Không tìm thấy tác giả nào.
               </td>
             </tr>
           )}

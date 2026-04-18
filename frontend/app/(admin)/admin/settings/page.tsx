@@ -52,32 +52,32 @@ const WebSettingPage = () => {
     try {
       if (selectedSetting && selectedSetting.id !== 0) {
         await AppProviders.UpdateWebSettingUseCase.execute(selectedSetting.id, data);
-        await logAction(action, "WebSetting", `Updated site config: ${data.webName} (ID: ${selectedSetting.id})`);
+        await logAction(action, "WebSetting", `Cập nhật cấu hình trang web: ${data.webName} (ID: ${selectedSetting.id})`);
       } else {
         action = "CREATE";
         await AppProviders.CreateWebSettingUseCase.execute(data);
-        await logAction(action, "WebSetting", `Created new site config: ${data.webName}`);
+        await logAction(action, "WebSetting", `Tạo cấu hình trang web mới: ${data.webName}`);
       }
       fetchSettings(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save web settings:", error);
-      logAction(`${action}_FAILURE`, "WebSetting", `Failed to save configuration: ${data.webName}`);
-      alert("Error saving settings. Please try again.");
+      logAction(`${action}_FAILURE`, "WebSetting", `Không thể lưu cấu hình: ${data.webName}`);
+      alert("Lỗi khi lưu cài đặt. Vui lòng thử lại.");
     }
   };
 
   const handleDelete = async (id: number) => {
     const settingToDelete = settings.find(s => s.id === id);
-    if (window.confirm("Are you sure you want to delete this configuration?")) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa cấu hình này?")) {
       try {
         await AppProviders.DeleteWebSettingUseCase.execute(id);
-        await logAction("DELETE", "WebSetting", `Deleted configuration: ${settingToDelete?.webName || id}`);
+        await logAction("DELETE", "WebSetting", `Đã xóa cấu hình: ${settingToDelete?.webName || id}`);
         fetchSettings(currentPage);
       } catch (error) {
         console.error("Failed to delete setting:", error);
-        logAction("DELETE_FAILURE", "WebSetting", `Failed to delete configuration ID: ${id}`);
-        alert("Error deleting configuration.");
+        logAction("DELETE_FAILURE", "WebSetting", `Không thể xóa cấu hình ID: ${id}`);
+        alert("Lỗi khi xóa cấu hình.");
       }
     }
   };
@@ -96,9 +96,9 @@ const WebSettingPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Settings className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">Website Configuration</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Cấu hình trang web</h1>
           </div>
-          <p className="text-sm text-emerald-900">Manage global settings, branding, and contact info for the storefront.</p>
+          <p className="text-sm text-emerald-900">Quản lý các cài đặt chung, thương hiệu và thông tin liên hệ cho cửa hàng.</p>
         </div>
 
         <button
@@ -106,7 +106,7 @@ const WebSettingPage = () => {
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
         >
           <Plus size={20} />
-          New Configuration
+          Cấu hình mới
         </button>
       </div>
 
@@ -119,10 +119,10 @@ const WebSettingPage = () => {
           <div className="mb-4 flex justify-between items-center">
             <div className="flex items-center gap-2 text-slate-400">
               <LayoutGrid size={16} />
-              <span className="text-xs font-semibold uppercase tracking-wider">Site Versions</span>
+              <span className="text-xs font-semibold uppercase tracking-wider">Các phiên bản trang web</span>
             </div>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
-              Page {currentPage} of {totalPages}
+              Trang {currentPage} trên {totalPages}
             </span>
           </div>
 
@@ -138,7 +138,7 @@ const WebSettingPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Previous
+              Trước
             </button>
             <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
               {currentPage}
@@ -148,7 +148,7 @@ const WebSettingPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Next
+              Sau
             </button>
           </div>
         </>

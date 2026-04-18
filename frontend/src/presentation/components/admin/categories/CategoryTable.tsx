@@ -17,10 +17,10 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ categories, onEdit, onDel
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Category</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Description</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Created At</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Danh mục</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Mô tả</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Ngày tạo</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -54,13 +54,13 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ categories, onEdit, onDel
               {/* Description */}
               <td className="px-6 py-4">
                 <div className="text-sm text-slate-600 line-clamp-2 max-w-xs">
-                  {category.description || <span className="text-slate-300 italic">No description</span>}
+                  {category.description || <span className="text-slate-300 italic">Không có mô tả</span>}
                 </div>
               </td>
 
               {/* Created Date */}
               <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-800">
-                {category.createdAt ? new Date(category.createdAt).toLocaleDateString() : 'N/A'}
+                {category.createdAt ? new Date(category.createdAt).toLocaleDateString('vi-VN') : 'N/A'}
               </td>
 
               {/* Actions */}
@@ -68,14 +68,14 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ categories, onEdit, onDel
                 <button
                   onClick={() => onEdit(category)}
                   className="text-emerald-600 hover:text-emerald-900 p-2 hover:bg-emerald-50 rounded-lg transition-colors mr-2"
-                  title="Edit Category"
+                  title="Chỉnh sửa danh mục"
                 >
                   <Edit size={18} />
                 </button>
                 <button
                   onClick={() => onDelete(category.id!)}
                   className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Delete Category"
+                  title="Xóa danh mục"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -87,7 +87,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ categories, onEdit, onDel
             <tr>
               <td colSpan={4} className="px-6 py-12 text-center text-emerald-800">
                 <Layers className="mx-auto mb-2 opacity-20" size={48} />
-                <p>No categories found.</p>
+                <p>Không tìm thấy danh mục nào.</p>
               </td>
             </tr>
           )}

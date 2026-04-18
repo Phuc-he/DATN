@@ -54,7 +54,7 @@ const OrderPage = () => {
       await logAction(
         action,
         "Order",
-        `Changed Order #${id} status to ${status}`
+        `Đã thay đổi trạng thái Đơn hàng #${id} thành ${status}`
       );
 
       await fetchOrders(currentPage);
@@ -66,10 +66,10 @@ const OrderPage = () => {
       logAction(
         `${action}_FAILURE`,
         "Order",
-        `Failed to change Order #${id} status to ${status}`
+        `Không thể thay đổi trạng thái Đơn hàng #${id} thành ${status}`
       );
 
-      alert("Failed to update order status");
+      alert("Cập nhật trạng thái đơn hàng thất bại");
     }
   };
 
@@ -87,16 +87,16 @@ const OrderPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <ShoppingBag className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">Order Management</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Quản lý đơn hàng</h1>
           </div>
-          <p className="text-sm text-emerald-900">Monitor transactions, payments, and shipping status.</p>
+          <p className="text-sm text-emerald-900">Theo dõi giao dịch, thanh toán và trạng thái vận chuyển.</p>
         </div>
 
         <div className="relative w-full md:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input
             type="text"
-            placeholder="Search Order ID..."
+            placeholder="Tìm mã đơn hàng..."
             className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
           />
         </div>
@@ -110,10 +110,10 @@ const OrderPage = () => {
         <>
           <div className="mb-4 flex justify-between items-center">
             <div className="flex gap-2">
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">All Orders</span>
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Tất cả đơn hàng</span>
             </div>
             <span className="text-xs font-medium text-slate-400">
-              Showing page {currentPage} of {totalPages}
+              Đang hiển thị trang {currentPage} trên {totalPages}
             </span>
           </div>
 
@@ -129,7 +129,7 @@ const OrderPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm"
             >
-              Previous
+              Trước
             </button>
             <div className="flex items-center px-4 bg-white border border-slate-200 rounded-lg text-slate-700 font-bold">
               {currentPage}
@@ -139,7 +139,7 @@ const OrderPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm"
             >
-              Next
+              Sau
             </button>
           </div>
         </>

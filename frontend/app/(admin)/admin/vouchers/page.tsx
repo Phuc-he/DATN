@@ -52,32 +52,32 @@ const VoucherPage = () => {
     try {
       if (selectedVoucher?.id) {
         await AppProviders.UpdateVoucherUseCase.execute(selectedVoucher.id, data);
-        await logAction(action, "Voucher", `Updated voucher: ${data.code} (ID: ${selectedVoucher.id})`);
+        await logAction(action, "Voucher", `Cập nhật mã giảm giá: ${data.code} (ID: ${selectedVoucher.id})`);
       } else {
         action = "CREATE";
         await AppProviders.CreateVoucherUseCase.execute(data);
-        await logAction(action, "Voucher", `Created new voucher: ${data.code} with ${data.discountValue}% discount`);
+        await logAction(action, "Voucher", `Tạo mã giảm giá mới: ${data.code} với ${data.discountValue}% giảm giá`);
       }
       fetchVouchers(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save voucher:", error);
-      logAction(`${action}_FAILURE`, "Voucher", `Failed to save voucher code: ${data.code}`);
-      alert("Error saving voucher. Check if the code already exists.");
+      logAction(`${action}_FAILURE`, "Voucher", `Không thể lưu mã giảm giá: ${data.code}`);
+      alert("Lỗi khi lưu mã giảm giá. Kiểm tra xem mã đã tồn tại chưa.");
     }
   };
 
   const handleDelete = async (id: number) => {
     const voucherToDelete = vouchers.find(v => v.id === id);
-    if (window.confirm(`Are you sure you want to delete voucher "${voucherToDelete?.code}"? This cannot be undone.`)) {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa mã giảm giá "${voucherToDelete?.code}"? Thao tác này không thể hoàn tác.`)) {
       try {
         await AppProviders.DeleteVoucherUseCase.execute(id);
-        await logAction("DELETE", "Voucher", `Deleted voucher: ${voucherToDelete?.code || id}`);
+        await logAction("DELETE", "Voucher", `Đã xóa mã giảm giá: ${voucherToDelete?.code || id}`);
         fetchVouchers(currentPage);
       } catch (error) {
         console.error("Failed to delete voucher:", error);
-        logAction("DELETE_FAILURE", "Voucher", `Failed to delete voucher ID: ${id}`);
-        alert("Error deleting voucher");
+        logAction("DELETE_FAILURE", "Voucher", `Không thể xóa mã giảm giá ID: ${id}`);
+        alert("Lỗi khi xóa mã giảm giá");
       }
     }
   };
@@ -96,9 +96,9 @@ const VoucherPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <TicketPercent className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">Voucher Management</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Quản lý mã giảm giá</h1>
           </div>
-          <p className="text-sm text-emerald-900">Create and monitor discount codes for your customers.</p>
+          <p className="text-sm text-emerald-900">Tạo và theo dõi mã giảm giá cho khách hàng của bạn.</p>
         </div>
 
         <button
@@ -106,7 +106,7 @@ const VoucherPage = () => {
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-md active:scale-95"
         >
           <Plus size={20} />
-          Create Voucher
+          Tạo mã giảm giá
         </button>
       </div>
 
@@ -118,10 +118,10 @@ const VoucherPage = () => {
         <>
           <div className="mb-4 flex justify-between items-center">
             <span className="text-sm text-emerald-900 font-medium">
-              Active Vouchers: {vouchers.length}
+              Mã giảm giá đang hoạt động: {vouchers.length}
             </span>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
-              Page {currentPage} of {totalPages || 1}
+              Trang {currentPage} trên {totalPages || 1}
             </span>
           </div>
 
@@ -137,7 +137,7 @@ const VoucherPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Previous
+              Trước
             </button>
             <div className="flex items-center px-4 bg-emerald-600 rounded-lg text-white font-bold shadow-inner">
               {currentPage}
@@ -147,7 +147,7 @@ const VoucherPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Next
+              Tiếp
             </button>
           </div>
         </>

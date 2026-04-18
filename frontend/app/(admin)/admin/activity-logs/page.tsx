@@ -73,7 +73,7 @@ const ActivityLogPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Warning: Deleting logs is not recommended for audit purposes. Proceed?")) {
+    if (window.confirm("Cảnh báo: Việc xóa nhật ký không được khuyến khích vì mục đích kiểm tra. Tiếp tục?")) {
       try {
         await AppProviders.DeleteActivityLogUseCase.execute(id);
         fetchLogs(currentPage, searchQuery);
@@ -90,21 +90,21 @@ const ActivityLogPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <History className="text-slate-700" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">System Activity Logs</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Nhật ký hoạt động hệ thống</h1>
             {unreadCount > 0 && (
               <span className="flex items-center gap-1 ml-2 px-2 py-0.5 bg-red-100 text-red-600 text-xs font-bold rounded-full animate-bounce">
-                <Bell size={12} /> {unreadCount} new
+                <Bell size={12} /> {unreadCount} mới
               </span>
             )}
           </div>
-          <p className="text-sm text-emerald-900">Monitor all administrative actions and system events in real-time.</p>
+          <p className="text-sm text-emerald-900">Theo dõi tất cả các hành động quản trị và sự kiện hệ thống trong thời gian thực.</p>
         </div>
 
         <div className="flex gap-2 w-full md:w-auto">
           <form onSubmit={handleSearch} className="relative flex-1 md:w-64">
             <input
               type="text"
-              placeholder="Search actions, entities..."
+              placeholder="Tìm kiếm hành động, thực thể..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
@@ -115,7 +115,7 @@ const ActivityLogPage = () => {
           <button
             onClick={handleRefresh}
             className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-emerald-50 transition-all shadow-sm active:rotate-180 duration-500"
-            title="Refresh Logs"
+            title="Tải lại nhật ký"
           >
             <RefreshCw size={20} />
           </button>
@@ -125,16 +125,16 @@ const ActivityLogPage = () => {
       {loading ? (
         <div className="flex flex-col justify-center items-center h-64 gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-800"></div>
-          <p className="text-emerald-900 text-sm font-medium">Loading audit trail...</p>
+          <p className="text-emerald-900 text-sm font-medium">Đang tải nhật ký kiểm tra...</p>
         </div>
       ) : (
         <>
           <div className="mb-4 flex justify-between items-center">
             <span className="text-xs font-semibold text-emerald-900 bg-slate-200/50 px-3 py-1.5 rounded-full">
-              Total Pages: {totalPages}
+              Tổng số trang: {totalPages}
             </span>
             <span className="text-xs font-medium text-slate-400">
-              Showing page {currentPage}
+              Đang hiển thị trang {currentPage}
             </span>
           </div>
 
@@ -150,7 +150,7 @@ const ActivityLogPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Previous
+              Trước
             </button>
 
             <div className="flex items-center px-6 bg-emerald-600 rounded-lg text-white font-bold shadow-md">
@@ -162,7 +162,7 @@ const ActivityLogPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-5 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm font-medium"
             >
-              Next
+              Sau
             </button>
           </div>
         </>

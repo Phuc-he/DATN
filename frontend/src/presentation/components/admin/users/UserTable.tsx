@@ -42,13 +42,13 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">User</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Role</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">History</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Contact</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Location</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Joined</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Người dùng</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Vai trò</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Lịch sử</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Liên hệ</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Địa chỉ</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase">Tham gia</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -103,13 +103,13 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
 
               {/* Contact */}
               <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                {user.phone || <span className="text-slate-400 italic text-xs">No phone</span>}
+                {user.phone || <span className="text-slate-400 italic text-xs">Không có số điện thoại</span>}
               </td>
 
               {/* Location */}
               <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                 <span className="truncate max-w-[150px] block">
-                   {user.address || <span className="text-slate-400 italic text-xs">Not set</span>}
+                   {user.address || <span className="text-slate-400 italic text-xs">Chưa thiết lập</span>}
                 </span>
               </td>
 
@@ -123,7 +123,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                 <button 
                   onClick={() => onEdit(user)}
                   className="text-emerald-600 hover:text-emerald-900 mr-4 transition-all hover:scale-110 p-1 rounded-lg hover:bg-emerald-50"
-                  title="Edit User"
+                  title="Chỉnh sửa người dùng"
                 >
                   <Edit size={18} />
                 </button>
@@ -131,7 +131,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                   onClick={() => user.id && onDelete(user.id)}
                   className="text-red-600 hover:text-red-900 transition-all hover:scale-110 p-1 rounded-lg hover:bg-red-50"
                   disabled={!user.id}
-                  title="Delete User"
+                  title="Xóa người dùng"
                 >
                   <Trash2 size={18} />
                 </button>

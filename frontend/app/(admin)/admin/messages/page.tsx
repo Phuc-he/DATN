@@ -99,19 +99,19 @@ const MessagePage = () => {
       // Nếu là ReplyMode, chúng ta coi như tạo mới hoàn toàn (không gửi ID cũ)
       if (selectedMessage?.id && !isReplyMode) {
         await AppProviders.UpdateMessageUseCase.execute(selectedMessage.id, data);
-        await logAction(action, "Message", `Updated message ID: ${selectedMessage.id}`);
+        await logAction(action, "Message", `Cập nhật tin nhắn ID: ${selectedMessage.id}`);
       } else {
         action = "CREATE";
         // Đảm bảo data gửi đi không chứa ID để Backend nhận diện là INSERT
         const payload = { ...data, id: undefined };
         await AppProviders.CreateMessageUseCase.execute(payload as Message);
-        await logAction(action, "Message", `Admin replied to ${data.user?.fullName}`);
+        await logAction(action, "Message", `Admin đã trả lời ${data.user?.fullName}`);
       }
       fetchMessages(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save message:", error);
-      logAction(`${action}_FAILURE`, "Message", `Failed to save message`);
+      logAction(`${action}_FAILURE`, "Message", `Không thể lưu tin nhắn`);
       alert("Thao tác thất bại. Vui lòng thử lại.");
     }
   };
@@ -120,11 +120,11 @@ const MessagePage = () => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa tin nhắn #${id}?`)) {
       try {
         await AppProviders.DeleteMessageUseCase.execute(id);
-        await logAction("DELETE", "Message", `Deleted message ID: ${id}`);
+        await logAction("DELETE", "Message", `Đã xóa tin nhắn ID: ${id}`);
         fetchMessages(currentPage);
       } catch (error) {
         console.error("Failed to delete message:", error);
-        logAction("DELETE_FAILURE", "Message", `Failed to delete message ID: ${id}`);
+        logAction("DELETE_FAILURE", "Message", `Không thể xóa tin nhắn ID: ${id}`);
         alert("Lỗi khi xóa tin nhắn.");
       }
     }

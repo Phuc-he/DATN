@@ -53,32 +53,32 @@ const CategoryPage = () => {
       if (selectedCategory) {
         const id = selectedCategory?.id || 0;
         await AppProviders.UpdateCategoryUseCase.execute(id, data);
-        await logAction(action, "Category", `Updated category: ${data.name} (ID: ${id})`);
+        await logAction(action, "Category", `Cập nhật danh mục: ${data.name} (ID: ${id})`);
       } else {
         action = "CREATE";
         await AppProviders.CreateCategoryUseCase.execute(data);
-        await logAction(action, "Category", `Created new category: ${data.name}`);
+        await logAction(action, "Category", `Tạo danh mục mới: ${data.name}`);
       }
       fetchCategories(currentPage);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Failed to save category:", error);
-      logAction(`${action}_FAILURE`, "Category", `Failed to save category: ${data.name}`);
-      alert("Operation failed. Check console for details.");
+      logAction(`${action}_FAILURE`, "Category", `Không thể lưu danh mục: ${data.name}`);
+      alert("Thao tác thất bại. Kiểm tra console để biết chi tiết.");
     }
   };
 
   const handleDelete = async (id: number) => {
     const categoryToDelete = categories.find(c => c.id === id);
-    if (window.confirm("Are you sure you want to delete this category?")) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa danh mục này?")) {
       try {
         await AppProviders.DeleteCategoryUseCase.execute(id);
-        await logAction("DELETE", "Category", `Deleted category: ${categoryToDelete?.name || id}`);
+        await logAction("DELETE", "Category", `Đã xóa danh mục: ${categoryToDelete?.name || id}`);
         fetchCategories(currentPage);
       } catch (error) {
         console.error("Failed to delete category:", error);
-        logAction("DELETE_FAILURE", "Category", `Failed to delete category ID: ${id}`);
-        alert("Error deleting category");
+        logAction("DELETE_FAILURE", "Category", `Không thể xóa danh mục ID: ${id}`);
+        alert("Lỗi khi xóa danh mục");
       }
     }
   };
@@ -97,9 +97,9 @@ const CategoryPage = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Layers className="text-emerald-600" size={24} />
-            <h1 className="text-2xl font-bold text-slate-950">Category Management</h1>
+            <h1 className="text-2xl font-bold text-slate-950">Quản lý danh mục</h1>
           </div>
-          <p className="text-sm text-emerald-900">Organize and manage your product categories.</p>
+          <p className="text-sm text-emerald-900">Tổ chức và quản lý các danh mục sản phẩm của bạn.</p>
         </div>
 
         <button
@@ -107,7 +107,7 @@ const CategoryPage = () => {
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg font-semibold transition-all shadow-sm active:scale-95"
         >
           <Plus size={20} />
-          Add Category
+          Thêm danh mục
         </button>
       </div>
 
@@ -119,7 +119,7 @@ const CategoryPage = () => {
         <>
           <div className="mb-4 flex justify-end">
             <span className="text-xs font-medium text-slate-400 bg-slate-200/50 px-2 py-1 rounded">
-              Page {currentPage} of {totalPages}
+              Trang {currentPage} trên {totalPages}
             </span>
           </div>
 
@@ -135,7 +135,7 @@ const CategoryPage = () => {
               onClick={() => setCurrentPage(prev => prev - 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm"
             >
-              Previous
+              Trước
             </button>
 
             <div className="flex items-center px-4 bg-slate-200 rounded-lg text-slate-700 font-medium">
@@ -147,7 +147,7 @@ const CategoryPage = () => {
               onClick={() => setCurrentPage(prev => prev + 1)}
               className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg disabled:opacity-40 hover:bg-emerald-50 transition-colors shadow-sm"
             >
-              Next
+              Sau
             </button>
           </div>
         </>

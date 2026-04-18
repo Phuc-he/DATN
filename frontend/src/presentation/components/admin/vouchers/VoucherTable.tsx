@@ -20,12 +20,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
       <table className="min-w-full divide-y divide-slate-200">
         <thead className="bg-emerald-50">
           <tr>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Voucher Code</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Discount</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Usage</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Validity Period</th>
-            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Actions</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Mã giảm giá</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Giảm giá</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Sử dụng</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Thời hạn</th>
+            <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-800 uppercase tracking-wider">Trạng thái</th>
+            <th className="px-6 py-4 text-right text-xs font-semibold text-emerald-800 uppercase tracking-wider">Hành động</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 bg-white">
@@ -53,10 +53,10 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                   <div className="text-sm font-bold text-slate-950">
                     {voucher.discountType === DiscountType.PERCENTAGE
                       ? `${voucher.discountValue}%`
-                      : `$${voucher.discountValue.toLocaleString()}`}
+                      : `${voucher.discountValue.toLocaleString()} VNĐ`}
                   </div>
                   <div className="text-[10px] text-slate-400 font-bold uppercase">
-                    Min: ${voucher.minOrderValue?.toLocaleString() || '0'}
+                    Tối thiểu: {voucher.minOrderValue?.toLocaleString() || '0'} VNĐ
                   </div>
                 </td>
 
@@ -83,11 +83,11 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-1.5 text-[11px] text-emerald-800">
                       <Calendar size={12} className="text-slate-300" />
-                      <span>{new Date(voucher.startDate).toLocaleDateString('vi-VN')}</span>
+                      <span>Bắt đầu: {new Date(voucher.startDate).toLocaleDateString('vi-VN')}</span>
                     </div>
                     <div className={`flex items-center gap-1.5 text-[11px] font-bold ${expired ? 'text-red-400' : 'text-slate-600'}`}>
                       <Calendar size={12} />
-                      <span>{new Date(voucher.expirationDate).toLocaleDateString('vi-VN')}</span>
+                      <span>Hết hạn: {new Date(voucher.expirationDate).toLocaleDateString('vi-VN')}</span>
                     </div>
                   </div>
                 </td>
@@ -96,12 +96,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                 <td className="px-6 py-4 whitespace-nowrap">
                   {voucher.isActive && !expired && !isFullyUsed ? (
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-green-100 text-green-700 border border-green-200">
-                      <CheckCircle size={10} /> ACTIVE
+                      <CheckCircle size={10} /> HOẠT ĐỘNG
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-emerald-800 border border-slate-200">
                       <XCircle size={10} />
-                      {expired ? 'EXPIRED' : isFullyUsed ? 'MAXED OUT' : 'INACTIVE'}
+                      {expired ? 'HẾT HẠN' : isFullyUsed ? 'HẾT LƯỢT' : 'NGỪNG HOẠT ĐỘNG'}
                     </span>
                   )}
                 </td>
@@ -111,7 +111,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                   <button
                     onClick={() => onEdit(voucher)}
                     className="text-emerald-600 hover:text-emerald-900 p-2 hover:bg-emerald-50 rounded-lg transition-all active:scale-90 mr-1"
-                    title="Edit Voucher"
+                    title="Chỉnh sửa mã giảm giá"
                   >
                     <Edit size={18} />
                   </button>
@@ -119,7 +119,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
                     onClick={() => voucher.id && onDelete(voucher.id)}
                     className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-all active:scale-90"
                     disabled={!voucher.id}
-                    title="Delete Voucher"
+                    title="Xóa mã giảm giá"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -130,7 +130,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ vouchers, onEdit, onDelete 
           {vouchers.length === 0 && (
             <tr>
               <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic text-sm">
-                No vouchers found in the system.
+                Không tìm thấy mã giảm giá nào.
               </td>
             </tr>
           )}
