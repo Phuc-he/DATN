@@ -130,7 +130,7 @@ export const InventoryChart = ({ products }: { products: Book[] }) => {
       </div>
 
       {filteredData.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none">
+        <div className="relative h-[500px] w-full flex items-center justify-center bg-white/50 pointer-events-none">
           <p className="text-slate-400 font-bold text-sm italic">All products are well stocked</p>
         </div>
       )}

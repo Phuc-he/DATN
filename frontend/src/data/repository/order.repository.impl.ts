@@ -13,6 +13,60 @@ export class OrderRepositoryImpl extends BaseRepositoryImpl<Order> implements Or
   constructor() {
     super('api/orders');
   }
+
+  async updateOrderByUserId(orderId: number, userId: number): Promise<number> {
+    try {
+      const response = await this.api.patch(
+        `/${this.endpoint}/${orderId}/user`,
+        null, // Use null for the body
+        {
+          params: { userId: userId },
+          // OVERRIDE the base settings here:
+          headers: {
+            'Accept': 'application/json', // Or text/plain
+            'Content-Type': 'application/json'
+          },
+          responseType: 'text'
+        }
+      );
+
+      // Chuyển đổi response.data (text/number) sang number
+      return Number(response.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error(`Failed to update user for order ${orderId}:`, error.message);
+      throw new Error(error.response?.data?.message || "Could not update user for the order.");
+    }
+  }
+
+  async getByCartByUserId(userId: number): Promise<Order | null> {
+    try {
+      const response = await this.api.get(`/${this.endpoint}/${userId}/cart`);
+
+      if (!response.data || response.data.byteLength === 0) {
+        return null;
+      }
+
+      const decoded = this.proto?.decode(new Uint8Array(response.data));
+      return decoded as unknown as Order;
+    } catch (error) {
+      console.error(`Failed to get cart for user ${userId}:`, error);
+      return null;
+    }
+  }
+
+  async findByUser(userId: number): Promise<Order[]> {
+    try {
+      const response = await this.api.get(`/${this.endpoint}/user/${userId}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const decoded = this.listProto?.decode(new Uint8Array(response.data)) as any;
+      return (decoded.orders || decoded.data || []) as Order[];
+    } catch (error) {
+      console.error(`Failed to fetch orders for user ${userId}:`, error);
+      return [];
+    }
+  }
+
   async cancelOrder(id: number): Promise<null> {
     try {
       // Sử dụng this.api (AxiosInstance) để gửi yêu cầu POST
@@ -25,11 +79,11 @@ export class OrderRepositoryImpl extends BaseRepositoryImpl<Order> implements Or
       }
 
       return null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       // Xử lý lỗi (ví dụ: đơn hàng không tồn tại hoặc không thể hủy ở trạng thái hiện tại)
       console.error(`Failed to cancel order ${id}:`, error.response?.data || error.message);
-      
+
       // Bạn có thể ném lỗi ra ngoài để UI hiển thị thông báo cho người dùng
       throw new Error(error.response?.data?.message || "Could not cancel the order.");
     }
@@ -51,11 +105,11 @@ export class OrderRepositoryImpl extends BaseRepositoryImpl<Order> implements Or
 
       // Giải mã Protobuf nhận được từ Backend
       const decodedProto = this.proto?.decode(new Uint8Array(response.data));
-      
+
       // Nếu bạn gặp lỗi overlap type như ở Voucher, hãy dùng mapper hoặc ép kiểu unknown
       return decodedProto as unknown as Order;
-      
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`Failed to update status for order ${id}:`, error.message);
       return null;

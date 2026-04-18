@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import java.math.BigDecimal
 
 @Service
 class OrderService(
@@ -39,7 +40,11 @@ class OrderService(
      */
     @Transactional
     fun create(orderRequest: Order): Order? =
-        activityLogService.executeWithLog<Order>(LogAction.CREATE.name, "Order") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "Order") {
+            orderRequest.id?.let { id ->
+                orderRepository.clearCartByUserId(id)
+            }
+
             // 1. Validate Stock for each item
             orderRequest.items.forEach { item ->
                 val book =
@@ -67,7 +72,7 @@ class OrderService(
         id: Long,
         newStatus: String,
     ): Order? =
-        activityLogService.executeWithLog<Order>(LogAction.UPDATE.name, "Order") {
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "Order") {
             val existingOrder = getById(id)
 
             val statusEnum =
@@ -97,7 +102,10 @@ class OrderService(
             val order = getById(id)
 
             if (order.status == OrderStatus.DELIVERED || order.status == OrderStatus.CANCELLED) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot cancel a delivered or already cancelled order")
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Cannot cancel a delivered or already cancelled order"
+                )
             }
 
             // Return stock to inventory
@@ -112,4 +120,32 @@ class OrderService(
         }
 
     fun findByUserId(userId: Long): List<Order> = orderRepository.findByUserId(userId)
+
+    fun findCartByUser(userId: Long): Order? = orderRepository.findCartByUser(userId)
+
+    fun updateOrderByUser(id: Long, userId: Long) = orderRepository.updateUserForOrder(id, userId)
+
+    @Transactional
+    fun updateOrderCart(id: Long, updates: Map<String, Any>): Order? =
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "Order") {
+            val order = getById(id)
+            var updatedOrder = order
+
+            updates.forEach { (key, value) ->
+                updatedOrder = when (key) {
+                    "fullName" -> updatedOrder.copy(fullName = value as String)
+                    "phone" -> updatedOrder.copy(phone = value as String)
+                    "address" -> updatedOrder.copy(address = value as String)
+                    "totalAmount" -> updatedOrder.copy(totalAmount = BigDecimal(value.toString()))
+                    "isCart" -> updatedOrder.copy(isCart = value as Boolean)
+                    "status" -> {
+                        val status = OrderStatus.valueOf(value.toString().uppercase())
+                        updatedOrder.copy(status = status)
+                    }
+
+                    else -> updatedOrder
+                }
+            }
+            orderRepository.save(updatedOrder)
+        }
 }

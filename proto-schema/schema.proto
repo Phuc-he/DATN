@@ -99,6 +99,7 @@ message OrderProto {
   OrderStatus status = 8;
   repeated OrderItemProto items = 9; // 'repeated' is the Protobuf version of a List
   string created_at = 10;
+  bool is_cart = 11;
 }
 
 message BookPageResponse {

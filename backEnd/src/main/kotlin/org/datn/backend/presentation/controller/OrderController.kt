@@ -1,11 +1,9 @@
 package org.datn.backend.presentation.controller
 
-import org.datn.backend.domain.entity.Order
-import org.datn.backend.domain.entity.OrderItem
-import org.datn.backend.domain.entity.OrderStatus
 import org.datn.backend.domain.entity.User
 import org.datn.backend.domain.usecase.OrderService
 import org.datn.backend.domain.usecase.UserService
+import org.datn.backend.presentation.mapper.toEntity
 import org.datn.backend.presentation.mapper.toPageResponse
 import org.datn.backend.presentation.mapper.toProto
 import org.datn.backend.proto.OrderPageResponse
@@ -16,7 +14,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/api/orders")
@@ -52,46 +49,21 @@ class OrderController(
     fun placeOrder(
         @RequestBody proto: OrderProto,
     ): ResponseEntity<OrderProto> {
-        // 1. Create the parent Order entity first
-        var entity =
-            Order(
-                fullName = proto.fullName,
-                phone = proto.phone,
-                address = proto.address,
-                cartId = proto.cartId,
-                totalAmount = BigDecimal(proto.totalAmount),
-                status = OrderStatus.valueOf(proto.status.name),
-                user = User(id = proto.user.id, username = "", email = "", password = ""),
-            )
-        runCatching {
-            entity = entity.copy(user = userService.getById(proto.user.id))
-        }.onFailure {
-            entity = entity.copy(user = userService.create(User(id = null, username = "${System.currentTimeMillis()}", email = "${System.currentTimeMillis()}", password = "")) ?: entity.user)
+        val user = try {
+            userService.getById(proto.user.id)
+        } catch (e: Exception) {
             log.error("User not found with id: ${proto.user.id}")
+            userService.create(
+                User(
+                    id = null,
+                    username = "${System.currentTimeMillis()}",
+                    email = "${System.currentTimeMillis()}@example.com",
+                    password = ""
+                )
+            ) ?: User(id = proto.user.id, username = "", email = "", password = "")
         }
 
-        // 2. Map the items and link them to the parent entity
-        val items =
-            proto.itemsList
-                .map { itemProto ->
-                    OrderItem(
-                        // Link back to the 'entity' we just defined above
-                        order = entity,
-                        book =
-                            org.datn.backend.domain.entity.Book(
-                                id = itemProto.book.id,
-                                title = "",
-                                price = BigDecimal.ZERO,
-                            ),
-                        quantity = itemProto.quantity,
-                        unitPrice = BigDecimal(itemProto.unitPrice),
-                        discount = BigDecimal(itemProto.discount),
-                    )
-                }.toMutableList()
-
-        // 3. Attach the items list to the order
-        entity.items.addAll(items)
-
+        val entity = proto.toEntity(user)
         val createdOrder = orderService.create(entity)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder?.toProto())
     }
@@ -109,4 +81,21 @@ class OrderController(
         orderService.cancelOrder(id)
         return ResponseEntity.noContent().build()
     }
+
+    @GetMapping("/{id}/cart", produces = ["application/x-protobuf"])
+    fun getByCartByUserId(
+        @PathVariable id: Long,
+    ): ResponseEntity<OrderProto> = ResponseEntity.ok(orderService.findCartByUser(id)?.toProto())
+
+    @PatchMapping("/{id}/user")
+    fun updateUserForOrder(
+        @PathVariable id: Long,
+        @RequestParam userId: Long,
+    ): ResponseEntity<Int> = ResponseEntity.ok(orderService.updateOrderByUser(id, userId))
+
+    @PatchMapping("/{id}", consumes = ["application/json"], produces = ["application/x-protobuf"])
+    fun update(
+        @PathVariable id: Long,
+        @RequestBody updates: Map<String, Any>
+    ): ResponseEntity<OrderProto> = ResponseEntity.ok(orderService.updateOrderCart(id, updates)?.toProto())
 }

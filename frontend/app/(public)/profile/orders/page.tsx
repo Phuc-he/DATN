@@ -1,9 +1,8 @@
 'use client';
 
 import { OrderStatus, getOrderStatusDetails } from '@/src/domain/entity/order-status.enum';
-import { Order } from '@/src/domain/entity/order.entity';
-import { getMyOrdersAction } from '@/src/presentation/action/order.action';
 import { useAuth } from '@/src/presentation/hooks/useAuth';
+import { useOrders } from '@/src/presentation/context/OrderContext';
 import {
   AlertCircle,
   BookOpen,
@@ -20,7 +19,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const OrderStatusBadge = ({ status }: { status: OrderStatus }) => {
   const details = getOrderStatusDetails(status);
@@ -55,37 +54,25 @@ const OrderStatusBadge = ({ status }: { status: OrderStatus }) => {
 
 export default function OrderHistoryPage() {
   const { currUser, loading: authLoading } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { orders, loading: ordersLoading } = useOrders();
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    async function fetchOrders() {
-      // Sử dụng currUser.id (number) theo domain mới
-      if (currUser?.id) {
-        const result = await getMyOrdersAction(currUser.id);
-        if (result.success && result.data) {
-          setOrders(result.data);
-        }
-        setLoading(false);
-      }
-    }
-    if (!authLoading) fetchOrders();
-  }, [currUser, authLoading]);
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const searchLower = searchQuery.toLowerCase();
       const orderIdMatch = order.id?.toString().includes(searchLower);
-      // Tìm kiếm theo tiêu đề sách trong items.book
-      const productMatch = order.items.some((item) =>
-        item.book.title.toLowerCase().includes(searchLower)
+      // Tìm kiếm theo tiêu đề sách trong items
+      const productMatch = order.items?.some((item) =>
+        item.book?.title?.toLowerCase().includes(searchLower)
       );
       return orderIdMatch || productMatch;
     });
   }, [orders, searchQuery]);
 
-  if (authLoading || loading) {
+  // Loading state handling: auth status or order fetching (for logged in users)
+  const isLoading = authLoading || (currUser ? ordersLoading : false);
+
+  if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center min-h-[60vh] gap-4">
         <Loader2 className="animate-spin text-indigo-600" size={40} />
@@ -169,10 +156,10 @@ export default function OrderHistoryPage() {
                   <div className="flex flex-col lg:flex-row justify-between gap-8">
                     {/* Danh sách sản phẩm trong đơn */}
                     <div className="flex-1 space-y-4">
-                      {order.items.map((item, idx) => (
+                      {order.items?.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-4">
                           <div className="relative h-16 w-16 rounded-xl overflow-hidden border border-slate-100 flex-shrink-0">
-                            {item.book.imageUrl ? (
+                            {item.book?.imageUrl ? (
                               <Image
                                 className="rounded border border-slate-100 object-cover"
                                 src={item.book.imageUrl}
@@ -186,7 +173,7 @@ export default function OrderHistoryPage() {
                             )}
                           </div>
                           <div className="flex-1">
-                            <p className="font-bold text-slate-950 line-clamp-1">{item.book.title}</p>
+                            <p className="font-bold text-slate-950 line-clamp-1">{item.book?.title}</p>
                             <p className="text-sm text-emerald-900 font-medium">
                               Số lượng: {item.quantity} × {item.unitPrice.toLocaleString('vi-VN')}đ
                             </p>
@@ -200,7 +187,7 @@ export default function OrderHistoryPage() {
                       <div>
                         <div className="flex justify-between text-sm mb-3">
                           <span className="text-slate-700">Tổng cộng</span>
-                          <span className="font-semibold text-slate-950">{order.items.length} sản phẩm</span>
+                          <span className="font-semibold text-slate-950">{order.items?.length || 0} sản phẩm</span>
                         </div>
                         <div className="flex justify-between items-center pt-3 border-t border-slate-200">
                           <span className="font-bold text-slate-950">Thành tiền</span>

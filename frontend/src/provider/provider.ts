@@ -13,7 +13,7 @@ import { CreateAuthorUseCase, DeleteAuthorUseCase, GetAllAuthorsUseCase, GetAuth
 import { CreateBookUseCase, DeleteBookUseCase, GetAllBooksUseCase, GetBooksByAuthorUseCase, GetBooksByPageUseCase, GetBookUseCase, GetCategoryStatsUseCase, SearchBooksUseCase, UpdateBookUseCase } from "../domain/use-case/book.usecase";
 import { CreateCategoryUseCase, DeleteCategoryUseCase, GetAllCategoriesUseCase, GetCategoriesByPageUseCase, GetCategoryUseCase, SearchCategoriesUseCase, UpdateCategoryUseCase } from "../domain/use-case/category.usecase";
 import { CreateOrderItemUseCase, DeleteOrderItemUseCase, GetAllOrderItemsUseCase, GetOrderItemsByPageUseCase, GetOrderItemUseCase, UpdateOrderItemUseCase } from "../domain/use-case/order-item.usecase";
-import { CancelOrderUseCase, CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderStatusUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
+import { CancelOrderUseCase, CreateOrderUseCase, DeleteOrderUseCase, GetAllOrdersUseCase, GetCartByUserUseCase, GetOrdersByPageUseCase, GetOrderUseCase, SearchOrdersUseCase, UpdateOrderByUserIdUseCase, UpdateOrderStatusUseCase, UpdateOrderUseCase } from "../domain/use-case/order.usecase";
 import { GeneratePaymentQrUseCase, VerifyPaymentWebhookUseCase } from "../domain/use-case/payment.usecase";
 import {
   CreateUserUseCase,
@@ -89,6 +89,8 @@ export const AppProviders = {
   SearchOrdersUseCase: new SearchOrdersUseCase(orderRepository),
   UpdateOrderStatusUseCase: new UpdateOrderStatusUseCase(orderRepository),
   CancelOrderUseCase: new CancelOrderUseCase(orderRepository),
+  GetCartByUserUseCase: new GetCartByUserUseCase(orderRepository),
+  UpdateOrderByUserIdUseCase: new UpdateOrderByUserIdUseCase(orderRepository),
 
   // --- Book Domain ---
   BookRepository: bookRepository,

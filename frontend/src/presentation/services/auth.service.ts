@@ -69,5 +69,14 @@ export const AuthService = {
     }
   },
 
-  logout: () => signOut(auth),
+  logout: async () => {
+    try {
+      await signOut(auth);
+      // Clear persisted states from localStorage
+      localStorage.removeItem('bookshop_cart');
+      localStorage.removeItem('bookshop_guest_orders');
+    } catch (error) {
+      console.error('Logout Error:', error);
+    }
+  },
 };

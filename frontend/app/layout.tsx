@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import React from "react";
 import "./globals.css";
+import { OrderProvider } from "@/src/presentation/context/OrderContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,9 @@ export default function RootLayout({
           <FirebaseProvider>
             <WebSettingProvider> {/* Wrapped settings here */}
               <CartProvider>
-                {children}
+                <OrderProvider>
+                  {children}
+                </OrderProvider>
               </CartProvider>
             </WebSettingProvider>
           </FirebaseProvider>

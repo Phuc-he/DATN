@@ -333,6 +333,7 @@ export interface OrderProto {
   /** 'repeated' is the Protobuf version of a List */
   items?: OrderItemProto[] | undefined;
   createdAt?: string | undefined;
+  isCart?: boolean | undefined;
 }
 
 export interface BookPageResponse {
@@ -1409,6 +1410,7 @@ function createBaseOrderProto(): OrderProto {
     status: 0,
     items: [],
     createdAt: "",
+    isCart: false,
   };
 }
 
@@ -1445,6 +1447,9 @@ export const OrderProto: MessageFns<OrderProto> = {
     }
     if (message.createdAt !== undefined && message.createdAt !== "") {
       writer.uint32(82).string(message.createdAt);
+    }
+    if (message.isCart !== undefined && message.isCart !== false) {
+      writer.uint32(88).bool(message.isCart);
     }
     return writer;
   },
@@ -1539,6 +1544,14 @@ export const OrderProto: MessageFns<OrderProto> = {
           message.createdAt = reader.string();
           continue;
         }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.isCart = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1578,6 +1591,11 @@ export const OrderProto: MessageFns<OrderProto> = {
         : isSet(object.created_at)
         ? globalThis.String(object.created_at)
         : "",
+      isCart: isSet(object.isCart)
+        ? globalThis.Boolean(object.isCart)
+        : isSet(object.is_cart)
+        ? globalThis.Boolean(object.is_cart)
+        : false,
     };
   },
 
@@ -1613,6 +1631,9 @@ export const OrderProto: MessageFns<OrderProto> = {
     if (message.createdAt !== undefined && message.createdAt !== "") {
       obj.createdAt = message.createdAt;
     }
+    if (message.isCart !== undefined && message.isCart !== false) {
+      obj.isCart = message.isCart;
+    }
     return obj;
   },
 
@@ -1631,6 +1652,7 @@ export const OrderProto: MessageFns<OrderProto> = {
     message.status = object.status ?? 0;
     message.items = object.items?.map((e) => OrderItemProto.fromPartial(e)) || [];
     message.createdAt = object.createdAt ?? "";
+    message.isCart = object.isCart ?? false;
     return message;
   },
 };

@@ -21,7 +21,8 @@ export interface CreateOrderDto {
 }
 
 export async function createOrderAction(formData: CreateOrderDto) {
-  const actor = formData.user.email || formData.fullName || `User ID: ${formData.user.id}`;
+  const isGuest = formData.user.id === -1;
+  const actor = formData.user.email || formData.fullName || (isGuest ? "Guest" : `User ID: ${formData.user.id}`);
 
   try {
     // 1. Clean data (ID only)
@@ -33,14 +34,16 @@ export async function createOrderAction(formData: CreateOrderDto) {
     }));
 
     const order: Partial<Order> = {
+      // If user.id is -1, it's a guest order, so we don't associate a user ID on the backend
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      user: { id: formData.user.id } as any,
+      user: !isGuest ? ({ id: formData.user.id } as any) : undefined,
       fullName: formData.fullName,
       phone: formData.phone,
       address: formData.address,
       items: cleanItems as OrderItem[],
       totalAmount: formData.totalAmount,
       status: OrderStatus.UNPROCESSED,
+      isCart: false,
     };
 
     // 2. Execute Order Creation
@@ -73,7 +76,8 @@ export async function createOrderAction(formData: CreateOrderDto) {
           success: true,
           orderId: result.id,
           paymentMethod: PaymentMethod.VNQR,
-          qrData: qrData
+          qrData: qrData,
+          isGuest // Inform client if this was a guest order so it can be saved to localStorage via OrderContext
         };
       } catch (error) {
         console.error('VietQR Generation Error:', error);
@@ -84,7 +88,11 @@ export async function createOrderAction(formData: CreateOrderDto) {
       }
     }
 
-    return { success: true, orderId: result.id };
+    return {
+      success: true,
+      orderId: result.id,
+      isGuest // Inform client if this was a guest order
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -112,6 +120,7 @@ export async function getMyOrdersAction(userId: number): Promise<{ success: bool
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    console.error("Fetch my orders error:", error);
     return { success: false, message: error.message };
   }
 }

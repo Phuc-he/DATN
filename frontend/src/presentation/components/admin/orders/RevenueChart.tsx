@@ -2,7 +2,7 @@
 
 import { Order } from '@/src/domain/entity/order.entity';
 import { useMemo, useState } from 'react';
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 type FilterRange = '7d' | '30d' | 'all';
 
@@ -94,7 +94,8 @@ export const RevenueChart = ({ orders }: { orders: Order[] }) => {
 
       <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ left: 20, right: 10, bottom: 20 }}>
+          {/* change to column chart */}
+          <BarChart data={chartData} margin={{ left: 20, right: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
             <XAxis
               dataKey="date"
@@ -122,16 +123,15 @@ export const RevenueChart = ({ orders }: { orders: Order[] }) => {
                 return [`${amount.toLocaleString('vi-VN')}đ`, 'Doanh thu'];
               }}
             />
-            <Line
+            {/* change to column chart */}
+            <Bar
               type="monotone"
               dataKey="amount"
-              stroke="#4f46e5"
+              fill="#4f46e5"
               strokeWidth={4}
-              dot={{ r: 4, fill: '#4f46e5', strokeWidth: 2, stroke: '#fff' }}
-              activeDot={{ r: 7, strokeWidth: 0 }}
               animationDuration={1000}
             />
-          </LineChart>
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>

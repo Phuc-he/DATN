@@ -1,6 +1,6 @@
 import { Order } from '@/src/domain/entity/order.entity';
-import { OrderRepository } from '@/src/domain/repository/order.repository';
 import { PaginatedResult } from '@/src/domain/entity/paginated.result';
+import { OrderRepository } from '@/src/domain/repository/order.repository';
 import { Constants } from '@/src/shared/constans';
 import { OrderStatus } from '../entity/order-status.enum';
 
@@ -8,7 +8,7 @@ import { OrderStatus } from '../entity/order-status.enum';
  * Places a new order during checkout.
  */
 export class CreateOrderUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(order: Order): Promise<Order> {
     return this.orderRepository.create(order);
@@ -19,7 +19,7 @@ export class CreateOrderUseCase {
  * Retrieves all orders (typically for an admin list view).
  */
 export class GetAllOrdersUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(): Promise<Order[]> {
     return this.orderRepository.findAll();
@@ -30,7 +30,7 @@ export class GetAllOrdersUseCase {
  * Retrieves a specific order by its numeric ID (Spring Long).
  */
 export class GetOrderUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(id: number): Promise<Order> {
     const order = await this.orderRepository.findById(id);
@@ -45,7 +45,7 @@ export class GetOrderUseCase {
  * Updates order details (e.g., status updates like 'SHIPPED' or 'CANCELLED').
  */
 export class UpdateOrderUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(
     id: number,
@@ -60,7 +60,7 @@ export class UpdateOrderUseCase {
 }
 
 export class UpdateOrderStatusUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(
     id: number, orderStatus: OrderStatus
@@ -74,7 +74,7 @@ export class UpdateOrderStatusUseCase {
 }
 
 export class CancelOrderUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
   async execute(
     id: number,
   ): Promise<null> {
@@ -86,7 +86,7 @@ export class CancelOrderUseCase {
  * Removes an order record.
  */
 export class DeleteOrderUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(id: number): Promise<boolean> {
     const deleted = await this.orderRepository.delete(id);
@@ -101,7 +101,7 @@ export class DeleteOrderUseCase {
  * Fetches orders in pages for the Admin Dashboard or Order History.
  */
 export class GetOrdersByPageUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(
     page: number = Constants.PAGE,
@@ -115,7 +115,7 @@ export class GetOrdersByPageUseCase {
  * Searches orders by keyword (matches the custom Query in your Kotlin backend).
  */
 export class SearchOrdersUseCase {
-  constructor(private readonly orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: OrderRepository) { }
 
   async execute(
     query: string,
@@ -123,5 +123,22 @@ export class SearchOrdersUseCase {
     limit: number = Constants.LIMIT,
   ): Promise<PaginatedResult<Order>> {
     return this.orderRepository.search(query, page, limit);
+  }
+}
+
+export class GetCartByUserUseCase {
+  constructor(private readonly orderRepository: OrderRepository) { }
+
+  async execute(
+    userId: number,): Promise<Order | null> {
+    return this.orderRepository.getByCartByUserId(userId);
+  }
+}
+
+export class UpdateOrderByUserIdUseCase {
+  constructor(private readonly orderRepository: OrderRepository) { }
+
+  async execute(orderId: number, userId: number): Promise<number> {
+    return this.orderRepository.updateOrderByUserId(orderId, userId);
   }
 }

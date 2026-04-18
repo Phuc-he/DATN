@@ -1,10 +1,14 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { OrderItem } from '@/src/domain/entity/order-item.entity';
 import { Book } from '@/src/domain/entity/book.entity';
 import { Voucher } from '@/src/domain/entity/voucher.entity';
 import { DiscountType } from '@/src/domain/entity/discount-type.enum';
+import { useAuth } from '../hooks/useAuth';
+import { AppProviders } from '@/src/provider/provider';
+import { Order } from '@/src/domain/entity/order.entity';
+import { OrderStatus } from '@/src/domain/entity/order-status.enum';
 
 interface CartContextType {
   cart: OrderItem[];
@@ -16,7 +20,7 @@ interface CartContextType {
   cartCount: number;
   voucherDiscount: number;
   appliedVoucher: Voucher | null;
-  applyVoucher: (voucher: Voucher) => void; // Khai báo trong interface
+  applyVoucher: (voucher: Voucher) => void;
   removeVoucher: () => void;
 }
 
@@ -25,8 +29,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<OrderItem[]>([]);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
+  const [isCartSynced, setIsCartSynced] = useState(false);
+  const [cartOrderId, setCartOrderId] = useState<number | null>(null);
+  const { currUser } = useAuth();
 
-  // Persistence logic
+  // Persistence logic: Load from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem('bookshop_cart');
     if (savedCart) {
@@ -39,50 +46,132 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  // Persistence logic: Save to localStorage on cart change
   useEffect(() => {
     localStorage.setItem('bookshop_cart', JSON.stringify(cart));
   }, [cart]);
 
+  const syncBackend = useCallback(async (newItems: OrderItem[], orderIdOverride?: number | null) => {
+    if (!currUser) return;
+
+    const idToUpdate = orderIdOverride !== undefined ? orderIdOverride : cartOrderId;
+
+    const total = newItems.reduce((acc, item) => {
+      const priceAfterBookDiscount = item.unitPrice * (1 - (item.discount || 0) / 100);
+      return acc + (priceAfterBookDiscount * item.quantity);
+    }, 0);
+
+    try {
+      if (idToUpdate) {
+        await AppProviders.UpdateOrderUseCase.execute(idToUpdate, {
+          items: newItems,
+          totalAmount: total
+        });
+      } else if (newItems.length > 0) {
+        const newOrder: Order = {
+          user: currUser,
+          fullName: currUser.fullName || currUser.username || '',
+          phone: currUser.phone || '',
+          address: currUser.address || '',
+          isCart: true,
+          status: OrderStatus.UNPROCESSED,
+          totalAmount: total,
+          items: newItems
+        };
+        const created = await AppProviders.CreateOrderUseCase.execute(newOrder);
+        setCartOrderId(created.id || null);
+      }
+    } catch (e) {
+      console.error("Backend cart sync failed", e);
+    }
+  }, [currUser, cartOrderId]);
+
+  // Sync with backend when user logs in
+  useEffect(() => {
+    if (currUser && !isCartSynced) {
+      AppProviders.GetCartByUserUseCase.execute(Number(currUser.id))
+        .then(cartData => {
+          if (cartData) {
+            setCartOrderId(cartData.id || null);
+            if (cartData.items) {
+              if (cart.length > 0) {
+                console.log("Merging local cart with backend cart for user:", currUser.email);
+
+                const mergedCart = [...cartData.items];
+                cart.forEach(localItem => {
+                  const existingItem = mergedCart.find(item => item.book.id === localItem.book.id);
+                  if (existingItem) {
+                    existingItem.quantity += localItem.quantity;
+                  } else {
+                    mergedCart.push(localItem);
+                  }
+                });
+                setCart(mergedCart);
+                syncBackend(mergedCart, cartData.id);
+              } else {
+                setCart(cartData.items);
+              }
+            }
+          }
+          setIsCartSynced(true);
+        })
+        .catch(error => {
+          console.error("Error fetching cart:", error);
+          setIsCartSynced(true); // Prevent repeated attempts on failure
+        });
+    } else if (!currUser && isCartSynced) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsCartSynced(false);
+      setCartOrderId(null);
+    }
+  }, [currUser, isCartSynced, cart, syncBackend]);
+
   // --- Cart Actions ---
   const addToCart = (product: Book, amount: number) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.book.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.book.id === product.id
-            ? { ...item, quantity: item.quantity + amount }
-            : item
-        );
-      }
+    const existing = cart.find((item) => item.book.id === product.id);
+    let nextCart: OrderItem[];
+
+    if (existing) {
+      nextCart = cart.map((item) =>
+        item.book.id === product.id
+          ? { ...item, quantity: item.quantity + amount }
+          : item
+      );
+    } else {
       const newItem: OrderItem = {
         book: product,
         quantity: amount,
         unitPrice: product.price,
         discount: product.discount || 0,
       };
-      return [...prev, newItem];
-    });
+      nextCart = [...cart, newItem];
+    }
+
+    setCart(nextCart);
+    if (currUser) syncBackend(nextCart);
   };
 
   const removeFromCart = (productId: number) => {
-    setCart((prev) => prev.filter((item) => item.book.id !== productId));
+    const nextCart = cart.filter((item) => item.book.id !== productId);
+    setCart(nextCart);
+    if (currUser) syncBackend(nextCart);
   };
 
   const updateAmount = (productId: number, quantity: number) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.book.id === productId ? { ...item, quantity } : item
-      )
+    const nextCart = cart.map((item) =>
+      item.book.id === productId ? { ...item, quantity } : item
     );
+    setCart(nextCart);
+    if (currUser) syncBackend(nextCart);
   };
 
   const clearCart = () => {
     setCart([]);
     setAppliedVoucher(null);
+    if (currUser) syncBackend([]);
   };
 
   // --- Voucher Actions ---
-  // ĐỊNH NGHĨA HÀM APPLY VOUCHER Ở ĐÂY
   const applyVoucher = (voucher: Voucher) => {
     setAppliedVoucher(voucher);
   };
@@ -108,18 +197,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const finalCartTotal = Math.max(0, subtotal - voucherDiscount);
 
   return (
-    <CartContext.Provider value={{ 
-      cart, 
-      addToCart, 
-      removeFromCart, 
-      updateAmount, 
-      clearCart, 
-      cartTotal: finalCartTotal, 
-      cartCount, 
-      voucherDiscount, 
-      appliedVoucher, 
-      applyVoucher, // Truyền hàm đã định nghĩa vào đây
-      removeVoucher 
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateAmount,
+      clearCart,
+      cartTotal: finalCartTotal,
+      cartCount,
+      voucherDiscount,
+      appliedVoucher,
+      applyVoucher,
+      removeVoucher
     }}>
       {children}
     </CartContext.Provider>

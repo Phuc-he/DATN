@@ -13,6 +13,7 @@ export interface Order {
   phone: string;
   address: string;
   cartId?: string;
+  isCart: boolean;
   totalAmount: number; // BigDecimal maps to number for UI
   status: OrderStatus;
   items: OrderItem[];  // @OneToMany relationship

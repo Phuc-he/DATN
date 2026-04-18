@@ -26,6 +26,7 @@ data class Order(
     val phone: String,
     val address: String,
     val cartId: String? = null,
+    val isCart: Boolean = false,
     val totalAmount: BigDecimal,
     @Enumerated(EnumType.STRING)
     val status: OrderStatus = OrderStatus.UNPROCESSED,

@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingBag } from 'lucide-react';
 import * as Icons from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -63,6 +63,16 @@ export const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-6">
+            {!currUser && (
+              <button
+                onClick={() => router.push('/profile/orders')}
+                className="flex items-center gap-2 text-slate-600 hover:text-emerald-700 font-semibold text-sm transition-colors px-3 py-2 rounded-lg hover:bg-emerald-50"
+              >
+                <ShoppingBag size={18} />
+                <span>Đơn hàng</span>
+              </button>
+            )}
+
             <div className="hover:text-emerald-600 transition-colors">
                 <CartIcon />
             </div>
@@ -108,6 +118,17 @@ export const Navbar = () => {
             <a href="/shop/best-sellers" className="flex items-center justify-between hover:text-emerald-700 transition-colors">
                 Bán chạy nhất <Icons.ChevronRight size={16} />
             </a>
+            {!currUser && (
+              <button
+                onClick={() => {
+                  router.push('/profile/orders');
+                  setIsOpen(false);
+                }}
+                className="flex items-center justify-between hover:text-emerald-700 transition-colors"
+              >
+                Đơn hàng của tôi <Icons.ChevronRight size={16} />
+              </button>
+            )}
           </div>
           
           {!currUser && (

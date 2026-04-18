@@ -7,6 +7,7 @@ import { createOrderAction, CreateOrderDto } from '@/src/presentation/action/ord
 import { validateVoucherAction } from '@/src/presentation/action/voucher.action';
 import { VietQRModal } from '@/src/presentation/components/public/checkout/VietQRModal';
 import { useCart } from '@/src/presentation/context/CartContext';
+import { useOrders } from '@/src/presentation/context/OrderContext';
 import { useAuth } from '@/src/presentation/hooks/useAuth';
 import { formatCurrency } from '@/src/shared/currency.utils';
 import {
@@ -21,6 +22,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { OrderStatus } from '@/src/domain/entity/order-status.enum';
+import { Order } from '@/src/domain/entity/order.entity';
 
 const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,10 +34,12 @@ const Page = () => {
   const [isVnQr, setIsVnQr] = useState<{ qrUrl: string; description: string; amount: number; orderId: string } | null>(null);
 
   const { appliedVoucher, applyVoucher, removeVoucher, cart, cartTotal, voucherDiscount, clearCart } = useCart();
+  const { addOrderToLocalHistory } = useOrders();
   const router = useRouter();
   const { currUser } = useAuth();
   const isRestrictedUser = !currUser || currUser.historyStatus === UserHistoryStatus.NEW_USER || currUser.historyStatus === UserHistoryStatus.BOOM_HISTORY;
   const [isSuccess, setIsSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const MAX_QTY_FOR_RESTRICTED = 5;       // Giới hạn 5 cuốn sách
   const MAX_COD_VALUE_FOR_RESTRICTED = 50 * 26000; // Tối đa 50$ cho COD
 
@@ -122,7 +127,7 @@ const Page = () => {
     }
   };
 
-  const handleSubmitOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitOrder = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate rules before submitting
@@ -144,12 +149,12 @@ const Page = () => {
     try {
       // 1. Chuẩn bị payload khớp với CreateOrderDto đã update
       const orderPayload: CreateOrderDto = {
-        user: { id: Number(currUser?.id) || 0 }, // Giả định currUser.id là number
+        user: { id: Number(currUser?.id) || -1 }, // Giả định currUser.id là number
         fullName: formData.get('fullName') as string,
         phone: formData.get('phone') as string,
         address: `${formData.get('address')}, ${formData.get('city')}`,
         voucher: appliedVoucher,
-        items: cart, // Đã khớp với CartContext.cart (OrderItem[])
+        items: cart, // Đã khớp with CartContext.cart (OrderItem[])
         paymentMethod: paymentMethod,
         totalAmount: finalTotal,
       };
@@ -158,6 +163,25 @@ const Page = () => {
       const result = await createOrderAction(orderPayload);
 
       if (result.success) {
+        // if currUser chưa đăng nhập (isGuest), lưu order vào localStorage
+        if (!currUser && result.orderId) {
+          const guestOrder: Order = {
+            id: result.orderId,
+            fullName: orderPayload.fullName,
+            phone: orderPayload.phone,
+            address: orderPayload.address,
+            totalAmount: orderPayload.totalAmount,
+            status: OrderStatus.UNPROCESSED,
+            items: orderPayload.items,
+            isCart: false,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            user: { id: -1 } as any,
+            createdAt: new Date().toISOString(),
+          };
+          addOrderToLocalHistory(guestOrder);
+          setSuccessMessage("Đơn hàng của bạn đã được ghi nhận. Vui lòng đăng nhập để theo dõi trạng thái đơn hàng!");
+        }
+
         setIsSuccess(true);
         clearCart();
         removeVoucher();
@@ -165,7 +189,9 @@ const Page = () => {
         if (paymentMethod === PaymentMethod.VNQR && result.qrData) {
           setIsVnQr(result.qrData);
         } else {
-          router.push(`/checkout/order-success?id=${result.orderId}`);
+          // Delay redirect slightly if guest to show message?
+          // Actually order-success page can show the message too.
+          router.push(`/checkout/order-success?id=${result.orderId}${!currUser ? '&guest=true' : ''}`);
         }
         return;
       }
@@ -196,6 +222,18 @@ const Page = () => {
         <Link href="/cart" className="flex items-center gap-2 text-emerald-900 hover:text-indigo-600 mb-8 text-sm font-bold uppercase">
           <ArrowLeft size={16} /> Quay lại giỏ hàng
         </Link>
+
+        {successMessage && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-start gap-3">
+             <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
+              <PackageCheck size={20} />
+            </div>
+            <div>
+              <p className="text-blue-800 text-sm font-bold">Thông báo</p>
+              <p className="text-blue-700 text-xs mt-1">{successMessage}</p>
+            </div>
+          </div>
+        )}
 
         {hasSpecialBook && (
           <div className="mb-6 bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-start gap-3">
@@ -378,7 +416,7 @@ const Page = () => {
       {isVnQr && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
           <div className="relative w-full max-w-md">
-            <button onClick={() => router.push(`/checkout/order-success?id=${isVnQr.orderId}`)} className="absolute -top-12 right-0 text-white hover:text-indigo-200 flex items-center gap-2 font-bold text-sm">
+            <button onClick={() => router.push(`/checkout/order-success?id=${isVnQr.orderId}${!currUser ? '&guest=true' : ''}`)} className="absolute -top-12 right-0 text-white hover:text-indigo-200 flex items-center gap-2 font-bold text-sm">
               Xem đơn hàng <X size={20} />
             </button>
             <VietQRModal qrUrl={isVnQr.qrUrl} amount={isVnQr.amount} orderId={isVnQr.orderId} />
