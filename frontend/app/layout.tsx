@@ -2,19 +2,19 @@ import { CartProvider } from "@/src/presentation/context/CartContext";
 import { FirebaseProvider } from "@/src/presentation/context/FirebaseContext";
 import { WebSettingProvider } from "@/src/presentation/context/WebSettingContext";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
 import React from "react";
 import "./globals.css";
 import { OrderProvider } from "@/src/presentation/context/OrderContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const inter = Inter({
+  subsets: ["latin", "vietnamese"], // Critical: Add vietnamese here
+  variable: "--font-inter",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const robotoMono = Roboto_Mono({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-roboto-mono",
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <React.StrictMode>

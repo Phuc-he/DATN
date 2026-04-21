@@ -225,7 +225,7 @@ const Page = () => {
 
         {successMessage && (
           <div className="mb-6 bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-start gap-3">
-             <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
+            <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
               <PackageCheck size={20} />
             </div>
             <div>
@@ -281,19 +281,58 @@ const Page = () => {
         <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Cột trái: Thông tin nhận hàng */}
           <div className="lg:col-span-7 space-y-8">
-            <section className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-              <h2 className="text-xl font-black text-slate-950 mb-6 flex items-center gap-3">
-                <div className="bg-indigo-100 p-2 rounded-lg text-indigo-600"><MapPin size={20} /></div>
+            <section className="bg-white p-8 rounded-3xl shadow-md border border-slate-200">
+              <h2 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                {/* Icon box đậm hơn với nền indigo-600 */}
+                <div className="bg-indigo-600 p-2.5 rounded-xl text-white shadow-sm">
+                  <MapPin size={20} strokeWidth={2.5} />
+                </div>
                 Thông tin giao hàng
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="fullName" required placeholder="Họ và tên" defaultValue={currUser?.fullName || ''} className="w-full p-4 bg-emerald-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
-                <input name="phone" required placeholder="Số điện thoại" defaultValue={currUser?.phone || ''} className="w-full p-4 bg-emerald-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* - Thay bg-emerald-50 (nhạt) bằng slate-50 hoặc white để chuyên nghiệp hơn
+       - Tăng border lên slate-300 để rõ khối
+       - Màu chữ (text-slate-900) đậm hơn
+    */}
+                <input
+                  name="fullName"
+                  required
+                  placeholder="Họ và tên"
+                  defaultValue={currUser?.fullName || ''}
+                  className="w-full p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none text-slate-900 font-medium placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                />
+
+                <input
+                  name="phone"
+                  required
+                  placeholder="Số điện thoại"
+                  defaultValue={currUser?.phone || ''}
+                  className="w-full p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none text-slate-900 font-medium placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                />
+
                 <div className="md:col-span-2">
-                  <input name="address" required placeholder="Địa chỉ chi tiết" defaultValue={currUser?.address || ''} className="w-full p-4 bg-emerald-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input
+                    name="address"
+                    required
+                    placeholder="Địa chỉ chi tiết"
+                    defaultValue={currUser?.address || ''}
+                    className="w-full p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none text-slate-900 font-medium placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                  />
                 </div>
-                <input name="city" required placeholder="Tỉnh/Thành phố" className="w-full p-4 bg-emerald-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
-                <input name="zipCode" placeholder="Mã bưu điện (tùy chọn)" className="w-full p-4 bg-emerald-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" />
+
+                <input
+                  name="city"
+                  required
+                  placeholder="Tỉnh/Thành phố"
+                  className="w-full p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none text-slate-900 font-medium placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                />
+
+                <input
+                  name="zipCode"
+                  placeholder="Mã bưu điện (tùy chọn)"
+                  className="w-full p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none text-slate-900 font-medium placeholder:text-slate-400 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                />
               </div>
             </section>
 

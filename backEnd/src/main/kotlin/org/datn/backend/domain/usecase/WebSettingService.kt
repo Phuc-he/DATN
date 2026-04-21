@@ -47,7 +47,7 @@ class WebSettingService(
      */
     @Transactional
     fun create(setting: WebSetting): WebSetting? =
-        activityLogService.executeWithLog<WebSetting>(LogAction.CREATE.name, "WebSetting") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "WebSetting") {
             if (setting.isActive) {
                 deactivateAllOthers()
             }
@@ -63,7 +63,7 @@ class WebSettingService(
         id: Long,
         updates: Map<String, Any>,
     ): WebSetting? =
-        activityLogService.executeWithLog<WebSetting>(LogAction.UPDATE.name, "WebSetting") {
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "WebSetting") {
             val existing = findById(id)
 
             val willBeActive = updates["isActive"] as? Boolean ?: existing.isActive
@@ -90,7 +90,7 @@ class WebSettingService(
      */
     @Transactional
     fun delete(id: Long) =
-        activityLogService.executeWithLog<Unit>(LogAction.DELETE.name, "WebSetting") {
+        activityLogService.executeWithLog(LogAction.DELETE.name, "WebSetting") {
             val setting = findById(id)
             if (setting.isActive) {
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete the active configuration")

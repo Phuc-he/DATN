@@ -24,7 +24,7 @@ class BookService(
     fun getCategoryStats(categoryId: Long): Long = bookRepository.countByCategoryId(categoryId)
 
     fun create(book: Book): Book? =
-        activityLogService.executeWithLog<Book>(LogAction.CREATE.name, "Book") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "Book") {
             // Business Logic: Verify Author exists before linking
             book.author?.id?.let { authorId ->
                 if (!authorRepository.existsById(authorId)) {
@@ -82,7 +82,7 @@ class BookService(
         }
 
     fun delete(id: Long) =
-        activityLogService.executeWithLog<Unit>(LogAction.DELETE.name, "Book") {
+        activityLogService.executeWithLog(LogAction.DELETE.name, "Book") {
             if (!bookRepository.existsById(id)) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found")
             }

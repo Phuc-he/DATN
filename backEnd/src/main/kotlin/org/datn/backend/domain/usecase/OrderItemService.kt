@@ -25,7 +25,7 @@ class OrderItemService(
      * Use Case: Add item to an existing order (e.g., manual admin adjustment)
      */
     fun create(orderItem: OrderItem): OrderItem? =
-        activityLogService.executeWithLog<OrderItem>(LogAction.CREATE.name, "OrderItem") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "OrderItem") {
             orderItemRepository.save(orderItem)
         }
 
@@ -36,7 +36,7 @@ class OrderItemService(
         id: Long,
         updates: Map<String, Any>,
     ): OrderItem? =
-        activityLogService.executeWithLog<OrderItem>(LogAction.UPDATE.name, "OrderItem") {
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "OrderItem") {
             val existingItem = getById(id)
 
             val updatedItem =
@@ -57,7 +57,7 @@ class OrderItemService(
      * Use Case: Remove an item from an order
      */
     fun delete(id: Long) =
-        activityLogService.executeWithLog<Unit>(LogAction.DELETE.name, "OrderItem") {
+        activityLogService.executeWithLog(LogAction.DELETE.name, "OrderItem") {
             if (!orderItemRepository.existsById(id)) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order item not found")
             }

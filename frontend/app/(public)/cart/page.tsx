@@ -68,17 +68,17 @@ const CartPage = () => {
                     <p className="text-sm text-emerald-900 mb-4">{book.author?.name || 'Tác giả ẩn danh'}</p>
 
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center border border-slate-200 rounded-lg bg-emerald-50">
+                      <div className="flex items-center border border-emerald-300 rounded-lg bg-emerald-100 text-emerald-900">
                         <button
                           onClick={() => updateAmount(book.id!, Math.max(1, item.quantity - 1))}
-                          className="p-1 md:p-2 hover:text-indigo-600 transition-colors"
+                          className="p-1 md:p-2 hover:bg-emerald-200 hover:text-emerald-700 transition-colors rounded-l-lg"
                         >
                           <Minus size={16} />
                         </button>
                         <span className="w-8 text-center font-bold text-sm">{item.quantity}</span>
                         <button
                           onClick={() => updateAmount(book.id!, item.quantity + 1)}
-                          className="p-1 md:p-2 hover:text-indigo-600 transition-colors"
+                          className="p-1 md:p-2 hover:bg-emerald-200 hover:text-emerald-700 transition-colors rounded-r-lg"
                         >
                           <Plus size={16} />
                         </button>

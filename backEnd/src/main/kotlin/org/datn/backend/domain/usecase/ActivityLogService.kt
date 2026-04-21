@@ -82,10 +82,10 @@ class ActivityLogService(
         }.onSuccess { result ->
             val details =
                 when (result) {
-                    is List<*> -> "Successfully retrieved $entityName list (Count: ${result.size})"
-                    is Collection<*> -> "Successfully retrieved $entityName collection (Count: ${result.size})"
-                    null -> "Executed $action on $entityName (Result: null)"
-                    else -> "Successfully executed $action on $entityName"
+                    is List<*> -> "Đã lấy danh sách $entityName thành công (Số lượng: ${result.size})"
+                    is Collection<*> -> "Đã lấy tập hợp $entityName thành công (Số lượng: ${result.size})"
+                    null -> "Đã thực hiện $action trên $entityName (Kết quả: null)"
+                    else -> "Đã thực hiện $action trên $entityName thành công"
                 }
 
             create(

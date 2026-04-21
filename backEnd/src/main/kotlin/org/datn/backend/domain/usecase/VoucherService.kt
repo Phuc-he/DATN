@@ -39,7 +39,7 @@ class VoucherService(
      * Creates a new voucher and logs the action.
      */
     fun create(voucher: Voucher): Voucher? =
-        activityLogService.executeWithLog<Voucher>(LogAction.CREATE.name, "Voucher") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "Voucher") {
             if (voucherRepository.findByCodeAndIsActiveTrue(voucher.code) != null) {
                 throw ResponseStatusException(HttpStatus.CONFLICT, "Voucher code '${voucher.code}' already exists and is active")
             }
@@ -53,7 +53,7 @@ class VoucherService(
         id: Long,
         updates: Map<String, Any>,
     ): Voucher? =
-        activityLogService.executeWithLog<Voucher>(LogAction.UPDATE.name, "Voucher") {
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "Voucher") {
             val existing = findById(id)
 
             val dateParser = { input: String ->
@@ -114,7 +114,7 @@ class VoucherService(
      * Deletes a voucher and logs the action.
      */
     fun delete(id: Long) =
-        activityLogService.executeWithLog<Unit>(LogAction.DELETE.name, "Voucher") {
+        activityLogService.executeWithLog(LogAction.DELETE.name, "Voucher") {
             if (!voucherRepository.existsById(id)) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }

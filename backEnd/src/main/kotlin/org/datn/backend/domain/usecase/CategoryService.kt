@@ -20,7 +20,7 @@ class CategoryService(
      * Creates a new category and logs the action.
      */
     fun create(category: Category): Category? =
-        activityLogService.executeWithLog<Category>(LogAction.CREATE.name, "Category") {
+        activityLogService.executeWithLog(LogAction.CREATE.name, "Category") {
             if (categoryRepository.existsByName(category.name)) {
                 throw ResponseStatusException(HttpStatus.CONFLICT, "Category already exists")
             }
@@ -49,7 +49,7 @@ class CategoryService(
         id: Long,
         updates: Map<String, Any>,
     ): Category? =
-        activityLogService.executeWithLog<Category>(LogAction.UPDATE.name, "Category") {
+        activityLogService.executeWithLog(LogAction.UPDATE.name, "Category") {
             val existingCategory = getById(id)
 
             val updatedCategory =
