@@ -9,13 +9,15 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface CategoryRepository : BaseRepository<Category, Long> {
-    override fun findByPage(pageable: Pageable): Page<Category> = findAll(pageable)
+    @Query("SELECT c FROM Category c WHERE c.isDeleted = false")
+    override fun findByPage(pageable: Pageable): Page<Category>
 
     @Query(
         """
-        SELECT c FROM Category c 
-        WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) 
-        OR LOWER(c.description) LIKE LOWER(CONCAT('%', :query, '%'))
+        SELECT c FROM Category c
+        WHERE (LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(c.description) LIKE LOWER(CONCAT('%', :query, '%')))
+        AND c.isDeleted = false
     """,
     )
     override fun search(
@@ -29,4 +31,6 @@ interface CategoryRepository : BaseRepository<Category, Long> {
     fun countBooksByCategoryId(
         @Param("categoryId") categoryId: Long,
     ): Long
+
+    fun findAllByIsDeletedFalse(): List<Category>
 }

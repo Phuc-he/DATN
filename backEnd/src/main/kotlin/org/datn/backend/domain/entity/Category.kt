@@ -16,4 +16,5 @@ data class Category(
     val image: String? = null,
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
+    val isDeleted: Boolean = false,
 )

@@ -17,13 +17,13 @@ interface PriceRange {
   min?: number;
   max?: number;
 }
-
+// max price end to 500k
 const VND_PRICE_RANGES: PriceRange[] = [
   { label: 'Tất cả mức giá', min: undefined, max: undefined },
-  { label: 'Dưới 500.000₫', min: 0, max: 500000 },
-  { label: '500.000₫ - 1.000.000₫', min: 500000, max: 1000000 },
-  { label: '1.000.000₫ - 2.000.000₫', min: 1000000, max: 2000000 },
-  { label: 'Trên 2.000.000₫', min: 2000000, max: Infinity },
+  { label: 'Dưới 100.000₫', min: 0, max: 100000 },
+  { label: '100.000₫ - 300.000₫', min: 100000, max: 300000 },
+  { label: '300.000₫ - 500.000₫', min: 300000, max: 500000 },
+  { label: 'Trên 500.000₫', min: 500000, max: Infinity },
 ];
 
 export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, query }: SidebarProps) => {

@@ -1,8 +1,8 @@
 'use client';
 
 import { OrderStatus, getOrderStatusDetails } from '@/src/domain/entity/order-status.enum';
-import { useAuth } from '@/src/presentation/hooks/useAuth';
 import { useOrders } from '@/src/presentation/context/OrderContext';
+import { useAuth } from '@/src/presentation/hooks/useAuth';
 import {
   AlertCircle,
   BookOpen,
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const OrderStatusBadge = ({ status }: { status: OrderStatus }) => {
   const details = getOrderStatusDetails(status);
@@ -54,8 +54,12 @@ const OrderStatusBadge = ({ status }: { status: OrderStatus }) => {
 
 export default function OrderHistoryPage() {
   const { currUser, loading: authLoading } = useAuth();
-  const { orders, loading: ordersLoading } = useOrders();
+  const { orders, loading: ordersLoading, refreshOrders } = useOrders();
   const [searchQuery, setSearchQuery] = useState('');
+  // Reload orders if the URL indicates a successful payment
+  useEffect(() => {
+    refreshOrders();
+  }, [refreshOrders]);
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {

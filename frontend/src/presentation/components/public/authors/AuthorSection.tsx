@@ -5,12 +5,16 @@ import { Author } from '@/src/domain/entity/author.entity';
 import { ArrowRight, Users } from 'lucide-react';
 import Link from 'next/link';
 import AuthorCard from './AuthorCard';
+import { usePathname } from 'next/navigation';
 
 interface AuthorSectionProps {
   authors: Author[];
 }
 
 const AuthorSection: React.FC<AuthorSectionProps> = ({ authors }) => {
+  const pathname = usePathname();
+  const isAuthorsPage = pathname === '/authors';
+
   return (
     <section className="py-20 bg-emerald-50">
       <div className="container mx-auto px-8">
@@ -34,19 +38,21 @@ const AuthorSection: React.FC<AuthorSectionProps> = ({ authors }) => {
             </p>
           </div>
 
-          <Link
-            href="/authors"
-            className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-3.5 rounded-2xl text-sm font-black text-slate-950 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm hover:shadow-xl hover:shadow-emerald-100/50"
-          >
-            Khám phá tất cả tác giả
-            <ArrowRight size={18} className="transition-transform group-hover:translate-x-1 text-emerald-600" />
-          </Link>
+          {!isAuthorsPage && (
+            <Link
+              href="/authors"
+              className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-3.5 rounded-2xl text-sm font-black text-slate-950 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm hover:shadow-xl hover:shadow-emerald-100/50"
+            >
+              Khám phá tất cả tác giả
+              <ArrowRight size={18} className="transition-transform group-hover:translate-x-1 text-emerald-600" />
+            </Link>
+          )}
         </div>
 
         {/* Grid Container */}
         {authors.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {authors.slice(0, 4).map((author, index) => (
+            {authors.map((author, index) => (
               <div
                 key={author.id || index}
                 className="animate-in fade-in zoom-in duration-700"

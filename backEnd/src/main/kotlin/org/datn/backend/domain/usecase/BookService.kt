@@ -42,7 +42,7 @@ class BookService(
             bookRepository.save(book)
         }
 
-    fun getAll(): List<Book> = bookRepository.findAll()
+    fun getAll(): List<Book> = bookRepository.findAllByIsDeletedFalse()
 
     fun getAll(pageable: Pageable): Page<Book> = bookRepository.findByPage(pageable)
 
@@ -64,6 +64,7 @@ class BookService(
             val existingBook =
                 bookRepository
                     .findById(id)
+                    .filter { !it.isDeleted }
                     .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found") }
 
             val updatedBook =
@@ -83,11 +84,12 @@ class BookService(
 
     fun delete(id: Long) =
         activityLogService.executeWithLog(LogAction.DELETE.name, "Book") {
-            if (!bookRepository.existsById(id)) {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found")
-            }
-            bookRepository.deleteById(id)
+            val book = bookRepository.findById(id)
+                .filter { !it.isDeleted }
+                .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found") }
+
+            bookRepository.save(book.copy(isDeleted = true))
         }
 
-    fun getById(id: Long): Optional<Book> = bookRepository.findById(id)
+    fun getById(id: Long): Optional<Book> = bookRepository.findById(id).filter { !it.isDeleted }
 }

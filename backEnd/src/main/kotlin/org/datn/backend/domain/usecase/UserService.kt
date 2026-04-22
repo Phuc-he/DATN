@@ -20,6 +20,7 @@ class UserService(
     private val orderService: OrderService
 ) {
     // READ operations: Kept standard to maintain high performance and clean logs
+
     fun getAll(pageable: Pageable): Page<User> = userRepository.findByPage(pageable)
 
     fun search(
@@ -27,13 +28,14 @@ class UserService(
         pageable: Pageable,
     ): Page<User> = userRepository.search(query, pageable)
 
-    fun getAll(): List<User> = userRepository.findAll()
+    fun getAll(): List<User> = userRepository.findAllByIsDeletedFalse()
 
     fun findByEmail(email: String): User? = userRepository.findByEmail(email)
 
     fun getById(id: Long): User =
         userRepository
             .findById(id)
+            .filter { !it.isDeleted }
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "User not found") }
 
     /**
@@ -83,14 +85,12 @@ class UserService(
      */
     fun delete(id: Long) =
         activityLogService.executeWithLog(LogAction.DELETE.name, "User") {
-            if (!userRepository.existsById(id)) {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-            }
-            userRepository.deleteById(id)
+            val user = getById(id)
+            userRepository.save(user.copy(isDeleted = true))
         }
 
     fun updateStatusForAllUser() {
-        userRepository.findAll().forEach {
+        userRepository.findAllByIsDeletedFalse().forEach {
             it.id?.let { id ->
                 val status = calcNewStatus(it, orderService.findByUserId(id))
                 update(id, mapOf("historyStatus" to status.ordinal))
@@ -102,9 +102,7 @@ class UserService(
      * Recalculates and updates the history status for a specific user
      */
     fun updateStatusForUser(id: Long): User {
-        val user = userRepository.findById(id).orElseThrow {
-            RuntimeException("User not found with id: $id")
-        }
+        val user = getById(id)
 
         val orders = orderService.findByUserId(id)
         val newStatus = calcNewStatus(user, orders)

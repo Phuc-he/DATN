@@ -28,7 +28,8 @@ class CategoryService(
         }
 
     // READ operations: No logging to avoid "log spam" in dashboard
-    fun getAll(): List<Category> = categoryRepository.findAll()
+
+    fun getAll(): List<Category> = categoryRepository.findAllByIsDeletedFalse()
 
     fun getAll(pageable: Pageable): Page<Category> = categoryRepository.findByPage(pageable)
 
@@ -40,6 +41,7 @@ class CategoryService(
     fun getById(id: Long): Category =
         categoryRepository
             .findById(id)
+            .filter { !it.isDeleted }
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found") }
 
     /**
@@ -78,6 +80,6 @@ class CategoryService(
                 )
             }
 
-            categoryRepository.delete(category)
+            categoryRepository.save(category.copy(isDeleted = true))
         }
 }

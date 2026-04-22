@@ -75,12 +75,12 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
 
     // Safety validation before Protobuf encoding
     if (isNaN(voucherData.discountType)) {
-      alert("Please select a valid Discount Type");
+      alert("Vui lòng chọn Loại giảm giá hợp lệ");
       return;
     }
 
     if (isNaN(voucherData.discountValue)) {
-      alert("Please enter a valid discount value");
+      alert("Vui lòng nhập giá trị giảm giá hợp lệ");
       return;
     }
 
@@ -97,7 +97,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
           <div className="flex items-center gap-2">
             <Ticket className="text-emerald-600" size={20} />
             <h2 className="text-xl font-bold text-slate-800">
-              {initialData ? 'Edit Voucher' : 'Create New Voucher'}
+              {initialData ? 'Chỉnh sửa Voucher' : 'Tạo mới Voucher'}
             </h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
@@ -108,7 +108,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Code */}
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-slate-700">Voucher Code</label>
+            <label className="text-sm font-semibold text-slate-700">Mã Voucher</label>
             <div className="flex gap-2">
               <input
                 required
@@ -121,6 +121,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
                 type="button"
                 onClick={generateRandomCode}
                 className="px-3 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors"
+                title="Tạo mã ngẫu nhiên"
               >
                 <RefreshCw size={18} />
               </button>
@@ -129,7 +130,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Type</label>
+              <label className="text-sm font-semibold text-slate-700">Loại</label>
               <select
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white"
                 // formData.discountType is a number (0 or 1)
@@ -145,13 +146,13 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
                   });
                 }}
               >
-                <option value={DiscountType.PERCENTAGE}>Percentage (%)</option>
-                <option value={DiscountType.FIXED}>Fixed Amount (VND)</option>
+                <option value={DiscountType.PERCENTAGE}>Phần trăm (%)</option>
+                <option value={DiscountType.FIXED}>Số tiền cố định (VNĐ)</option>
               </select>
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Value</label>
+              <label className="text-sm font-semibold text-slate-700">Giá trị</label>
               <div className="relative">
                 <input
                   required
@@ -162,7 +163,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
                   onChange={(e) => setFormData({ ...formData, discountValue: e.target.value === '' ? 0 : Number(e.target.value) })}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                  {formData.discountType === DiscountType.PERCENTAGE ? <Percent size={14} /> : "VND"}
+                  {formData.discountType === DiscountType.PERCENTAGE ? <Percent size={14} /> : "VNĐ"}
                 </div>
               </div>
             </div>
@@ -170,7 +171,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Min Order ($)</label>
+              <label className="text-sm font-semibold text-slate-700">Đơn hàng tối thiểu (VNĐ)</label>
               <input
                 type="number"
                 step="0.01"
@@ -180,7 +181,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Max Uses</label>
+              <label className="text-sm font-semibold text-slate-700">Số lần dùng tối đa</label>
               <input
                 required
                 type="number"
@@ -194,7 +195,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                <Calendar size={14} /> Start Date
+                <Calendar size={14} /> Ngày bắt đầu
               </label>
               <input
                 required
@@ -206,7 +207,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
             </div>
             <div className="space-y-1">
               <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                <Calendar size={14} /> Expiration
+                <Calendar size={14} /> Ngày hết hạn
               </label>
               <input
                 required
@@ -227,7 +228,7 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
             />
             <label htmlFor="isActive" className="text-sm font-semibold text-slate-700 cursor-pointer">
-              Active and usable by customers
+              Đang hoạt động và cho phép khách hàng sử dụng
             </label>
           </div>
 
@@ -237,13 +238,13 @@ const VoucherModal: React.FC<VoucherModalProps> = ({ isOpen, onClose, onSave, in
               onClick={onClose}
               className="px-6 py-2 text-slate-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors"
             >
-              Cancel
+              Hủy
             </button>
             <button
               type="submit"
               className="px-6 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 shadow-md transition-all active:scale-95"
             >
-              {initialData ? 'Update Voucher' : 'Create Voucher'}
+              {initialData ? 'Cập nhật Voucher' : 'Tạo Voucher'}
             </button>
           </div>
         </form>

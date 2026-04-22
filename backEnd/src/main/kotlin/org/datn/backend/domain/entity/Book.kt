@@ -41,4 +41,5 @@ data class Book(
     val author: Author? = null,
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
+    val isDeleted: Boolean = false,
 )

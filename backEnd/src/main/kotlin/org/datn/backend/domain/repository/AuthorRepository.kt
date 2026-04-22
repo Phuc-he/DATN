@@ -9,13 +9,15 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface AuthorRepository : BaseRepository<Author, Long> {
-    override fun findByPage(pageable: Pageable): Page<Author> = findAll(pageable)
+    @Query("SELECT a FROM Author a WHERE a.isDeleted = false")
+    override fun findByPage(pageable: Pageable): Page<Author>
 
     @Query(
         """
-        SELECT a FROM Author a 
-        WHERE LOWER(a.name) LIKE LOWER(CONCAT('%', :query, '%')) 
-        OR LOWER(a.bio) LIKE LOWER(CONCAT('%', :query, '%'))
+        SELECT a FROM Author a
+        WHERE (LOWER(a.name) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(a.bio) LIKE LOWER(CONCAT('%', :query, '%')))
+        AND a.isDeleted = false
     """,
     )
     override fun search(
@@ -24,4 +26,6 @@ interface AuthorRepository : BaseRepository<Author, Long> {
     ): Page<Author>
 
     fun existsByName(name: String): Boolean
+
+    fun findAllByIsDeletedFalse(): List<Author>
 }

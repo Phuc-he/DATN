@@ -19,4 +19,5 @@ data class Author(
     @Lob
     @Column(name = "profile_image", columnDefinition = "LONGTEXT")
     val profileImage: String? = null,
+    val isDeleted: Boolean = false,
 )

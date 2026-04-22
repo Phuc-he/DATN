@@ -5,6 +5,7 @@ import org.datn.backend.domain.entity.Order
 import org.datn.backend.domain.entity.OrderStatus
 import org.datn.backend.domain.repository.BookRepository
 import org.datn.backend.domain.repository.OrderRepository
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -19,6 +20,7 @@ class OrderService(
     private val bookRepository: BookRepository,
     private val activityLogService: ActivityLogService, // Injected logging service
 ) {
+    private val logger = LoggerFactory.getLogger(OrderService::class.java)
     // READ operations: Kept clean without logging to avoid dashboard noise
     fun getAll(pageable: Pageable): Page<Order> = orderRepository.findByPage(pageable)
 
@@ -139,7 +141,7 @@ class OrderService(
                     "totalAmount" -> updatedOrder.copy(totalAmount = BigDecimal(value.toString()))
                     "isCart" -> updatedOrder.copy(isCart = value as Boolean)
                     "status" -> {
-                        val status = OrderStatus.valueOf(value.toString().uppercase())
+                        val status = OrderStatus.entries[value as Int]
                         updatedOrder.copy(status = status)
                     }
 

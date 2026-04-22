@@ -26,7 +26,7 @@ class AuthorController(
     ): ResponseEntity<AuthorProto> {
         logger.info("hxt id $id")
         val optional = authorService.getById(id)
-        return if (optional.isPresent) {
+        return if (optional?.isPresent == true) {
             ResponseEntity.ok(optional.get().toProto())
         } else {
             ResponseEntity.notFound().build()

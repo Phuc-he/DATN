@@ -17,6 +17,7 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // Set default to 1 for consistency
   const [totalPages, setTotalPages] = useState(0);
+  const [totalBooks, setTotalBooks] = useState(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Book | null>(null);
@@ -48,6 +49,7 @@ const ProductPage = () => {
       const result = await AppProviders.GetBooksByPageUseCase.execute(page - 1, 10);
       setProducts(result.content);
       setTotalPages(result.totalPages);
+      setTotalBooks(result.totalElements);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -144,7 +146,7 @@ const ProductPage = () => {
         <>
           <div className="mb-4 flex justify-between items-center">
             <span className="text-sm text-emerald-900 font-medium">
-              Tổng số sách: {products.length}
+              Tổng số sách: {totalBooks}
             </span>
             <span className="text-xs font-medium text-slate-400 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
               Trang {currentPage} trên {totalPages || 1}
