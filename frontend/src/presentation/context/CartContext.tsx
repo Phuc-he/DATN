@@ -89,6 +89,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   // Sync with backend when user logs in
   useEffect(() => {
     if (currUser && !isCartSynced) {
+      // Check if we already synced in this session to avoid redundant calls on page refresh
+      const sessionSynced = sessionStorage.getItem('cart_synced_' + currUser.id);
+
+      if (sessionSynced) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsCartSynced(true);
+        return;
+      }
+
       AppProviders.GetCartByUserUseCase.execute(Number(currUser.id))
         .then(cartData => {
           if (cartData) {
@@ -114,6 +123,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             }
           }
           setIsCartSynced(true);
+          sessionStorage.setItem('cart_synced_' + currUser.id, 'true');
         })
         .catch(error => {
           console.error("Error fetching cart:", error);
