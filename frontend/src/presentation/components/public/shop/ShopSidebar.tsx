@@ -5,7 +5,7 @@ import Link from "next/link";
 
 interface SidebarProps {
   categories: Category[];
-  currentCategory?: string;
+  currentCategory?: number;
   minPrice?: string;
   maxPrice?: string;
   query?: string;
@@ -31,12 +31,12 @@ export const ShopSidebar = ({ categories, currentCategory, minPrice, maxPrice, q
   const getPriceUrl = (pMin?: number, pMax?: number) => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
-    if (currentCategory) params.set('category', currentCategory);
+    if (currentCategory) params.set('category', currentCategory.toString());
     if (pMin !== undefined) params.set('minPrice', pMin.toString());
     if (pMax !== undefined) params.set('maxPrice', pMax.toString());
     return `/shop/search?${params.toString()}`;
   };
-
+  console.log("Rendering ShopSidebar with categories:", currentCategory);
   return (
     <aside className="lg:col-span-3 space-y-6">
 

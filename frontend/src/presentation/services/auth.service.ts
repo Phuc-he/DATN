@@ -71,8 +71,22 @@ export const AuthService = {
 
   logout: async () => {
     try {
+      // Get current user id before signing out to remove session storage
+      const currentUser = auth.currentUser;
+
       await signOut(auth);
+
       // Clear persisted states from localStorage
+      if (currentUser) {
+        // Find user by email in backend to get the numeric ID (or we can just clear all session storage matching the pattern)
+        // Since we don't have the backend ID synchronously available here, we'll clear all sessionStorage items starting with 'cart_synced_'
+        Object.keys(sessionStorage).forEach(key => {
+          if (key.startsWith('cart_synced_')) {
+            sessionStorage.removeItem(key);
+          }
+        });
+      }
+
       localStorage.removeItem('bookshop_cart');
       localStorage.removeItem('bookshop_guest_orders');
     } catch (error) {

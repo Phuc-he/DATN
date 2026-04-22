@@ -65,7 +65,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Bộ lọc bên lề */}
-          <ShopSidebar categories={categories} baseUrl={""} maxPrice={max.toString()} minPrice={min.toString()} query={q} />
+          <ShopSidebar categories={categories} baseUrl={""} maxPrice={max.toString()} minPrice={min.toString()} query={q} currentCategory={category ? Number(category) : undefined} />
 
           {/* Lưới sản phẩm */}
           <main className="lg:col-span-9">

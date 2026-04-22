@@ -52,6 +52,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [cart]);
 
   const syncBackend = useCallback(async (newItems: OrderItem[], orderIdOverride?: number | null) => {
+    console.log("Syncing cart with backend. User:", currUser?.email, "Order ID override:", orderIdOverride, "Cart items:", newItems);
     if (!currUser) return;
 
     const idToUpdate = orderIdOverride !== undefined ? orderIdOverride : cartOrderId;
@@ -91,13 +92,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     if (currUser && !isCartSynced) {
       // Check if we already synced in this session to avoid redundant calls on page refresh
       const sessionSynced = sessionStorage.getItem('cart_synced_' + currUser.id);
-
+      console.log("Cart sync check for user:", currUser.email, "Session synced:", sessionSynced);
       if (sessionSynced) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsCartSynced(true);
         return;
       }
-
+      console.log("Fetching cart for user:", currUser.email);
       AppProviders.GetCartByUserUseCase.execute(Number(currUser.id))
         .then(cartData => {
           if (cartData) {
@@ -130,7 +131,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           setIsCartSynced(true); // Prevent repeated attempts on failure
         });
     } else if (!currUser && isCartSynced) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setIsCartSynced(false);
       setCartOrderId(null);
     }
@@ -158,13 +159,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setCart(nextCart);
-    if (currUser) syncBackend(nextCart);
+    syncBackend(nextCart);
   };
 
   const removeFromCart = (productId: number) => {
     const nextCart = cart.filter((item) => item.book.id !== productId);
     setCart(nextCart);
-    if (currUser) syncBackend(nextCart);
+    syncBackend(nextCart);
   };
 
   const updateAmount = (productId: number, quantity: number) => {
